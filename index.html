@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ActorForge — Reliable UK Data APIs, Pay Per Result</title>
+<meta name="description" content="Pay-per-use UK data tools built on official sources: Companies House company data with officers & filings, MOT history, planning applications. No subscriptions — pay per result.">
+<style>
+:root { --navy:#14213d; --navy2:#0a1628; --orange:#f26430; --ink:#1b2430; --muted:#5b6572; --line:#e5e8ee; }
+* { box-sizing:border-box; margin:0; }
+body { font:16px/1.6 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); }
+.wrap { max-width:880px; margin:0 auto; padding:0 24px; }
+header { background:linear-gradient(180deg,var(--navy),var(--navy2)); color:#fff; padding:64px 0 56px; }
+header h1 { font-size:2.2rem; letter-spacing:-.02em; }
+header h1 span { color:var(--orange); }
+header p.tag { color:#c8d2e0; max-width:38em; margin-top:12px; font-size:1.1rem; }
+.badges { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+.badge { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:4px 14px; font-size:.85rem; color:#dde5f0; }
+main { padding:48px 0 24px; }
+h2 { font-size:1.4rem; margin:32px 0 8px; letter-spacing:-.01em; }
+p.sub { color:var(--muted); margin-bottom:20px; }
+.card { border:1px solid var(--line); border-radius:12px; padding:24px; margin:20px 0; }
+.card.live { border-color:var(--orange); }
+.card h3 { font-size:1.15rem; }
+.card .status { font-size:.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+.card.live .status { color:var(--orange); }
+.card .status.soon { color:var(--muted); }
+.card p { color:var(--muted); margin:8px 0 14px; }
+.price { font-weight:600; color:var(--ink); }
+a.btn { display:inline-block; background:var(--orange); color:#fff; text-decoration:none; font-weight:600; border-radius:8px; padding:10px 18px; margin-top:6px; }
+a.btn:hover { filter:brightness(1.07); }
+.tablewrap { overflow-x:auto; margin:12px 0; }
+table { border-collapse:collapse; font-size:.85rem; min-width:640px; }
+th,td { text-align:left; padding:8px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
+th { color:var(--muted); font-weight:600; }
+ul.points { padding-left:0; list-style:none; }
+ul.points li { padding-left:26px; position:relative; margin:8px 0; color:var(--muted); }
+ul.points li::before { content:"✓"; position:absolute; left:0; color:var(--orange); font-weight:700; }
+footer { border-top:1px solid var(--line); margin-top:48px; padding:24px 0 40px; color:var(--muted); font-size:.85rem; }
+footer a { color:var(--navy); }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Actor<span>Forge</span></h1>
+    <p class="tag">Reliable UK data, straight from the source. Pay-per-result data tools built on official registers — no subscriptions, no scraping fragility.</p>
+    <div class="badges">
+      <span class="badge">🏛️ Official sources first</span>
+      <span class="badge">🌙 Monitored nightly</span>
+      <span class="badge">💷 Budget caps respected</span>
+      <span class="badge">🤖 AI-agent ready</span>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <h2>The tools</h2>
+    <p class="sub">Run them on Apify — pay only for the rows you receive.</p>
+
+    <div class="card live">
+      <div class="status">● Live</div>
+      <h3>UK Companies House Enrichment — Officers &amp; Filings</h3>
+      <p>Fully-enriched UK company records from the official Companies House API: profile, current and resigned officers, and filing history in one row. Build lead lists by SIC code, incorporation date, status, or location — or enrich company numbers in bulk.</p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>companyNumber</th><th>name</th><th>status</th><th>incorporatedOn</th><th>sicCodes</th><th>officers</th><th>filings</th></tr>
+          <tr><td>00445790</td><td>TESCO PLC</td><td>active</td><td>1947-11-27</td><td>47110</td><td>74 mapped</td><td>25 most recent</td></tr>
+          <tr><td>15055247</td><td>CROWN SCAFFOLDING (NW) LTD</td><td>active</td><td>2023-08-07</td><td>43991</td><td>1 mapped</td><td>8 filings</td></tr>
+        </table>
+      </div>
+      <p><span class="price">$5 per 1,000 companies</span> — officers and filing history included, not extra.</p>
+      <a class="btn" href="https://apify.com/actor-forge/uk-companies-house-enrichment">Run it on Apify →</a>
+    </div>
+
+    <div class="card">
+      <div class="status soon">○ Coming soon</div>
+      <h3>UK Planning Applications — 15 Councils, One Actor</h3>
+      <p>New and decided planning applications from council portals, unified: reference, proposal, site address, status, dates, deep link. A proven lead source for trades and developers.</p>
+    </div>
+
+    <div class="card">
+      <div class="status soon">○ Coming soon</div>
+      <h3>UK MOT History Bulk Checker</h3>
+      <p>Full MOT history for any UK vehicle from the official DVSA API — results, expiry, mileage, defects — by registration or VIN, in bulk.</p>
+    </div>
+
+    <h2>Why ActorForge</h2>
+    <ul class="points">
+      <li><strong>Official APIs, not scraped pages</strong> — results don't break when a website changes its layout.</li>
+      <li><strong>Nightly automated self-tests</strong> — breakages are caught and fixed before you notice them.</li>
+      <li><strong>Honest pay-per-event pricing</strong> — worked examples in every README; rows we can't deliver are never charged.</li>
+      <li><strong>Budget caps are a contract</strong> — set a max charge on any run and the actor stops cleanly at the cap.</li>
+      <li><strong>Privacy by design</strong> — statutory public registers only; personal details like dates of birth are deliberately excluded.</li>
+    </ul>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    ActorForge · <a href="https://apify.com/actor-forge">All actors on Apify</a> · Questions or a niche you'd like covered? Open an issue on any actor.
+  </div>
+</footer>
+</body>
+</html>
