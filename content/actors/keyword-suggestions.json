@@ -1,0 +1,131 @@
+{
+  "name": "keyword-suggestions",
+  "category": "seo-marketing",
+  "h1": "Keyword Suggestions from Google, YouTube, Bing and Baidu Autocomplete",
+  "metaTitle": "Bulk Keyword Suggestions: Google & YouTube Autocomplete",
+  "metaDescription": "Bulk long-tail keyword ideas from Google, YouTube, Bing and Baidu autocomplete with a-z, question and preposition expansion. From $0.30 per 1,000 seeds.",
+  "tagline": "Turn a list of seed keywords into the long-tail queries people actually type, across four search boxes, in any country and language.",
+  "intro": [
+    "Autocomplete is one of the most direct signals of what people search for: every suggestion is a query real users type. Collecting it by hand means typing a seed, then the seed plus each letter of the alphabet, in every search engine you care about. The Keyword Suggestions actor does that in bulk.",
+    "Give it seed keywords and pick engines: Google, YouTube, Bing and Baidu. With `a-z` expansion (the default) each seed is also sent as \"seed a\" to \"seed z\", which usually returns a few hundred unique long-tail keywords per seed and engine. `questions` expansion adds who, what, why, how, can, is and similar words in front of the seed; `prepositions` adds for, with, vs, near and others after it. Results are deduplicated across the expansion.",
+    "You get one row per seed and engine with each suggestion's text, position and the exact query that produced it, or a flat row per keyword for spreadsheets. It costs $0.30 per 1,000 seeds per engine without expansion and $1 per 1,000 with expansion, billed per seed and engine rather than per keyword. Empty and rate-limited rows are free."
+  ],
+  "howItWorks": [
+    "You provide `seeds`, choose `engines` and an `expansion` mode, and set `country` and `language` for the market.",
+    "Each seed is expanded into its query set (1 request with none, 27 with a-z, 14 with questions, 13 with prepositions) and sent to each engine's public suggest endpoint.",
+    "Requests are paced politely: at most 2 in flight and at least 350 ms apart per host, with back-off on HTTP 429.",
+    "Suggestions are deduplicated per seed and engine (case- and whitespace-insensitive) and capped at `maxSuggestionsPerSeed`.",
+    "Each complete seed and engine row is charged once; rows with no suggestions, partial failures or rate limits are free."
+  ],
+  "inputExample": {
+    "seeds": [
+      "coffee maker",
+      "running shoes"
+    ],
+    "engines": [
+      "google",
+      "youtube",
+      "bing"
+    ],
+    "expansion": "a-z",
+    "country": "us",
+    "language": "en",
+    "dedupe": true,
+    "outputMode": "grouped"
+  },
+  "outputNote": "In the sample each row is one seed on one engine, with the suggestion count and the keywords found by the a-z expansion.",
+  "useCases": [
+    {
+      "title": "Long-tail keyword research",
+      "text": "Expand a list of head terms with `a-z` to see the specific variants people search, such as brands, sizes and use cases, then group them into content topics."
+    },
+    {
+      "title": "FAQ and blog topic ideas",
+      "text": "Use `questions` expansion to collect how, why and can questions around a topic. They map well to FAQ sections and article headings."
+    },
+    {
+      "title": "YouTube titles and tags",
+      "text": "Select the `youtube` engine to see what viewers type into YouTube search, which often differs from web search, and use it when writing video titles and tags."
+    },
+    {
+      "title": "Comparison and buying intent",
+      "text": "`prepositions` expansion surfaces queries like \"seed vs\", \"seed for\" and \"seed near\", which point to comparison pages and local or purchase intent. Check rising terms with [Google Trends](actor:google-trends)."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Keyword Suggestions",
+      "Typing into search boxes manually",
+      "Paid keyword research suites"
+    ],
+    "rows": [
+      [
+        "Bulk seeds and engines in one run",
+        "Yes",
+        "No",
+        "Yes"
+      ],
+      [
+        "Google, YouTube, Bing and Baidu",
+        "Yes",
+        "Yes, one at a time",
+        "Varies"
+      ],
+      [
+        "Search volume",
+        "No, suggestions only",
+        "No",
+        "Usually yes"
+      ],
+      [
+        "Keyword difficulty and CPC",
+        "No",
+        "No",
+        "Usually yes"
+      ],
+      [
+        "Country and language targeting",
+        "Yes",
+        "Partial",
+        "Yes"
+      ],
+      [
+        "Cost",
+        "$0.30-$1 per 1,000 seeds per engine",
+        "Free, but slow",
+        "Subscription"
+      ]
+    ]
+  },
+  "comparisonNote": "Autocomplete tells you what people type, not how often. If you need search volumes, difficulty or CPC, a paid keyword suite is the right tool; this actor is a cheap way to generate the candidate list to feed into one.",
+  "faq": [
+    {
+      "q": "How do I scrape Google autocomplete suggestions in bulk?",
+      "a": "Put your keywords in `seeds`, keep `google` in `engines` and choose an expansion. With `a-z`, each seed sends 27 queries and the suggestions are deduplicated into one row per seed. Suggestions come from Google's public suggest endpoint."
+    },
+    {
+      "q": "Does it give search volume?",
+      "a": "No. Suggestions are what each engine shows for that query, country and language at run time. They indicate what people type but are not search volumes."
+    },
+    {
+      "q": "Why is flat mode not more expensive?",
+      "a": "Billing is per seed and engine, never per keyword. Flat mode (one row per suggestion) costs exactly the same as grouped mode: $0.0003 per seed and engine without expansion, $0.001 with a-z, questions or prepositions."
+    },
+    {
+      "q": "Why don't you support Amazon or DuckDuckGo suggestions?",
+      "a": "They are left out on purpose: Amazon, DuckDuckGo and Naver disallow it in robots.txt, eBay bans automated access, and Yahoo and Yandex restrict it in their terms."
+    },
+    {
+      "q": "What happens if Google rate-limits the run?",
+      "a": "The actor waits 5 seconds, then 20. If the engine keeps answering 429, or answers 401/403 once, that engine stops for the rest of the run and its remaining rows come back as rate-limited, free. Re-run later to fill them in."
+    }
+  ],
+  "related": [
+    "google-trends",
+    "seo-audit",
+    "ads-transparency",
+    "youtube-search-api"
+  ],
+  "guides": []
+}

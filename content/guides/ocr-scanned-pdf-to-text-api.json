@@ -1,0 +1,101 @@
+{
+  "slug": "ocr-scanned-pdf-to-text-api",
+  "category": "documents-ai",
+  "title": "How to OCR Scanned PDFs to Text with an API",
+  "metaTitle": "OCR Scanned PDF to Text API: Step-by-Step Guide",
+  "metaDescription": "OCR scanned PDFs to text through an API: pick languages, get page-level text with confidence scores, flag weak pages in Python. $3 per 1,000 OCR pages.",
+  "actor": "pdf-ocr",
+  "alsoActors": [
+    "ocr-to-text"
+  ],
+  "summary": "Send scanned PDF links to the PDF OCR actor, get text back one row per page with a confidence score, and use that score to flag pages for review. OCR costs $3 per 1,000 pages; pages that already have text cost $0.30 per 1,000.",
+  "intro": [
+    "A scanned PDF has no text to copy or search, only page images. Getting text out of it means rendering each page, running OCR in the right language and stitching the result back together, and doing that reliably for thousands of files is where most of the work goes.",
+    "Running Tesseract yourself is free but needs a renderer, language packs, a queue and servers. Desktop tools work one file at a time. The PDF OCR actor wraps Tesseract 5 behind an API, reads pages that already have a text layer without OCR, and reports a confidence score for every OCR'd page.",
+    "This guide sets up a page-level OCR run, checks the quality of the result in Python, rebuilds full documents from page rows, and shows when to use the mixed-format [OCR to Text](actor:ocr-to-text) actor instead."
+  ],
+  "steps": [
+    {
+      "name": "Gather the PDF links and any password",
+      "text": "Each PDF must be reachable by URL. Files up to 100 MB and up to 2,000 pages are supported. If some PDFs are password-protected and you are entitled to open them, put the password in `password`; it applies to every PDF in that run, so group files that share a password."
+    },
+    {
+      "name": "Choose languages and PDF mode",
+      "text": "Pick only the languages your documents use, up to 4, using Tesseract codes such as `eng`, `deu`, `fra` or `chi_sim`. Fewer languages is faster and more accurate. Keep `pdfMode` on `auto` so pages that already contain text are read directly at the cheaper price; switch to `ocr-all` only for PDFs whose hidden text layer is known to be garbage.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"urls\": [\n    \"https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf\"\n  ],\n  \"languages\": [\"eng\", \"deu\"],\n  \"pdfMode\": \"auto\",\n  \"outputMode\": \"pages\",\n  \"dpi\": 300,\n  \"maxPagesPerPdf\": 500,\n  \"minWordConfidence\": 40\n}"
+      }
+    },
+    {
+      "name": "Tune for your document type",
+      "text": "Leave `dpi` at 300 for normal scans; 200 is faster for large print. `pageSegmentation` defaults to `auto`; use `single-column` for uniform book-like text and `sparse` for forms with scattered fields. Setting `minWordConfidence` to around 40-60 removes most noise from stains and stamps. Raise `maxPagesPerPdf` above the default 200 if your documents are longer, or they will be marked truncated."
+    },
+    {
+      "name": "Flag low-confidence pages for review",
+      "text": "With `outputMode` set to `pages`, every row is one page with `page`, `confidence`, `wordCount` and `text`. Clean printed scans usually score above 95; handwriting, stamps and low-resolution scans score lower. Sort by confidence and send the weakest pages to a human.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/pdf-ocr\").call(run_input={\n    \"urls\": [\"https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf\"],\n    \"languages\": [\"eng\"],\n    \"outputMode\": \"pages\",\n})\nrows = list(client.dataset(run[\"defaultDatasetId\"]).iterate_items())\n\nTHRESHOLD = 80\nfor r in rows:\n    if r.get(\"error\"):\n        print(\"ERROR\", r.get(\"url\"), r[\"error\"])\n        continue\n    conf = r.get(\"confidence\")  # empty for text-layer pages\n    if conf is not None and conf < THRESHOLD:\n        print(f\"REVIEW {r['url']} page {r.get('page')}: confidence {conf}\")"
+      }
+    },
+    {
+      "name": "Rebuild one text file per PDF",
+      "text": "Page rows are ideal for page-level search, but you often also want one text file per document. Group rows by URL, sort by page number and join them. Alternatively set `outputMode` to `document` to get one row per PDF directly.",
+      "code": {
+        "lang": "python",
+        "code": "from collections import defaultdict\nfrom pathlib import Path\nimport hashlib\n\npages = defaultdict(list)\nfor r in rows:\n    if r.get(\"text\"):\n        pages[r[\"url\"]].append((r.get(\"page\") or 0, r[\"text\"]))\n\nout = Path(\"ocr_text\")\nout.mkdir(exist_ok=True)\nfor url, items in pages.items():\n    name = hashlib.sha1(url.encode()).hexdigest()[:12] + \".txt\"\n    text = \"\\n\\n\\f\\n\\n\".join(t for _, t in sorted(items))  # form feed between pages\n    (out / name).write_text(text, encoding=\"utf-8\")\n    print(name, \"<-\", url)"
+      }
+    },
+    {
+      "name": "Use OCR to Text for mixed PDFs and images",
+      "text": "If the same pipeline also receives photos, TIFF faxes or screenshots, send everything to [OCR to Text](actor:ocr-to-text) instead. It takes the same inputs, accepts PDF and image formats in one `urls` list, and defaults to one row per file. Pricing is identical."
+    },
+    {
+      "name": "Cap the cost of big batches",
+      "text": "Set a maximum total charge on the run. Processing stops cleanly at the cap and no page is charged twice, so an unexpectedly long archive cannot overrun your budget. `maxFiles` (up to 10,000) gives a second limit on the number of files per run."
+    }
+  ],
+  "sampleInput": {
+    "urls": [
+      "https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf",
+      "https://arxiv.org/pdf/1706.03762"
+    ],
+    "languages": [
+      "eng"
+    ],
+    "pdfMode": "auto",
+    "outputMode": "pages",
+    "maxPagesPerPdf": 200
+  },
+  "sampleOutputNote": "The sample shows a scanned PDF that needed OCR and a digital PDF read entirely from its text layer, with the page counts for each method.",
+  "costExample": "An archive of 400 scanned PDFs averaging 12 pages is 4,800 OCR pages, so 4,800 x $0.003 = $14.40. A 200-page PDF where only 20 pages are scanned costs 20 x $0.003 + 180 x $0.0003 = $0.06 + $0.054 = $0.114.",
+  "tips": [
+    "Rotate pages that are sideways or upside down before submitting; 90 and 180 degree rotations are not corrected automatically.",
+    "Tables come out as lines of text, not structured tables. Plan a separate extraction step if you need table cells.",
+    "Modern Greek is not available, and handwriting comes out poorly. Use the confidence score to find pages that need a human.",
+    "Links that return a web page instead of a file are reported and not charged; check for login walls on document links."
+  ],
+  "faq": [
+    {
+      "q": "Does the API return a searchable PDF?",
+      "a": "No. It returns the recognised text (and optionally word boxes) as dataset rows. Store the text in your search index next to the original PDF, or use the word boxes if you want to build an overlay."
+    },
+    {
+      "q": "Is the OCR confidence per page or per word?",
+      "a": "Each OCR'd page has a confidence score. With `includeWords` on, every word also gets its own confidence and pixel box. Pages read from an existing text layer have no confidence because no OCR was needed."
+    },
+    {
+      "q": "Can I OCR PDFs in Chinese, Japanese or Arabic?",
+      "a": "Yes. The 29 supported languages include simplified and traditional Chinese, Japanese, Korean, Arabic, Hebrew, Hindi and Thai. Select up to 4 per run in `languages`."
+    },
+    {
+      "q": "Should I use PDF OCR or OCR to Text?",
+      "a": "Same engine and same prices. PDF OCR defaults to one row per page, which suits scanned PDF archives. OCR to Text defaults to one row per file and is the better fit when PDFs and images arrive mixed."
+    }
+  ],
+  "related": [
+    "convert-pdf-to-markdown-for-rag",
+    "extract-text-from-images-screenshots"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "name": "weibo-hot-search",
+  "category": "china-trends",
+  "h1": "Weibo Hot Search Scraper — 微博热搜 Real-Time Trending List",
+  "metaTitle": "Weibo Hot Search 微博热搜 Scraper & API | ActorForge",
+  "metaDescription": "Get the live Weibo hot search list (微博热搜榜) as data: organic rank, topic, heat count, 新/热/沸/爆 badge and search link. Ads removed. $2 per 1,000 topics.",
+  "tagline": "The live 微博热搜榜 as clean rows: organic rank, topic, heat count, Weibo's own badge and a direct search link, with ads removed.",
+  "intro": [
+    "Weibo's hot search list (微博热搜) is where Chinese news, celebrity stories and brand crises surface first, and a topic can climb into the top ten within minutes. For PR teams and analysts outside China, watching it means refreshing a Chinese-language page and losing the history as soon as it changes.",
+    "This actor captures the current Weibo hot search board and returns each trending topic with its organic rank, heat count (热度), Weibo's badge as shown on the site (新 new, 热 hot, 沸 boiling, 爆 explosive) and a direct search link. Ads are removed and the pinned/government slot is excluded, so ranks reflect what is genuinely trending.",
+    "Use it for brand monitoring, PR and crisis alerts, China market research and news detection, or as a live China context tool for AI agents. Schedule it every 15 to 60 minutes to build a ranking history. Topics are $2 per 1,000, so the full top 50 costs $0.10 a run."
+  ],
+  "howItWorks": [
+    "The actor fetches Weibo's live public hot search board; no login, cookies or configuration are needed.",
+    "Advertised entries are dropped and the pinned/government slot is excluded, so rank 1 is the top organic topic.",
+    "Each topic is written as a row with platform, rank, title, heat score, label and search URL.",
+    "The optional `keywords` filter keeps only matching topics, and topics it filters out are never charged.",
+    "If Weibo is temporarily unavailable, the run fails cleanly and nothing is charged."
+  ],
+  "inputExample": {
+    "platforms": [
+      "weibo"
+    ],
+    "maxTopicsPerPlatform": 50,
+    "keywords": [
+      "比亚迪",
+      "iPhone"
+    ]
+  },
+  "outputNote": "Each trending topic is one row with its organic rank, heat count and badge, like this entry from the top of the board:",
+  "useCases": [
+    {
+      "title": "PR and crisis alerts",
+      "text": "Put your brand and product names in `keywords` and run every 15 minutes. A non-empty dataset means your brand just entered Weibo hot search, and quiet runs cost nothing for topics."
+    },
+    {
+      "title": "Ranking history for news analysis",
+      "text": "Schedule hourly runs of the full board and append the rows to a table. Over time you can see how long topics stay on the list, how high they climb and how their heat count changes."
+    },
+    {
+      "title": "Reading Weibo's badges",
+      "text": "The `label` column preserves Weibo's own 新, 热, 沸 and 爆 badges, which tell you whether a topic is new or escalating. Filter on 爆 to catch the most explosive topics of the day."
+    },
+    {
+      "title": "China context for AI agents",
+      "text": "Feed an agent the current top 20 Weibo topics so its answers about China reflect what people are talking about right now."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Weibo Hot Search",
+      "China Trending Topics (5 boards)",
+      "Watching s.weibo.com by hand"
+    ],
+    "rows": [
+      [
+        "Weibo hot search board",
+        "Yes",
+        "Yes",
+        "Yes"
+      ],
+      [
+        "Douyin, Baidu, Toutiao, Bilibili",
+        "No",
+        "Yes",
+        "Separate sites"
+      ],
+      [
+        "Ads removed, organic rank",
+        "Yes",
+        "Yes",
+        "No"
+      ],
+      [
+        "Weibo badge (新/热/沸/爆)",
+        "Yes",
+        "Yes",
+        "Visible"
+      ],
+      [
+        "History over time",
+        "Yes, by scheduling",
+        "Yes, by scheduling",
+        "No"
+      ],
+      [
+        "Price per 1,000 topics",
+        "$2",
+        "$2",
+        "Free, by hand"
+      ]
+    ]
+  },
+  "comparisonNote": "If you also want Douyin, Baidu, Toutiao or Bilibili, [China Trending Topics](actor:china-trending-topics) uses the same schema and price with five boards in one run. This actor is the simpler choice when Weibo is all you watch.",
+  "faq": [
+    {
+      "q": "What do the 新, 热, 沸 and 爆 labels mean on Weibo hot search?",
+      "a": "They are Weibo's own badges: 新 marks a new topic, 热 a hot one, 沸 a boiling one and 爆 an explosive one. The actor returns them in `label` exactly as Weibo shows them, or null when a topic has no badge."
+    },
+    {
+      "q": "Are ads included in the Weibo hot search data?",
+      "a": "No. Ads are removed and the pinned/government slot is excluded, so `rank` is the organic position with 1 as the top topic."
+    },
+    {
+      "q": "How often should I scrape Weibo hot search?",
+      "a": "Every 15 to 60 minutes is enough to build a useful ranking history. Hourly top 10 for a month is about 7,200 topics, which costs $14.40."
+    },
+    {
+      "q": "Does it collect Weibo user accounts or posts?",
+      "a": "No. It returns topics, ranks and heat only. No user accounts, profiles or personal data are collected."
+    },
+    {
+      "q": "Can I get the Weibo trending list in English?",
+      "a": "Topics are returned in their original language, mostly Simplified Chinese, and are not machine-translated. Run the titles through your own translator or LLM if you need English."
+    }
+  ],
+  "related": [
+    "china-trending-topics",
+    "douyin-hot-search",
+    "bilibili-scraper"
+  ],
+  "guides": []
+}

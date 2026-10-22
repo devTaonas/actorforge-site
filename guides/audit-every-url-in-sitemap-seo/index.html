@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit Every URL in Your Sitemap &amp; Find Orphan Pages</title>
+<meta name="description" content="Crawl your site plus its sitemap.xml, audit every URL for SEO issues and list orphan pages that nothing links to. Priced per audited page: $6 per 1,000.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Audit Every URL in Your Sitemap &amp; Find Orphan Pages">
+<meta property="og:description" content="Crawl your site plus its sitemap.xml, audit every URL for SEO issues and list orphan pages that nothing links to. Priced per audited page: $6 per 1,000.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Audit Every URL in Your Sitemap and Find Orphan Pages","description":"Crawl your site plus its sitemap.xml, audit every URL for SEO issues and list orphan pages that nothing links to. Priced per audited page: $6 per 1,000.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"SEO Audit Crawler — On-Page SEO Checker for Whole Sites","url":"https://devtaonas.github.io/actorforge-site/actors/seo-audit/"},"dateModified":"2026-10-22"},{"@type":"HowTo","name":"How to Audit Every URL in Your Sitemap and Find Orphan Pages","description":"Crawl your site plus its sitemap.xml, audit every URL for SEO issues and list orphan pages that nothing links to. Priced per audited page: $6 per 1,000.","tool":[{"@type":"HowToTool","name":"SEO Audit Crawler — On-Page SEO Checker for Whole Sites"}],"step":[{"@type":"HowToStep","position":1,"name":"Estimate your site size and set maxPages","text":"Orphan detection is only conclusive when the crawl covers the whole site, because an orphan is a sitemap URL that no audited page links to. Count the URLs in your sitemap and set maxPages comfortably above that number; the default is 200. The run summary includes orphanCheckComplete, which tells you whether the result is conclusive.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/#step-1"},{"@type":"HowToStep","position":2,"name":"Keep the sitemap on and trim noise","text":"Leave useSitemap on (the default). The actor reads sitemap.xml and any sitemaps listed in robots.txt, and after the pages reachable by links it audits sitemap URLs that no page links to. Use excludeGlobs to skip tag archives and pagination you do not want to pay for, but do not exclude sections that link to sitemap pages, or those pages may be wrongly reported as orphans.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/#step-2"},{"@type":"HowToStep","position":3,"name":"List the orphan pages","text":"Each page row has an issues list; orphan sitemap URLs carry the orphan-page issue code. Pull the dataset and filter. The snippet accepts issues as plain codes or as objects with a code field, since you will see the exact structure in your first run.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/#step-3"},{"@type":"HowToStep","position":4,"name":"Triage the rest of the sitemap URLs","text":"Orphans are just one signal. For every audited URL you also get status code, redirect chain, indexability (noindex and canonical), title and meta description problems, H1 count, thin content and broken internal links. A sitemap should list only indexable, 200-status, self-canonical pages, so filter for rows where indexable is false or statusCode is not 200 and remove or fix them in the sitemap.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/#step-4"},{"@type":"HowToStep","position":5,"name":"Decide what to do with each orphan","text":"For each orphan, choose: link to it from a relevant hub or category page if it still matters, merge it into a stronger page and redirect, or remove it from the sitemap if it should not be indexed. Re-run the audit afterwards; pages you linked should lose the orphan-page flag.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/#step-5"},{"@type":"HowToStep","position":6,"name":"Audit only a fixed list of sitemap URLs (optional)","text":"If you only want the pages in one sitemap audited, without crawling the rest of the site, fetch and parse the sitemap yourself (free), then pass the URLs as startUrls with maxDepth 0, which audits only the start pages. Turn useSitemap off in this mode. Inlinks and orphan detection are not meaningful here, because the crawl does not follow links.","url":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/#step-6"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Audit Every URL in Your Sitemap and Find Orphan Pages","item":"https://devtaonas.github.io/actorforge-site/guides/audit-every-url-in-sitemap-seo/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an orphan page in SEO?","acceptedAnswer":{"@type":"Answer","text":"A page with no internal links pointing to it. Here it specifically means a URL listed in your sitemap that none of the audited pages link to, which the actor flags with the orphan-page issue."}},{"@type":"Question","name":"Can I just get a list of all URLs in my sitemap?","acceptedAnswer":{"@type":"Answer","text":"This actor audits pages and charges per audited page, so it is not a free URL lister. To list sitemap URLs only, parse the sitemap XML with a few lines of Python as in the last step, at no cost."}},{"@type":"Question","name":"Does it follow sitemap index files and robots.txt sitemaps?","acceptedAnswer":{"@type":"Answer","text":"It reads sitemap.xml and the sitemaps listed in robots.txt when useSitemap is on. Sitemap URLs that the link crawl did not reach are audited afterwards and checked for inbound links."}},{"@type":"Question","name":"Why does a page I link to show up as an orphan?","acceptedAnswer":{"@type":"Answer","text":"Usually because the linking page was not audited: it was beyond maxPages, excluded by a glob, outside the start path, or the link is only added by JavaScript. Check orphanCheckComplete and your crawl settings."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Audit Every URL in Your Sitemap and Find Orphan Pages</li></ol></nav><h1>How to Audit Every URL in Your Sitemap and Find Orphan Pages</h1><p>Uses <a href="../../actors/seo-audit/" style="color:#fff">SEO Audit Crawler — On-Page SEO Checker for Whole Sites</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Run the SEO Audit Crawler with <code>useSitemap</code> on and <code>maxPages</code> above your site's size; it audits every page it can reach plus every sitemap URL, and flags sitemap URLs no page links to as <code>orphan-page</code>. Each audited page costs $0.006, so this is a paid audit, not a free sitemap URL lister.</div><p>Your sitemap tells search engines which URLs you care about, but it does not guarantee those pages are healthy or linked from anywhere. Pages that sit only in the sitemap, with no internal links pointing at them, are orphans: they get little internal link equity and are often forgotten, outdated or duplicated.</p><p>Finding them by hand means downloading the sitemap, crawling the site, and diffing the two lists, then checking each page for titles, canonicals and status codes. The SEO Audit Crawler does both halves at once: it crawls links like a search engine, reads sitemap.xml and the sitemaps listed in robots.txt, audits the sitemap URLs nothing links to, and flags them.</p><p>To be clear about cost: every HTML page audited is charged at $0.006 ($6 per 1,000). If all you need is the list of URLs in a sitemap, parse the XML yourself for free, as shown in the last step.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Estimate your site size and set maxPages</h3><p>Orphan detection is only conclusive when the crawl covers the whole site, because an orphan is a sitemap URL that no audited page links to. Count the URLs in your sitemap and set <code>maxPages</code> comfortably above that number; the default is 200. The run summary includes <code>orphanCheckComplete</code>, which tells you whether the result is conclusive.</p><pre><code class="language-json">{
+  "startUrls": ["https://example.com/"],
+  "maxPages": 3000,
+  "maxDepth": 20,
+  "useSitemap": true,
+  "respectRobotsTxt": true,
+  "excludeGlobs": ["**/tag/**", "**/page/*"]
+}</code></pre></li><li id="step-2"><h3>Keep the sitemap on and trim noise</h3><p>Leave <code>useSitemap</code> on (the default). The actor reads sitemap.xml and any sitemaps listed in robots.txt, and after the pages reachable by links it audits sitemap URLs that no page links to. Use <code>excludeGlobs</code> to skip tag archives and pagination you do not want to pay for, but do not exclude sections that link to sitemap pages, or those pages may be wrongly reported as orphans.</p></li><li id="step-3"><h3>List the orphan pages</h3><p>Each page row has an <code>issues</code> list; orphan sitemap URLs carry the <code>orphan-page</code> issue code. Pull the dataset and filter. The snippet accepts issues as plain codes or as objects with a <code>code</code> field, since you will see the exact structure in your first run.</p><pre><code class="language-python">import os
+import pandas as pd
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/seo-audit").call(run_input={
+    "startUrls": ["https://example.com/"],
+    "maxPages": 3000,
+    "useSitemap": True,
+})
+rows = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+
+def codes(row):
+    return {i if isinstance(i, str) else i.get("code") for i in row.get("issues") or []}
+
+orphans = [r for r in rows if "orphan-page" in codes(r)]
+pd.DataFrame(orphans)[["url", "statusCode", "indexable", "score", "wordCount"]] \
+  .to_csv("orphan_pages.csv", index=False)
+print(len(orphans), "orphan pages of", len(rows), "audited")
+
+summary = client.key_value_store(run["defaultKeyValueStoreId"]).get_record("OUTPUT")
+print("Orphan check complete:", (summary or {}).get("value", {}).get("orphanCheckComplete"))</code></pre></li><li id="step-4"><h3>Triage the rest of the sitemap URLs</h3><p>Orphans are just one signal. For every audited URL you also get status code, redirect chain, indexability (noindex and canonical), title and meta description problems, H1 count, thin content and broken internal links. A sitemap should list only indexable, 200-status, self-canonical pages, so filter for rows where <code>indexable</code> is false or <code>statusCode</code> is not 200 and remove or fix them in the sitemap.</p><pre><code class="language-python">df = pd.DataFrame(rows)
+bad_in_sitemap = df[(df["indexable"] == False) | (df["statusCode"] != 200)]
+print(bad_in_sitemap[["url", "statusCode", "indexable"]].head(50))
+
+top = df.explode("issues")["issues"].map(lambda i: i if isinstance(i, str) else (i or {}).get("code"))
+print(top.value_counts().head(15))  # most common issues across the site</code></pre></li><li id="step-5"><h3>Decide what to do with each orphan</h3><p>For each orphan, choose: link to it from a relevant hub or category page if it still matters, merge it into a stronger page and redirect, or remove it from the sitemap if it should not be indexed. Re-run the audit afterwards; pages you linked should lose the <code>orphan-page</code> flag.</p></li><li id="step-6"><h3>Audit only a fixed list of sitemap URLs (optional)</h3><p>If you only want the pages in one sitemap audited, without crawling the rest of the site, fetch and parse the sitemap yourself (free), then pass the URLs as <code>startUrls</code> with <code>maxDepth</code> 0, which audits only the start pages. Turn <code>useSitemap</code> off in this mode. Inlinks and orphan detection are not meaningful here, because the crawl does not follow links.</p><pre><code class="language-python">import requests
+import xml.etree.ElementTree as ET
+
+NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+xml = requests.get("https://example.com/sitemap.xml", timeout=30).content
+urls = [loc.text.strip() for loc in ET.fromstring(xml).findall(".//sm:loc", NS)]
+print(len(urls), "URLs in sitemap")  # a sitemap index lists child sitemaps instead
+
+run_input = {
+    "startUrls": urls,
+    "maxDepth": 0,
+    "maxPages": len(urls),
+    "useSitemap": False,
+}</code></pre></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "startUrls": [
+    "https://crawlee.dev/js/docs/guides"
+  ],
+  "maxPages": 500,
+  "maxDepth": 20,
+  "useSitemap": true,
+  "respectRobotsTxt": true
+}</code></pre><h2>Sample output</h2><p>The sample includes a page flagged <code>orphan-page</code> with zero inlinks next to well-linked pages from the same section.</p><div class="tablewrap"><table><thead><tr><th scope="col">url</th><th scope="col">score</th><th scope="col">statusCode</th><th scope="col">indexable</th><th scope="col">titleLength</th><th scope="col">metaDescriptionLength</th><th scope="col">h1Count</th><th scope="col">wordCount</th><th scope="col">inlinks</th><th scope="col">issues</th></tr></thead><tbody><tr><td class="cut">https://crawlee.dev/js/docs/guides/motivation</td><td class="cut">83</td><td class="cut">200</td><td class="cut">true</td><td class="cut">68</td><td class="cut">146</td><td class="cut">1</td><td class="cut">8</td><td class="cut">0</td><td class="cut">meta-description-duplicate, thin-content, title-too-long, orphan-page, structured-data-missing</td></tr><tr><td class="cut">https://crawlee.dev/js/docs/guides/cheerio-crawler-guide</td><td class="cut">89</td><td class="cut">200</td><td class="cut">true</td><td class="cut">78</td><td class="cut">56</td><td class="cut">1</td><td class="cut">622</td><td class="cut">19</td><td class="cut">meta-description-duplicate, title-too-long, meta-description-too-short</td></tr><tr><td class="cut">https://crawlee.dev/js/docs/guides/custom-http-client</td><td class="cut">94</td><td class="cut">200</td><td class="cut">true</td><td class="cut">99</td><td class="cut">66</td><td class="cut">1</td><td class="cut">474</td><td class="cut">19</td><td class="cut">title-too-long, meta-description-too-short</td></tr><tr><td class="cut">https://crawlee.dev/js/docs/quick-start</td><td class="cut">95</td><td class="cut">200</td><td class="cut">true</td><td class="cut">69</td><td class="cut">118</td><td class="cut">1</td><td class="cut">1207</td><td class="cut">21</td><td class="cut">title-too-long</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~seo-audit/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"startUrls": ["https://crawlee.dev/js/docs/guides"], "maxPages": 500, "maxDepth": 20, "useSitemap": true, "respectRobotsTxt": true}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "startUrls": [
+    "https://crawlee.dev/js/docs/guides"
+  ],
+  "maxPages": 500,
+  "maxDepth": 20,
+  "useSitemap": true,
+  "respectRobotsTxt": true
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~seo-audit/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "startUrls": [
+        "https://crawlee.dev/js/docs/guides"
+    ],
+    "maxPages": 500,
+    "maxDepth": 20,
+    "useSitemap": True,
+    "respectRobotsTxt": True
+}
+
+run = client.actor("actor-forge/seo-audit").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Auditing a site with 2,500 HTML pages costs 2,500 x $0.006 = $15.00; a 100-page site costs $0.60. Pages that answer 4xx/5xx, time out or are blocked are reported free and do not count.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Page audited</td><td class="cut">Charged per HTML page of your site fetched and audited (one dataset row)</td><td>$0.006</td><td>$6</td><td class="cut">100 pages = $0.60; a 1,000-page site = $6.00. Pages that answer 4xx/5xx or time out are reported free</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 1 GB = $0.00005</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> SEO Audit Crawler — On-Page SEO Checker for Whole Sites runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/seo-audit" rel="noopener">Run on Apify →</a> <a href="../../actors/seo-audit/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>Orphan results are only reliable when <code>orphanCheckComplete</code> in the summary is true; if the crawl hit <code>maxPages</code>, raise it and re-run.</li><li>Pages are fetched as static HTML. Links that only appear after JavaScript runs are not seen, so a JavaScript-rendered menu can make linked pages look orphaned.</li><li>Starting at a sub-path such as /blog keeps the crawl under that path; use the homepage as the start URL for a site-wide orphan check.</li><li>The crawler sends at most 3 requests at a time and pauses on HTTP 429, so large sites take a while; schedule big audits off-peak.</li></ul><h2>FAQ</h2><details><summary>What is an orphan page in SEO?</summary><p>A page with no internal links pointing to it. Here it specifically means a URL listed in your sitemap that none of the audited pages link to, which the actor flags with the <code>orphan-page</code> issue.</p></details><details><summary>Can I just get a list of all URLs in my sitemap?</summary><p>This actor audits pages and charges per audited page, so it is not a free URL lister. To list sitemap URLs only, parse the sitemap XML with a few lines of Python as in the last step, at no cost.</p></details><details><summary>Does it follow sitemap index files and robots.txt sitemaps?</summary><p>It reads sitemap.xml and the sitemaps listed in robots.txt when <code>useSitemap</code> is on. Sitemap URLs that the link crawl did not reach are audited afterwards and checked for inbound links.</p></details><details><summary>Why does a page I link to show up as an orphan?</summary><p>Usually because the linking page was not audited: it was beyond <code>maxPages</code>, excluded by a glob, outside the start path, or the link is only added by JavaScript. Check <code>orphanCheckComplete</code> and your crawl settings.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/seo-audit/">SEO Audit Crawler — On-Page SEO Checker for Whole Sites</a></h3><p>Crawl a whole website and audit every page for technical and on-page SEO: titles, meta descriptions, H1s, canonicals, noindex, duplicates, broken…</p><span class="price">$6 per 1,000 · page audited</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/wayback-machine-snapshots-api/">How to Use a Wayback Machine Snapshots API and See When a Page Changed</a></h3><p>Query archive.org&#x27;s captures through the Wayback Snapshots actor with collapse set to digest to keep only versions where the content changed, then…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

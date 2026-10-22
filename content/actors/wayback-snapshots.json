@@ -1,0 +1,134 @@
+{
+  "name": "wayback-snapshots",
+  "category": "seo-marketing",
+  "h1": "Wayback Machine Scraper: Archive.org Snapshots and URL History",
+  "metaTitle": "Wayback Machine Scraper: Archive.org Snapshots | ActorForge",
+  "metaDescription": "Every Wayback Machine capture of a URL, folder or domain as clean rows: dates, status, archive links, unique versions, yearly summaries. $2 per 1,000.",
+  "tagline": "List every archived capture of a page or site from the Internet Archive, filtered down to the versions that actually changed.",
+  "intro": [
+    "The Wayback Machine holds years of captures for most public websites, but browsing its calendar one day at a time is slow, and the raw CDX index is awkward to query. This actor turns the official Wayback CDX API into clean dataset rows: capture time, original URL, HTTP status, MIME type, size, content digest and archive links with and without the Wayback toolbar.",
+    "You can look up a single page, a folder (`example.com/blog/*`), a host or a whole domain with subdomains. By default it keeps only unique content versions and flags each with `changedFromPrevious`, so a page captured thousands of times collapses to the moments it really changed. Alternatively keep one capture per hour, day, month or year, or one row per distinct URL to list every page ever archived on a site.",
+    "Summary mode returns one row per site with first and last capture, totals, captures per year, missing years and longest gap. You can also fetch the archived HTML of captures as Markdown or text. Snapshots cost $2 per 1,000 rows, summaries $0.004 per exact URL or $0.01 per prefix, host or domain, and archived content $0.004 per page. The data comes from the Internet Archive; ActorForge is not affiliated with it."
+  ],
+  "howItWorks": [
+    "You list pages, folders or domains in `urls` and choose a `matchType`: exact, prefix, host or domain.",
+    "The actor queries archive.org's CDX index, applying your `from`/`to` dates, `statusFilter`, `mimeFilter` and `collapse` mode.",
+    "Requests are paced (about one per second, two URLs in parallel) and retried with back-off on rate limits, server errors and timeouts.",
+    "Rows are written per capture (snapshots mode) or per input (summary mode), capped by `maxSnapshotsPerUrl`.",
+    "With `fetchContent` on, the first `maxContentPages` HTML captures with status 200 are downloaded and their title and main content added as Markdown or text."
+  ],
+  "inputExample": {
+    "urls": [
+      "https://apify.com/pricing",
+      "example.com"
+    ],
+    "matchType": "exact",
+    "outputMode": "snapshots",
+    "collapse": "digest",
+    "from": "2018",
+    "statusFilter": "200",
+    "mimeFilter": "text/html",
+    "maxSnapshotsPerUrl": 300
+  },
+  "outputNote": "Each row below is one archived capture with its timestamp, status, MIME type, change flag and a ready-to-open Wayback link.",
+  "useCases": [
+    {
+      "title": "Recover lost content and old URLs",
+      "text": "Use `collapse` set to `unique-urls` with a host or domain match to list every page ever archived on a site, then rebuild missing pages or map old URLs to redirects."
+    },
+    {
+      "title": "Domain history before buying",
+      "text": "Summary mode shows first and last capture, captures per year and the longest gap for a domain, a quick check of what an expired domain was used for and when."
+    },
+    {
+      "title": "Competitor price and copy history",
+      "text": "Look up a competitor's pricing page with unique versions to see each date its content changed, then open the archive links or fetch the content to compare wording. See the [Wayback snapshots API guide](guide:wayback-machine-snapshots-api)."
+    },
+    {
+      "title": "Evidence of what a page said",
+      "text": "For compliance or legal research, list the captures of a terms or policy page within a date range and keep the archive links as references to the archived versions."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Wayback Snapshots",
+      "Browsing the Wayback calendar",
+      "Querying the CDX API yourself"
+    ],
+    "rows": [
+      [
+        "Same underlying data",
+        "Yes, the official CDX API",
+        "Yes",
+        "Yes"
+      ],
+      [
+        "Bulk URLs and domains",
+        "Yes",
+        "No",
+        "Yes, with your own code"
+      ],
+      [
+        "Unique versions with change flag",
+        "Yes",
+        "No",
+        "Partial, digest collapse without the flag"
+      ],
+      [
+        "Yearly summary and gaps",
+        "Yes",
+        "Visual only",
+        "You compute it"
+      ],
+      [
+        "Archived page as Markdown",
+        "Yes, optional",
+        "No",
+        "You fetch and parse it"
+      ],
+      [
+        "Retries and pacing",
+        "Built in",
+        "Not needed",
+        "Your responsibility"
+      ],
+      [
+        "Cost",
+        "$2 per 1,000 snapshots",
+        "Free",
+        "Free"
+      ]
+    ]
+  },
+  "comparisonNote": "For one page and a quick look, the Wayback Machine website is free and perfectly fine, and developers comfortable with the CDX API can query it directly. This actor saves the paging, retries, change flags and summaries when you have many URLs or need the data in a spreadsheet or pipeline.",
+  "faq": [
+    {
+      "q": "How do I get all Wayback Machine snapshots of a URL?",
+      "a": "Put the URL in `urls` with `matchType` exact and set `collapse` to `none` to get every capture, or leave the default `digest` to keep only captures where the content changed. Raise `maxSnapshotsPerUrl` (1,000 by default) for heavily archived pages."
+    },
+    {
+      "q": "How do I list every archived page of a domain?",
+      "a": "Use `matchType` domain (or the `*.example.com` shortcut) with `collapse` set to `unique-urls`. Domain lookups are slow on archive.org's side, about 20-40 seconds per index page, and stop after `maxIndexPagesPerUrl` pages (10 by default)."
+    },
+    {
+      "q": "Can I get the newest captures first?",
+      "a": "Yes, for exact URLs only: set `newestFirst` to true. Prefix, host and domain results come in URL order, then time."
+    },
+    {
+      "q": "Why does a page show up as changed back to an old version?",
+      "a": "Unique-versions mode compares each capture with the previous one, so a page that reverts to earlier content is flagged again. That is a real change in the archive."
+    },
+    {
+      "q": "What if a URL has never been archived?",
+      "a": "Captures the archive does not have, because the page was never crawled, was excluded by its owner or is very recent, cannot be returned. Such inputs get a free row saying so."
+    }
+  ],
+  "related": [
+    "seo-audit",
+    "any-url-to-markdown"
+  ],
+  "guides": [
+    "wayback-machine-snapshots-api"
+  ]
+}

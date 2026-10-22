@@ -1,0 +1,98 @@
+{
+  "slug": "convert-pdf-to-markdown-for-rag",
+  "category": "documents-ai",
+  "title": "How to Convert PDF to Markdown for RAG Pipelines",
+  "metaTitle": "Convert PDF to Markdown for RAG (with Python Chunking)",
+  "metaDescription": "Convert PDFs to clean Markdown for RAG, then split by heading into token-sized chunks in Python. Scanned pages handled with OCR. $2 per 1,000 documents.",
+  "actor": "any-url-to-markdown",
+  "alsoActors": [
+    "pdf-ocr"
+  ],
+  "summary": "Send your PDF links to the Any URL to Markdown actor, read the `markdown` field of each result, then split it by heading into token-sized chunks before embedding. Digital PDFs cost $0.002 per started 50 pages.",
+  "intro": [
+    "Retrieval quality depends heavily on what you feed the embedder. Plain text extracted from a PDF loses the headings that tell you where one topic ends and the next begins, and naive fixed-size splitting cuts sections in half. Markdown keeps that structure, so you can chunk along it.",
+    "The usual approach is a stack of libraries: one PDF parser for digital files, an OCR engine for scans, and glue code for the cases where they disagree. The Any URL to Markdown actor reads the PDF text layer with heading and paragraph detection, falls back to Tesseract OCR for pages without text, and returns Markdown plus a token estimate in one row per file.",
+    "This guide converts a batch of PDFs, filters out failures, splits the Markdown into heading-aware chunks of a target size in Python, and writes JSONL ready for your vector store."
+  ],
+  "steps": [
+    {
+      "name": "Collect the PDF links",
+      "text": "List the PDFs you want in your knowledge base as URLs. The actor fetches each link itself, so the files must be reachable without a login; password-protected PDFs cannot be read. You can pass up to 1,000 links per run in `urls`, and duplicates are removed. If your PDFs are on your own storage, use pre-signed or public links."
+    },
+    {
+      "name": "Set PDF and OCR limits",
+      "text": "`maxPdfPages` (500 by default) caps how many pages of each PDF are read. Scanned pages are read by OCR when `ocr` is on, up to `maxOcrPages` per PDF (20 by default, $0.003 each); pages beyond that are left out and the row is marked truncated. If your corpus is all digital, set `ocr` to false so scanned files are reported for free instead of being charged.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"urls\": [\n    \"https://arxiv.org/pdf/1706.03762\",\n    \"https://example.com/reports/annual-report-2025.pdf\"\n  ],\n  \"ocr\": true,\n  \"ocrLanguages\": [\"eng\"],\n  \"maxOcrPages\": 50,\n  \"maxPdfPages\": 500\n}"
+      }
+    },
+    {
+      "name": "Run the conversion and keep the good rows",
+      "text": "Each result has `url`, `title`, `markdown`, `tokenEstimate`, `route` and a `status`. Failed or unsupported files come back as rows with an `error` and are not charged. Keep only rows that have Markdown, and log the rest so you can follow up on them.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/any-url-to-markdown\").call(run_input={\n    \"urls\": [\n        \"https://arxiv.org/pdf/1706.03762\",\n    ],\n    \"maxOcrPages\": 50,\n})\n\ndocs, failed = [], []\nfor item in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n    if item.get(\"markdown\"):\n        docs.append(item)\n    else:\n        failed.append((item.get(\"url\"), item.get(\"error\")))\n\nprint(f\"{len(docs)} converted, {len(failed)} failed\")\nfor url, err in failed:\n    print(\"FAILED\", url, err)"
+      }
+    },
+    {
+      "name": "Split the Markdown by heading into token-sized chunks",
+      "text": "Split each document at Markdown headings first, so a chunk never straddles two sections, then pack paragraphs into chunks up to a target size. The actor's `tokenEstimate` is characters divided by 4, so the same rule is used here to stay consistent. Each chunk keeps the heading path as context, which helps retrieval when a paragraph on its own is ambiguous.",
+      "code": {
+        "lang": "python",
+        "code": "import re\n\nHEADING = re.compile(r\"^(#{1,6})\\s+(.*)$\")\n\ndef est_tokens(text):\n    return len(text) // 4  # same rule as tokenEstimate\n\ndef split_sections(markdown):\n    \"\"\"Yield (heading_path, body) pairs, one per Markdown section.\"\"\"\n    path, body = [], []\n    for line in markdown.splitlines():\n        m = HEADING.match(line)\n        if m:\n            if body:\n                yield \" > \".join(path), \"\\n\".join(body).strip()\n            level = len(m.group(1))\n            path = path[: level - 1] + [m.group(2).strip()]\n            body = []\n        else:\n            body.append(line)\n    if body:\n        yield \" > \".join(path), \"\\n\".join(body).strip()\n\ndef chunk_markdown(markdown, max_tokens=500):\n    chunks = []\n    for heading, body in split_sections(markdown):\n        if not body:\n            continue\n        current = \"\"\n        for para in re.split(r\"\\n\\s*\\n\", body):\n            candidate = (current + \"\\n\\n\" + para).strip()\n            if current and est_tokens(candidate) > max_tokens:\n                chunks.append({\"heading\": heading, \"text\": current})\n                current = para\n            else:\n                current = candidate\n        if current:\n            chunks.append({\"heading\": heading, \"text\": current})\n    return chunks"
+      }
+    },
+    {
+      "name": "Write JSONL for your vector store",
+      "text": "Attach the source URL, title and heading path to every chunk so answers can cite where they came from. JSONL loads easily into most vector databases and into LangChain or LlamaIndex document loaders.",
+      "code": {
+        "lang": "python",
+        "code": "import json\n\nwith open(\"chunks.jsonl\", \"w\", encoding=\"utf-8\") as f:\n    for doc in docs:\n        for i, ch in enumerate(chunk_markdown(doc[\"markdown\"], max_tokens=500)):\n            f.write(json.dumps({\n                \"id\": f\"{doc['url']}#{i}\",\n                \"source\": doc[\"url\"],\n                \"title\": doc.get(\"title\"),\n                \"heading\": ch[\"heading\"],\n                \"text\": ch[\"text\"],\n            }, ensure_ascii=False) + \"\\n\")"
+      }
+    },
+    {
+      "name": "Handle heavily scanned or non-English PDFs",
+      "text": "OCR in this actor covers 7 languages (English, German, French, Spanish, Italian, Portuguese and Dutch) and up to `maxOcrPages` pages per PDF. For long scanned documents, other languages or per-page confidence scores, run those files through [PDF OCR](actor:pdf-ocr) instead and chunk its page text the same way. Note that OCR output is plain text without Markdown headings, so the chunker falls back to paragraph packing."
+    }
+  ],
+  "sampleInput": {
+    "url": "https://arxiv.org/pdf/1706.03762",
+    "ocr": true,
+    "ocrLanguages": [
+      "eng"
+    ],
+    "maxOcrPages": 20,
+    "maxPdfPages": 500
+  },
+  "sampleOutputNote": "Each converted URL becomes one row; for PDFs, the `markdown` column holds the full document and `tokenEstimate` tells you how much context it will use.",
+  "costExample": "Converting 1,000 digital PDFs of up to 50 pages each costs 1,000 x $0.002 = $2.00. If 100 of those were 120-page reports instead, each counts three times, adding 100 x 2 x $0.002 = $0.40, and every scanned page read by OCR adds $0.003.",
+  "tips": [
+    "Check `tokenEstimate` before chunking to spot unusually large files; very large results are cut at about 3.5 million characters and marked truncated.",
+    "Tables in digital PDFs are detected as layout, but complex tables can still come out imperfect; spot-check a few before indexing financial reports.",
+    "Keep `respectRobotsTxt` on for public sites. If a host answers 429 or 403, the remaining URLs on that host are skipped as free error rows, so spread big batches over time.",
+    "Files are limited to 50 MB. Split or compress larger PDFs before converting."
+  ],
+  "faq": [
+    {
+      "q": "Why convert PDFs to Markdown instead of plain text for RAG?",
+      "a": "Markdown keeps headings, lists and tables, so you can split chunks at section boundaries and store the heading path as context. Plain text loses that structure and forces fixed-size splitting."
+    },
+    {
+      "q": "What chunk size should I use?",
+      "a": "It depends on your embedding model and how specific your questions are. The code above uses about 500 estimated tokens per chunk as a starting point; measure retrieval quality on real questions and adjust."
+    },
+    {
+      "q": "Does it work with scanned PDFs?",
+      "a": "Yes, pages without a text layer are read with Tesseract OCR when `ocr` is on, up to `maxOcrPages` per PDF. OCR'd text has no Markdown headings, so heading-based splitting does less for those pages."
+    },
+    {
+      "q": "Can I convert Word and PowerPoint files in the same run?",
+      "a": "Yes. The same actor converts Word, Excel, PowerPoint, OpenDocument text and spreadsheets, EPUB, CSV and JSON, and the chunking code works on their Markdown too."
+    }
+  ],
+  "related": [
+    "ocr-scanned-pdf-to-text-api",
+    "extract-text-from-images-screenshots"
+  ]
+}

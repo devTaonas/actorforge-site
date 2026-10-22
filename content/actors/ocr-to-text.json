@@ -1,0 +1,132 @@
+{
+  "name": "ocr-to-text",
+  "category": "documents-ai",
+  "h1": "OCR API for Bulk Scanned PDFs and Images in One Run",
+  "metaTitle": "Bulk OCR API: Scanned PDFs & Images to Text | ActorForge",
+  "metaDescription": "One OCR API for mixed batches of scanned PDFs, PNG, JPEG, TIFF and more. Tesseract 5, 29 languages, per-page confidence. $3 per 1,000 OCR pages.",
+  "tagline": "A general-purpose OCR endpoint for pipelines that receive a bit of everything: scanned PDFs, phone photos, TIFF faxes and screenshots.",
+  "intro": [
+    "Document intake is rarely tidy. One supplier emails a scanned PDF, another sends a phone photo of the same invoice, the fax gateway produces TIFFs and a support form uploads screenshots. Building a separate path for each format is busywork. The OCR to Text actor takes all of them in one `urls` list and returns text in a consistent row format.",
+    "It accepts PDF, PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000. Each image counts as one page; each PDF is read page by page, with pages that already have a text layer read directly at a tenth of the OCR price. By default you get one row per file with all its text, which keeps downstream code simple whatever the input type.",
+    "Under the hood it runs Tesseract 5 with LSTM models in 29 languages, up to 4 per run. That makes it a good fit for automation work: back-office pipelines, AI agents that need a reliable OCR tool, and scheduled batch jobs where a run budget cap matters. Failed downloads, unreadable files and blank pages are never charged."
+  ],
+  "howItWorks": [
+    "You submit a list of file links in `urls`, mixing PDFs and image formats freely, and optionally cap the batch with `maxFiles`.",
+    "The actor detects each file's type; images go straight to OCR, PDFs are split into pages and text-layer pages are read without OCR in `auto` mode.",
+    "Tesseract 5 recognises the image pages in your chosen `languages`, dropping low-confidence words if you set `minWordConfidence`.",
+    "Each file becomes one dataset row by default (`outputMode` `document`), or one row per PDF page if you switch to `pages`.",
+    "Charges are per page read, and the run stops cleanly when it reaches the maximum total charge you set."
+  ],
+  "inputExample": {
+    "urls": [
+      "https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf",
+      "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif",
+      "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png"
+    ],
+    "languages": [
+      "eng",
+      "fra"
+    ],
+    "pdfMode": "auto",
+    "outputMode": "document",
+    "minWordConfidence": 40,
+    "maxFiles": 5000
+  },
+  "outputNote": "The sample shows a scanned PDF, a TIFF test image and a digital PDF processed in the same run, each as one row with its file type and page counts.",
+  "useCases": [
+    {
+      "title": "Back-office document intake",
+      "text": "Route every incoming attachment, whatever its format, to one OCR call and store the text next to the file. Because each file comes back as one row with `fileType`, `pagesOcr` and `confidence`, the same parser handles invoices, letters and forms."
+    },
+    {
+      "title": "OCR tool for AI agents",
+      "text": "Give an agent one tool that turns any document link into text instead of separate image and PDF tools. The confidence score lets the agent decide when to ask a human to check a result."
+    },
+    {
+      "title": "Migrating a document store",
+      "text": "When moving years of scans out of an old document management system, export file links in batches of up to 10,000 per run with `maxFiles` and keep the returned text for search in the new system."
+    },
+    {
+      "title": "Scheduled nightly OCR jobs",
+      "text": "Run the actor on a schedule against the day's new uploads and set a maximum total charge. If a batch is unexpectedly large the run stops at the cap rather than overrunning your budget."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge OCR to Text",
+      "Separate image and PDF tools",
+      "Self-hosted OCR service"
+    ],
+    "rows": [
+      [
+        "PDFs and images in the same request",
+        "Yes",
+        "No, one tool per format",
+        "Yes, if you build it"
+      ],
+      [
+        "Formats",
+        "PDF, PNG, JPEG, TIFF, WebP, GIF, BMP, JPEG 2000",
+        "Depends on each tool",
+        "Whatever you install"
+      ],
+      [
+        "Text-layer PDF pages skipped from OCR",
+        "Yes, at $0.30 per 1,000 pages",
+        "Varies",
+        "Only if you script it"
+      ],
+      [
+        "Run budget cap",
+        "Yes, stops cleanly at the cap",
+        "Varies",
+        "Your responsibility"
+      ],
+      [
+        "Maintenance",
+        "None",
+        "Several integrations to maintain",
+        "Servers, updates, scaling"
+      ],
+      [
+        "HEIC/AVIF photos and SVG",
+        "No, convert to JPEG first",
+        "Some tools support them",
+        "Depends on your stack"
+      ]
+    ]
+  },
+  "comparisonNote": "If you only ever process one kind of file, a dedicated tool such as [PDF OCR](actor:pdf-ocr) or [Image to Text OCR](actor:image-to-text-ocr) gives you the same engine with defaults tuned for that input. Teams with strict data residency needs may still prefer a self-hosted OCR service.",
+  "faq": [
+    {
+      "q": "Can I send PDFs and images to the same OCR API call?",
+      "a": "Yes. Put any mix of PDF, PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000 links in `urls`. Images are always one row each; PDFs are one row per file by default or one row per page with `outputMode` set to `pages`."
+    },
+    {
+      "q": "Which OCR languages are supported and how many can I use at once?",
+      "a": "29 languages, including English, German, French, Spanish, Arabic, Hebrew, Hindi, Russian, Chinese (simplified and traditional), Japanese, Korean and Thai. You can select up to 4 per run. Modern Greek is not available."
+    },
+    {
+      "q": "How many files can one run handle?",
+      "a": "`maxFiles` defaults to 1,000 and can be raised to 10,000 per run. Individual files can be up to 100 MB, and PDFs up to 2,000 pages each (200 by default via `maxPagesPerPdf`)."
+    },
+    {
+      "q": "Am I charged for files that fail?",
+      "a": "No. Failed downloads, unreadable files, blank pages and links that return a web page instead of a file are reported in the dataset and not charged. You pay $0.003 per OCR'd page and $0.0003 per PDF page read from its text layer."
+    },
+    {
+      "q": "How do I cut noise from stamps and stains?",
+      "a": "Set `minWordConfidence` to drop words Tesseract is unsure about. The README suggests 40 to 60 removes most noise from stains and stamps; 0 keeps everything."
+    }
+  ],
+  "related": [
+    "pdf-ocr",
+    "image-to-text-ocr",
+    "any-url-to-markdown"
+  ],
+  "guides": [
+    "ocr-scanned-pdf-to-text-api",
+    "extract-text-from-images-screenshots"
+  ]
+}

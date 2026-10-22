@@ -1,0 +1,134 @@
+{
+  "name": "shopify-store-scraper",
+  "category": "ecommerce-apps",
+  "h1": "Shopify Store Scraper — Products, Prices, Variants and Store Data",
+  "metaTitle": "Shopify Store Scraper: Products & Prices | ActorForge",
+  "metaDescription": "Scrape any Shopify store's products.json: prices, compare-at, stock, variants and images, or one store row with theme and apps. $0.30 per 1,000 products.",
+  "tagline": "Export a Shopify store's full public catalog, or profile the store itself, from the same products.json feed Shopify serves to every visitor.",
+  "intro": [
+    "Most Shopify stores expose their published catalog as JSON at /products.json. This actor reads that feed for one or more store URLs and returns one row per product: title, handle, vendor, product type, tags, created, published and updated dates, **price range**, **compare-at price** and discount percentage, stock availability, every **variant** (SKU, price, compare-at, options, weight) and every image URL.",
+    "For competitor price monitoring, pass `updatedSince` on a daily schedule and only products updated since that date become rows, so unchanged products cost nothing. `collections` narrows a run to specific collection handles. In `store` mode you get one row per shop instead: name, country, currency, ships-to countries, product and collection counts, price statistics, top vendors, product types and tags, the biggest collections, the theme and the apps detected on the homepage.",
+    "It is polite by design: the store's robots.txt and Crawl-delay are obeyed, requests go one at a time per store at about 1.3 per second, and any block stops that store with a free row. Products cost $0.30 per 1,000 and each analyzed store $0.005; blocked, headless and non-Shopify sites are free."
+  ],
+  "howItWorks": [
+    "Each URL in `storeUrls` (or `storeUrl`) is reduced to its host, so any page of a store works, including myshopify.com domains.",
+    "The actor reads the store's robots.txt first, then pages through products.json at 250 products per page, up to `maxProductsPerStore`.",
+    "Filters are applied as it goes: `collections` switches to collection feeds and `updatedSince` keeps only recently updated products, which are the only ones charged.",
+    "In store or both mode it also reads meta.json and the homepage HTML to compute price stats and detect the theme and apps from open fingerprints.",
+    "A 401, 403, 429 or bot challenge stops that store at once with no retries, proxies or bypass, and the resulting row is free."
+  ],
+  "inputExample": {
+    "storeUrls": [
+      "allbirds.com",
+      "https://www.tentree.com"
+    ],
+    "mode": "products",
+    "collections": [],
+    "maxProductsPerStore": 1000,
+    "updatedSince": "",
+    "includeVariants": true,
+    "includeBodyHtml": false
+  },
+  "outputNote": "Product rows carry the store, pricing, discount and stock fields up front, with variants and images attached to each row:",
+  "useCases": [
+    {
+      "title": "Competitor price and stock monitoring",
+      "text": "Schedule a daily run for a list of competitor stores with `updatedSince` set to the previous day. You get only the products whose prices, stock or details changed, and pay only for those rows."
+    },
+    {
+      "title": "Catalog export and migration prep",
+      "text": "Pull a whole store's published catalog with variants, images and optionally descriptions as JSON or CSV. It is a quick way to audit a catalog or hand product data to another system."
+    },
+    {
+      "title": "Product research and dropshipping",
+      "text": "Compare vendors, product types, price ranges and discount depth across several stores in one dataset. Compare-at prices show how often and how deeply a store discounts."
+    },
+    {
+      "title": "Store profiling for sales and partnerships",
+      "text": "Use store mode to get one row per shop with its theme, detected apps, currency, ships-to countries and catalog size. Agencies and app vendors can qualify a list of Shopify stores at $0.005 each."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Shopify Scraper",
+      "Downloading products.json yourself",
+      "Store owner's admin CSV export"
+    ],
+    "rows": [
+      [
+        "Works on stores you do not own",
+        "Yes",
+        "Yes",
+        "No, owner only"
+      ],
+      [
+        "Pagination, robots.txt and polite pacing handled",
+        "Yes",
+        "You handle it",
+        "Not needed"
+      ],
+      [
+        "Clean rows with discount % and stock flags",
+        "Yes",
+        "No, raw JSON",
+        "Partial"
+      ],
+      [
+        "Only products updated since a date",
+        "Yes, unchanged products free",
+        "You filter it",
+        "No"
+      ],
+      [
+        "Theme and app detection",
+        "Yes, store mode",
+        "No",
+        "No"
+      ],
+      [
+        "Inventory quantities and sales figures",
+        "No, not public",
+        "No",
+        "Yes"
+      ],
+      [
+        "Headless (Hydrogen/custom) storefronts",
+        "No, returns a free not-reachable row",
+        "No",
+        "Yes"
+      ]
+    ]
+  },
+  "comparisonNote": "If you own the store, Shopify's admin export includes inventory quantities and data this public feed never shows. For one small store, opening /products.json in a browser may be all you need; the actor helps once you have many stores, schedules or large catalogs.",
+  "faq": [
+    {
+      "q": "How do I scrape all products from a Shopify store?",
+      "a": "Add the store's domain to `storeUrls` with `mode` set to products. The actor pages through the public products.json feed at 250 products per page until it reaches `maxProductsPerStore` (default 1,000, up to 100,000)."
+    },
+    {
+      "q": "Why does a Shopify store return no products?",
+      "a": "Headless storefronts built on Hydrogen/Oxygen or a custom frontend do not serve /products.json, and some stores block automated requests with a 403 or a bot challenge. Those stores come back as free rows explaining the reason."
+    },
+    {
+      "q": "Can I get inventory quantities or sales numbers?",
+      "a": "No. products.json shows whether each variant is available but not stock quantities, and sales figures are not public. Prices are the store's base-currency prices, not market-specific or B2B prices."
+    },
+    {
+      "q": "How do I scrape only one collection?",
+      "a": "Put the collection handle, the part after /collections/ in the URL such as mens-shoes, in `collections`. Each row then says which collection it came from. The handles apply to every store in the run."
+    },
+    {
+      "q": "Which Shopify apps can it detect?",
+      "a": "Store mode checks the homepage HTML against open webappanalyzer fingerprints (7,600+ of them), covering apps such as Klaviyo, Rebuy, Yotpo and Afterpay, and reads the theme name, base theme and version. Apps that load only after JavaScript runs or only on product pages may be missed."
+    }
+  ],
+  "related": [
+    "app-store-scraper",
+    "ads-transparency",
+    "seo-audit"
+  ],
+  "guides": [
+    "export-shopify-store-product-data"
+  ]
+}

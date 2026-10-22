@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Store &amp; Google Play Scraper | ActorForge</title>
+<meta name="description" content="Scrape Google Play and App Store app details in one schema: rating histogram, installs, price, version, similar apps, Apple top charts. $0.80 per 1,000 apps.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/app-store-scraper/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="App Store &amp; Google Play Scraper | ActorForge">
+<meta property="og:description" content="Scrape Google Play and App Store app details in one schema: rating histogram, installs, price, version, similar apps, Apple top charts. $0.80 per 1,000 apps.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/app-store-scraper/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"App Store & Google Play Scraper — Apps, Charts, Reviews","description":"Scrape Google Play and App Store app details in one schema: rating histogram, installs, price, version, similar apps, Apple top charts. $0.80 per 1,000 apps.","applicationCategory":"BusinessApplication","applicationSubCategory":"E-commerce & App Stores","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/app-store-scraper/","sameAs":"https://apify.com/actor-forge/app-store-scraper","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"App result","description":"Charged per app row delivered (one app in one country, either store)","price":"0.0008","priceCurrency":"USD","url":"https://apify.com/actor-forge/app-store-scraper"},{"@type":"Offer","name":"Review result","description":"Charged per anonymised Google Play review delivered","price":"0.00004","priceCurrency":"USD","url":"https://apify.com/actor-forge/app-store-scraper"},{"@type":"Offer","name":"Chart entry","description":"Charged per Apple top-chart position delivered","price":"0.0002","priceCurrency":"USD","url":"https://apify.com/actor-forge/app-store-scraper"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"E-commerce & App Stores","item":"https://devtaonas.github.io/actorforge-site/categories/ecommerce-apps/"},{"@type":"ListItem","position":3,"name":"App Store & Google Play Scraper — Apps, Charts, Reviews","item":"https://devtaonas.github.io/actorforge-site/actors/app-store-scraper/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I scrape App Store reviews with this actor?","acceptedAnswer":{"@type":"Answer","text":"No. Apple's customer-review feed sits under a path that Apple's robots.txt disallows, so App Store rows include rating, ratings count and the histogram but no review text. Google Play reviews are available."}},{"@type":"Question","name":"How many Google Play reviews can I get per app?","acceptedAnswer":{"@type":"Answer","text":"Up to 20 per app, country and language: the most relevant reviews shown on the public app page. There is no deep history or newest-first sort, but scheduled runs with onlyNewReviewsSinceLastRun accumulate history over time."}},{"@type":"Question","name":"Can I search the stores by keyword?","acceptedAnswer":{"@type":"Answer","text":"No. Google Play and Apple both disallow their search pages in robots.txt, so apps are given by package name, ID or URL. Use the Apple top charts to discover apps."}},{"@type":"Question","name":"Does it return Google Play top charts?","acceptedAnswer":{"@type":"Answer","text":"No, only Apple's top-free and top-paid charts from Apple's official marketing RSS feed are supported, with up to 100 positions per chart and country."}},{"@type":"Question","name":"Why are some fields empty for one store?","acceptedAnswer":{"@type":"Answer","text":"Each store publishes different data. Google Play no longer shows app size on the web, so size is null for Play apps, and Apple does not publish installs, so App Store rows have none."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a></li><li aria-current="page">App Store &amp; Google Play Scraper — Apps, Charts, Reviews</li></ol></nav><h1>App Store &amp; Google Play Scraper — App Details, Top Charts and Reviews</h1><p>One normalized row per app, store and country, for ASO, competitor tracking and app-intelligence dashboards, plus Apple top charts and anonymized Play reviews.</p><a class="btn" href="https://apify.com/actor-forge/app-store-scraper" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p>App store data usually means two scrapers with two schemas: one for Google Play, one for the App Store. This actor takes Google Play package names or URLs and App Store IDs or URLs together and returns <strong>one normalized row per app, store and country</strong>: title, developer, category and genres, star rating, ratings count, <strong>rating histogram</strong>, installs range and exact install count on Play, price, in-app purchases, content rating, release and update dates, version, minimum OS, description, release notes, icon, screenshots, <strong>similar apps</strong> and more by the same developer.</p><p>It also reads <strong>Apple's official top-free and top-paid charts</strong> (up to 100 positions, any country) as chart rows, optionally with a full app row for every charting app. That is the way to discover apps, because the actor deliberately has no keyword search: both stores disallow their search pages in robots.txt.</p><p>As a review source it returns the Google Play reviews shown on the public app page, up to 20 per app, country and language, with reviewer names, avatars and user IDs stripped. With <code>onlyNewReviewsSinceLastRun</code> on a schedule, it builds up review history over time. Pricing is $0.80 per 1,000 app rows, $0.04 per 1,000 reviews and $0.20 per 1,000 chart entries.</p><h3>How it works</h3><ol><li>Each entry in <code>apps</code> is recognized as a Google Play package or URL, or an App Store ID or URL, and scraped once per country in <code>countries</code>.</li><li>Store pages are fetched over plain HTTP, at most 2 requests at a time per store with pauses, and only pages the stores' robots.txt allows (re-checked every run).</li><li>Fields from both stores are mapped into one schema; anything a store does not publish, such as App Store installs or Play app size, is null.</li><li>Optional extras: Apple top charts from the official marketing RSS feed via <code>charts</code>, and anonymized Google Play reviews via <code>includeReviews</code>.</li><li>If a store shows a CAPTCHA or keeps answering 429/403, the actor stops asking that store and returns free error rows for the skipped apps.</li></ol><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "apps": [
+    "com.spotify.music",
+    "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580"
+  ],
+  "countries": [
+    "us",
+    "gb"
+  ],
+  "language": "en",
+  "charts": [
+    "top-free"
+  ],
+  "chartSize": 25,
+  "includeChartAppDetails": false,
+  "includeReviews": true,
+  "maxReviewsPerApp": 20
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>apps</code></td><td>array</td><td>no</td><td></td><td class="cut">Apps to scrape, one per line: a Google Play package name (com.spotify.music) or Play URL (play.google.com/store/apps/details?id=…), or an App Store id (324684580) or App Store URL (apps.apple.com/us/app/…/id324684580).…</td></tr><tr><td><code>charts</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Apple App Store top charts to fetch for each country (Apple's official marketing RSS feed). Each position is one chart row.</td></tr><tr><td><code>countries</code></td><td>array</td><td>no</td><td><code>["us"]</code></td><td class="cut">Two-letter store country codes (us, gb, de, fr, jp, br …). Apps are scraped and charts fetched for each country.</td></tr><tr><td><code>language</code></td><td>string</td><td>no</td><td><code>"en"</code></td><td class="cut">Language of Google Play text and reviews, e.g. en, de, pt-BR. App Store text is in the storefront's own language.</td></tr><tr><td><code>chartSize</code></td><td>integer</td><td>no</td><td><code>25</code></td><td class="cut">How many positions to return per chart (Apple serves at most 100).</td></tr><tr><td><code>includeChartAppDetails</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Fetch the App Store page of every app in the chart and return a full app row for it as well (charged as an app result).</td></tr><tr><td><code>includeReviews</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Return the reviews Google Play shows on the public app page (its "most relevant" set, up to 20 per app, country and language) as anonymised review rows: rating, text, date, thumbs-up, app version and developer reply.…</td></tr><tr><td><code>maxReviewsPerApp</code></td><td>integer</td><td>no</td><td><code>20</code></td><td class="cut">Stop after this many reviews per app and country (the public app page shows at most 20).</td></tr><tr><td><code>reviewsSince</code></td><td>string</td><td>no</td><td></td><td class="cut">Only return reviews posted on or after this date (YYYY-MM-DD).</td></tr><tr><td><code>onlyNewReviewsSinceLastRun</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">For scheduled runs: remember which reviews were delivered and return only reviews not seen before. State is kept in the named key-value store 'app-store-scraper-monitor' in your account, one record per app, country and…</td></tr></tbody></table></div></details><h2>Output example</h2><p>App, chart and review rows share one dataset and are told apart by the type column, as in this sample:</p><div class="tablewrap"><table><thead><tr><th scope="col">type</th><th scope="col">store</th><th scope="col">title</th><th scope="col">developer</th><th scope="col">rating</th><th scope="col">ratingsCount</th><th scope="col">installs</th><th scope="col">priceText</th><th scope="col">version</th><th scope="col">updatedAt</th></tr></thead><tbody><tr><td class="cut">app</td><td class="cut">google-play</td><td class="cut">Spotify: Music and Podcasts</td><td class="cut">Spotify AB</td><td class="cut">4.3</td><td class="cut">36505489</td><td class="cut">1,000,000,000+</td><td class="cut">Free</td><td class="cut">Varies with device</td><td class="cut">2026-10-14</td></tr><tr><td class="cut">app</td><td class="cut">app-store</td><td class="cut">Spotify: Music and Podcasts</td><td class="cut">Spotify</td><td class="cut">4.8</td><td class="cut">42653998</td><td class="cut"></td><td class="cut">Free</td><td class="cut">9.1.90</td><td class="cut">2026-10-08</td></tr><tr><td class="cut">app</td><td class="cut">app-store</td><td class="cut">Minecraft: Play with Friends!</td><td class="cut">Mojang</td><td class="cut">4.5</td><td class="cut">843566</td><td class="cut"></td><td class="cut">$6.99</td><td class="cut">26.52</td><td class="cut">2026-09-28</td></tr><tr><td class="cut">chart</td><td class="cut">app-store</td><td class="cut">#1 top-free (us): Muse from Meta</td><td class="cut">Meta Platforms, Inc.</td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut">2026-10-19</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>App result</td><td class="cut">Charged per app row delivered (one app in one country, either store)</td><td>$0.0008</td><td>$0.80</td><td class="cut">100 apps = $0.08; 1,000 apps = $0.80</td></tr><tr><td>Review result</td><td class="cut">Charged per anonymised Google Play review delivered</td><td>$0.00004</td><td>$0.04</td><td class="cut">20 reviews for each of 50 apps = $0.04</td></tr><tr><td>Chart entry</td><td class="cut">Charged per Apple top-chart position delivered</td><td>$0.0002</td><td>$0.20</td><td class="cut">Top 25 free + top 25 paid in one country = $0.01</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB ≈ $0.0000125</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try App Store &amp; Google Play Scraper on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/app-store-scraper" rel="noopener">Run on Apify →</a></div><h2>Use cases</h2><div class="uc"><h3>ASO competitor tracking</h3><p>Scrape your app and its closest rivals in every market you care about and compare rating, ratings count, histogram and update cadence side by side. The similar-apps field helps you find competitors you had not listed.</p></div><div class="uc"><h3>Top chart monitoring</h3><p>Pull Apple's top-free and top-paid charts for several countries on a schedule to see which apps climb or drop. Turn on full details for charting apps when you want ratings and versions next to the positions.</p></div><div class="uc"><h3>Review monitoring without personal data</h3><p>Schedule runs with only-new reviews on to collect fresh Google Play reviews, including the app version and any developer reply. Reviewer identities are never returned, which keeps the dataset simpler to handle under GDPR.</p></div><div class="uc"><h3>Market research datasets</h3><p>Build a table of apps across stores and countries with prices, in-app purchases, content ratings and install ranges. One schema for both stores means fewer joins and less cleanup.</p></div><h2>How it compares</h2><div class="tablewrap"><table><thead><tr><th scope="col"></th><th scope="col">ActorForge App Store Scraper</th><th scope="col">Single-store scrapers</th><th scope="col">Paid app-intelligence platforms</th></tr></thead><tbody><tr><td>Google Play and App Store in one schema</td><td>Yes</td><td>No, one store each</td><td>Yes</td></tr><tr><td>Keyword search for apps</td><td>No, use charts or IDs</td><td>Partial</td><td>Yes</td></tr><tr><td>App Store review text</td><td>No, disallowed by robots.txt</td><td>Partial</td><td>Yes</td></tr><tr><td>Google Play reviews</td><td>Up to 20 per app, country and language, anonymized</td><td>Partial</td><td>Yes, with deeper history</td></tr><tr><td>Apple top charts</td><td>Yes, top-free and top-paid, 1-100</td><td>Partial</td><td>Yes</td></tr><tr><td>Install and download estimates beyond Play's ranges</td><td>No</td><td>No</td><td>Yes, modeled</td></tr><tr><td>Pricing</td><td>$0.80 per 1,000 apps, pay per row</td><td>Varies</td><td>Subscription</td></tr></tbody></table></div><p class="muted">If you need deep review history, App Store review text or modeled download estimates, a paid app-intelligence platform covers more ground. This actor is for teams that want public store-page data for both stores, cheaply and on their own schedule.</p><h2>Limits and honest notes</h2><ul><li>No keyword search. Google Play's robots.txt disallows /store/search and itunes.apple.com disallows /search*, so apps are given by package name, id or URL. Use Apple's top charts to discover apps.</li><li>No App Store reviews. Apple's customer-review feed lives under itunes.apple.com/…/rss/…, which Apple's robots.txt disallows, so App Store rows carry rating, ratings count and histogram but no review text.</li><li>Google Play reviews: up to 20 per app, country and language — the "most relevant" reviews shown on the public app page. Google's paging endpoint (/_/PlayStoreUi/data/batchexecute) and /store/getreviews are disallowed by its robots.txt, so there is no deep history and no newest-first sort. Scheduled runs with *Only new reviews since last run* build up history over time.</li><li>Reviewer names, avatars and user ids are never returned, and developer e-mails are kept only when they are company mailboxes (support@, help@ … on the company's own domain). Review text is returned as written.</li><li>Google Play does not publish app size on the web any more (size is null for Play apps); App Store rows have no installs (Apple does not publish them). Fields a store does not provide are null.</li><li>Apple charts: top-free and top-paid apps, 1-100 positions per chart and country, from Apple's official marketing RSS feed. Google Play charts are not supported.</li><li>Plain HTTP from Apify's servers, at most 2 requests at a time per store, with pauses. If a store shows a CAPTCHA, an 'unusual traffic' page or keeps answering 429/403, the actor stops asking that store for the rest of the run and returns free error rows for the skipped apps. No proxies, no CAPTCHA solving.</li><li>robots.txt is re-checked at the start of every run; if a store ever disallows the pages used here, that store is skipped.</li><li>Error rows (app not found in a country, store blocked, chart unavailable) are free. Respects your run budget: set a maximum total charge and the actor stops cleanly at the cap.</li></ul><h2>FAQ</h2><details><summary>Can I scrape App Store reviews with this actor?</summary><p>No. Apple's customer-review feed sits under a path that Apple's robots.txt disallows, so App Store rows include rating, ratings count and the histogram but no review text. Google Play reviews are available.</p></details><details><summary>How many Google Play reviews can I get per app?</summary><p>Up to 20 per app, country and language: the most relevant reviews shown on the public app page. There is no deep history or newest-first sort, but scheduled runs with <code>onlyNewReviewsSinceLastRun</code> accumulate history over time.</p></details><details><summary>Can I search the stores by keyword?</summary><p>No. Google Play and Apple both disallow their search pages in robots.txt, so apps are given by package name, ID or URL. Use the Apple top charts to discover apps.</p></details><details><summary>Does it return Google Play top charts?</summary><p>No, only Apple's top-free and top-paid charts from Apple's official marketing RSS feed are supported, with up to 100 positions per chart and country.</p></details><details><summary>Why are some fields empty for one store?</summary><p>Each store publishes different data. Google Play no longer shows app size on the web, so size is null for Play apps, and Apple does not publish installs, so App Store rows have none.</p></details><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~app-store-scraper/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"apps": ["com.spotify.music", "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580"], "countries": ["us", "gb"], "language": "en", "charts": ["top-free"], "chartSize": 25, "includeChartAppDetails": false, "includeReviews": true, "maxReviewsPerApp": 20}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "apps": [
+    "com.spotify.music",
+    "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580"
+  ],
+  "countries": [
+    "us",
+    "gb"
+  ],
+  "language": "en",
+  "charts": [
+    "top-free"
+  ],
+  "chartSize": 25,
+  "includeChartAppDetails": false,
+  "includeReviews": true,
+  "maxReviewsPerApp": 20
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~app-store-scraper/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "apps": [
+        "com.spotify.music",
+        "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580"
+    ],
+    "countries": [
+        "us",
+        "gb"
+    ],
+    "language": "en",
+    "charts": [
+        "top-free"
+    ],
+    "chartSize": 25,
+    "includeChartAppDetails": False,
+    "includeReviews": True,
+    "maxReviewsPerApp": 20
+}
+
+run = client.actor("actor-forge/app-store-scraper").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/shopify-store-scraper/">Shopify Store Scraper — Products, Prices, Store Info</a></h3><p>Scrape any Shopify store&#x27;s products from its public products.json: title, vendor, type, tags, price range, compare-at price, stock, variants and…</p><span class="price">$0.30 per 1,000 · product result</span></div><div class="card"><h3><a href="../../actors/google-trends/">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></h3><p>Google Trends scraper and API: Trending Now searches for 125 countries from the official feed (traffic, start time, picture, news articles), plus…</p><span class="price">$0.50 per 1,000 · trend result</span></div><div class="card"><h3><a href="../../actors/ads-transparency/">Google Ads Transparency Scraper — Competitor Ads | $0.60/1K</a></h3><p>Scrape competitor ads from the Google Ads Transparency Center by domain, advertiser name or ID: format, first/last shown, regions, impressions, ad…</p><span class="price">$0.60 per 1,000 · ad result</span></div></div><div class="cta"><p><strong>Try App Store &amp; Google Play Scraper on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/app-store-scraper" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/ecommerce-apps/">More E-commerce &amp; App Stores tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

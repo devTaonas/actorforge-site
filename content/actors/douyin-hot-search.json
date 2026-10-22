@@ -1,0 +1,121 @@
+{
+  "name": "douyin-hot-search",
+  "category": "china-trends",
+  "h1": "Douyin Hot Search Scraper — 抖音热榜 Trending List of Chinese TikTok",
+  "metaTitle": "Douyin Hot Search 抖音热榜 Scraper & API | ActorForge",
+  "metaDescription": "Get Douyin's live hot list (抖音热榜) as data: rank, topic, heat value, hot/new label, topic ID, cover image and search link. No login. $2 per 1,000 topics.",
+  "tagline": "The live trending board of Chinese TikTok as clean rows: rank, topic, heat value, badge, topic ID, cover image and a direct search link.",
+  "intro": [
+    "Douyin (抖音) is the Chinese version of TikTok, and its hot list (抖音热榜) shows which topics, challenges and events are driving short-video traffic in China right now. For content strategists and brands, it is a direct read on what Chinese audiences are watching, but the board is in Chinese and changes constantly.",
+    "This actor captures the live Douyin hot list and returns each trending topic with its rank, heat value (热度), Douyin's badge in English (hot, new, first, exclusive or live), topic ID, cover image and a direct search link. The pinned slot is excluded, so `rank` is the board position starting at 1. There is no login, no cookies and nothing to configure.",
+    "It is aimed at social listening, influencer and content strategy, brand monitoring in China, trend detection and cross-border e-commerce product discovery. Topics cost $2 per 1,000, so a top-50 snapshot is $0.10."
+  ],
+  "howItWorks": [
+    "The actor reads Douyin's live public hot list; no login, cookies or configuration are needed.",
+    "The pinned slot is excluded so ranks run from 1 at the top of the board.",
+    "Each topic is returned with rank, title, heat score, English label, topic ID, cover image and search URL.",
+    "Use `keywords` to keep only topics mentioning your terms; filtered-out topics are not charged.",
+    "If Douyin is temporarily unavailable, the run fails cleanly and nothing is charged."
+  ],
+  "inputExample": {
+    "platforms": [
+      "douyin"
+    ],
+    "maxTopicsPerPlatform": 20,
+    "keywords": []
+  },
+  "outputNote": "Each topic on the Douyin board becomes one row with its rank, heat value and badge, like this top entry:",
+  "useCases": [
+    {
+      "title": "Short-video content planning",
+      "text": "Check the board before planning content for the Chinese market. Topics badged hot or new show where short-video attention is heading, and the search link takes you straight to the videos behind each topic."
+    },
+    {
+      "title": "Trend tracking over time",
+      "text": "Schedule an hourly run of the top 20 and store the rows to see how fast topics rise and fall. That is about 14,400 topics a month, or $28.80."
+    },
+    {
+      "title": "Product discovery for cross-border sellers",
+      "text": "Filter with `keywords` for product categories or brand names to spot consumer trends on Douyin early, and pay only for matching topics."
+    },
+    {
+      "title": "Visual dashboards",
+      "text": "The cover image returned for each topic makes it easy to build a visual trend board for teams who do not read Chinese."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Douyin Hot Search",
+      "China Trending Topics (5 boards)",
+      "Checking the Douyin app"
+    ],
+    "rows": [
+      [
+        "Douyin hot list",
+        "Yes",
+        "Yes",
+        "Yes"
+      ],
+      [
+        "Weibo, Baidu, Toutiao, Bilibili",
+        "No",
+        "Yes",
+        "Separate apps"
+      ],
+      [
+        "Topic ID and cover image",
+        "Yes",
+        "Not listed",
+        "Visible"
+      ],
+      [
+        "Structured history over time",
+        "Yes, by scheduling",
+        "Yes, by scheduling",
+        "No"
+      ],
+      [
+        "Videos behind each topic",
+        "No, search link only",
+        "No, search link only",
+        "Yes"
+      ],
+      [
+        "Price per 1,000 topics",
+        "$2",
+        "$2",
+        "Free, by hand"
+      ]
+    ]
+  },
+  "comparisonNote": "The app is better for actually watching the videos behind a trend; this actor returns topics and a search link, not the videos. If you want Douyin alongside Weibo and Baidu, [China Trending Topics](actor:china-trending-topics) covers five boards at the same price per topic.",
+  "faq": [
+    {
+      "q": "What is the Douyin hot list (抖音热榜)?",
+      "a": "It is Douyin's live trending board, the Chinese TikTok equivalent of a trending page, ranking topics by Douyin's own heat value. The actor returns roughly the 50 topics the board holds at any moment."
+    },
+    {
+      "q": "What do the labels in the Douyin data mean?",
+      "a": "`label` is Douyin's own badge, returned in English: hot, new, first, exclusive or live, or null when a topic has none."
+    },
+    {
+      "q": "Does it scrape Douyin videos or user profiles?",
+      "a": "No. It returns topics, ranks and heat only, plus a search link for each topic. No user accounts, profiles or personal data are collected."
+    },
+    {
+      "q": "Do I need a Douyin account or cookies?",
+      "a": "No. The actor uses Douyin's public hot list data and needs no login, no cookies and no configuration."
+    },
+    {
+      "q": "Is the heat value comparable with Weibo or Baidu?",
+      "a": "No. `heatScore` is each platform's own metric. Use it to compare topics within the Douyin board, and use rank when comparing against other platforms."
+    }
+  ],
+  "related": [
+    "china-trending-topics",
+    "weibo-hot-search",
+    "bilibili-scraper"
+  ],
+  "guides": []
+}

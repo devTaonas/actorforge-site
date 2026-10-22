@@ -1,0 +1,137 @@
+{
+  "name": "uk-companies-house-enrichment",
+  "category": "business-leads",
+  "h1": "Companies House API Scraper: UK Company Directors, SIC Codes and Filings",
+  "metaTitle": "Companies House Directors & Filings API | ActorForge",
+  "metaDescription": "Enrich UK companies from the official Companies House API: profile, SIC codes, current and resigned directors, latest filings. $5 per 1,000 companies.",
+  "tagline": "One fully enriched row per UK company: registered details, SIC codes, directors and officers, and the 25 most recent filings, from the official register.",
+  "intro": [
+    "The Companies House website is fine for looking up one company. It is slow when you need two hundred, and the official API makes you stitch together separate calls for the profile, the officers and the filing history, then deal with rate limits.",
+    "**Companies House Enrichment** does that stitching for you. Give it a list of company numbers, a free-text name search, or advanced filters (SIC codes, status, incorporation date range, registered-office location) and it returns one row per company with the registered address, status, incorporation date, SIC codes, **current and resigned officers** (name, role, appointment and resignation dates, occupation, nationality) and the **25 most recent filings** (date, category, type, description). Data comes from the official Companies House API, so it is as current as the register itself.",
+    "It suits lead generation ('active scaffolding companies in Manchester incorporated since 2020'), KYC and supplier checks, and bulk enrichment of company numbers already in a spreadsheet. Privacy is built in: officers' dates of birth and personal addresses are never returned, only statutory business-register fields."
+  ],
+  "howItWorks": [
+    "If you pass companyNumbers, those exact companies are enriched; otherwise the actor runs an advanced search on SIC code, status, incorporation dates and location, or a plain name search with searchTerms.",
+    "For each company it calls the official Companies House API for the profile, then (if enabled) the officers list and the filing history.",
+    "Responses are merged into one clean row; officers are capped at 100 per company and filings at the 25 most recent.",
+    "Requests stay within the Companies House rate limit of 600 requests per 5 minutes (a fully enriched company uses 3), and you can add your own free API key for dedicated throughput.",
+    "Mistyped or missing company numbers are skipped and never charged, and the run stops cleanly at maxResults or your spend limit."
+  ],
+  "inputExample": {
+    "sicCodes": [
+      "43991"
+    ],
+    "companyStatus": "active",
+    "incorporatedFrom": "2020-01-01",
+    "location": "Manchester",
+    "maxResults": 200,
+    "includeOfficers": true,
+    "includeFilings": true
+  },
+  "outputNote": "Each row is one company, with officers and filings attached as nested lists (summarised here):",
+  "useCases": [
+    {
+      "title": "New-company lead lists",
+      "text": "Filter by SIC code, active status and incorporatedFrom to find businesses formed recently in a town or city. The officers list gives you the directors' names and roles to address outreach properly."
+    },
+    {
+      "title": "Bulk enrichment of a company list",
+      "text": "Paste the company numbers from your CRM or a supplier sheet into companyNumbers and get status, SIC codes, directors and recent filings back in one dataset, instead of opening each record by hand."
+    },
+    {
+      "title": "Due diligence and supplier checks",
+      "text": "See at a glance whether a company is active, dissolved or in liquidation, who its current and resigned officers are, and what it has filed lately, such as accounts or confirmation statements."
+    },
+    {
+      "title": "Trade and sector research",
+      "text": "Combine several SIC codes with a location filter to map an industry in a region, then use incorporation dates to see how many firms were formed in each period."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Companies House Enrichment",
+      "Companies House website by hand",
+      "Calling the Companies House API yourself"
+    ],
+    "rows": [
+      [
+        "Data source",
+        "Official Companies House API",
+        "Official register",
+        "Official Companies House API"
+      ],
+      [
+        "Profile, officers and filings in one row",
+        "Yes",
+        "No, separate pages",
+        "No, separate endpoints to combine"
+      ],
+      [
+        "Search by SIC code, status, dates and location",
+        "Yes",
+        "Partial",
+        "Yes, with your own code"
+      ],
+      [
+        "Bulk list of company numbers",
+        "Yes",
+        "No",
+        "Yes, with your own code"
+      ],
+      [
+        "Officers' dates of birth and personal addresses",
+        "Never returned",
+        "Shown as published on each page",
+        "Raw fields, you decide what to keep"
+      ],
+      [
+        "Rate-limit handling",
+        "Built in, optional own key",
+        "Not applicable",
+        "You build it"
+      ],
+      [
+        "Cost",
+        "$5 per 1,000 companies",
+        "Free",
+        "Free API, your development time"
+      ]
+    ]
+  },
+  "comparisonNote": "For a handful of companies the free website is all you need, and developers with time to spare can call the free API directly. This actor earns its keep when you need hundreds of enriched rows in a spreadsheet-ready format without writing the glue code.",
+  "faq": [
+    {
+      "q": "How do I get a list of directors for many UK companies at once?",
+      "a": "Put the company numbers into companyNumbers and keep includeOfficers on. Each output row then has an officers list with name, role, appointment and resignation dates, occupation and nationality, up to 100 officers per company."
+    },
+    {
+      "q": "Can I search Companies House by SIC code and incorporation date?",
+      "a": "Yes. Use sicCodes (for example 43991 for scaffolding) with companyStatus, incorporatedFrom, incorporatedTo and location. These advanced filters take over from searchTerms, and companyNumbers takes priority over both."
+    },
+    {
+      "q": "Does it return directors' dates of birth or home addresses?",
+      "a": "No. Dates of birth and personal addresses are never returned. You get only statutory business-register fields: name, role, dates, occupation and nationality."
+    },
+    {
+      "q": "Which companies are covered?",
+      "a": "Companies on the official Companies House register: UK-registered companies in England, Wales, Scotland and Northern Ireland. Overseas companies not on the register are not covered."
+    },
+    {
+      "q": "Do I need my own Companies House API key?",
+      "a": "No, a shared key is used by default. You can add your own free key from developer.company-information.service.gov.uk in apiKey for dedicated throughput of 600 requests per 5 minutes, which is roughly 180 fully enriched companies per 5 minutes."
+    },
+    {
+      "q": "How much does it cost to enrich 1,000 companies?",
+      "a": "$5.00, at $0.005 per enriched company with profile, officers and filings included. 100 companies cost $0.50. Companies that are not found are never charged."
+    }
+  ],
+  "related": [
+    "uk-planning-applications",
+    "startup-funding-rounds",
+    "business-places-data"
+  ],
+  "guides": [
+    "uk-company-directors-companies-house-export"
+  ]
+}

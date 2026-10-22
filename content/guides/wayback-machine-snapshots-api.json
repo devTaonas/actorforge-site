@@ -1,0 +1,97 @@
+{
+  "slug": "wayback-machine-snapshots-api",
+  "category": "seo-marketing",
+  "title": "How to Use a Wayback Machine Snapshots API and See When a Page Changed",
+  "metaTitle": "Wayback Machine Snapshots API: Page Change History",
+  "metaDescription": "Pull Wayback Machine snapshots for any URL or domain and build a timeline of when a page changed, using unique versions and change flags. $2 per 1,000.",
+  "actor": "wayback-snapshots",
+  "alsoActors": [],
+  "summary": "Query archive.org's captures through the Wayback Snapshots actor with `collapse` set to `digest` to keep only versions where the content changed, then sort them into a change timeline. It shows changes the archive captured in the past; it does not watch pages live.",
+  "intro": [
+    "The Wayback Machine is the largest public record of how websites looked over time, but its calendar view shows one capture at a time and a busy page can have thousands of near-identical captures. To answer \"when did this pricing page change?\" or \"what URLs did this site have in 2016?\", you need the capture index as data.",
+    "The Internet Archive's CDX API provides that index, but you have to handle paging, rate limits, slow domain queries and deduplication yourself. The Wayback Snapshots actor does that and adds a `changedFromPrevious` flag and per-site summaries. ActorForge is not affiliated with the Internet Archive.",
+    "This guide pulls snapshots for a URL, builds a change history, lists every archived URL of a domain, and explains the limits: a change only shows up if the archive happened to capture the page before and after it."
+  ],
+  "steps": [
+    {
+      "name": "Decide what you are looking up",
+      "text": "Put pages, folders or domains in `urls` and set `matchType`: `exact` for one page, `prefix` for a folder, `host` for one host name, `domain` for the host and all subdomains. Shortcuts work too: `example.com/blog/*` is a prefix and `*.example.com` is the whole domain. Exact lookups take about a second; prefix, host and domain lookups take 20-40 seconds per index page on archive.org's side."
+    },
+    {
+      "name": "Get a page's change history with unique versions",
+      "text": "The default `collapse` mode, `digest`, keeps a capture only when its content digest differs from the previous capture, and marks it with `changedFromPrevious`. Add `statusFilter` 200 and `mimeFilter` text/html to skip redirects and error captures, and use `from` and `to` to limit the period. Setting `newestFirst` to true (exact URLs only) returns the most recent versions first.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"urls\": [\"https://apify.com/pricing\"],\n  \"matchType\": \"exact\",\n  \"collapse\": \"digest\",\n  \"statusFilter\": \"200\",\n  \"mimeFilter\": \"text/html\",\n  \"from\": \"2019\",\n  \"to\": \"2025\",\n  \"maxSnapshotsPerUrl\": 500\n}"
+      }
+    },
+    {
+      "name": "Turn the versions into a change timeline",
+      "text": "Load the rows into pandas, sort by `capturedAt` and look at how often the page changed per month and how its size moved between versions. Big jumps in `lengthBytes` often mark redesigns, while small ones tend to be copy or price edits. Each row's `archiveUrl` opens that exact version in the Wayback Machine.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/wayback-snapshots\").call(run_input={\n    \"urls\": [\"https://apify.com/pricing\"],\n    \"collapse\": \"digest\",\n    \"statusFilter\": \"200\",\n    \"mimeFilter\": \"text/html\",\n})\nrows = [r for r in client.dataset(run[\"defaultDatasetId\"]).iterate_items() if not r.get(\"error\")]\n\ndf = pd.DataFrame(rows)\ndf[\"capturedAt\"] = pd.to_datetime(df[\"capturedAt\"])\ndf = df.sort_values(\"capturedAt\")\ndf[\"sizeChange\"] = df[\"lengthBytes\"].diff()\n\nprint(df.groupby(df[\"capturedAt\"].dt.to_period(\"M\")).size().tail(24))  # versions per month\nprint(df[[\"capturedAt\", \"lengthBytes\", \"sizeChange\", \"archiveUrl\"]]\n      .loc[df[\"sizeChange\"].abs() > 2000])"
+      }
+    },
+    {
+      "name": "Read what the page said in each version",
+      "text": "Set `fetchContent` to true to download the archived HTML of captures and add the page title and main content as Markdown or text (`contentFormat`). Only HTML captures with status 200 are fetched, up to `maxContentPages` per run (10 by default), at $0.004 each. Pages that were built by JavaScript may come out nearly empty, because only the raw archived HTML is read."
+    },
+    {
+      "name": "List every archived URL of a site",
+      "text": "To recover lost pages or plan redirects, use `matchType` domain or host with `collapse` set to `unique-urls`, which returns one row per distinct URL. These queries stop after `maxIndexPagesPerUrl` index pages per input (10 by default); raise it for large sites, keeping in mind each page takes 20-40 seconds.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"urls\": [\"*.example.com\"],\n  \"matchType\": \"domain\",\n  \"collapse\": \"unique-urls\",\n  \"statusFilter\": \"200\",\n  \"mimeFilter\": \"text/html\",\n  \"maxSnapshotsPerUrl\": 5000,\n  \"maxIndexPagesPerUrl\": 30\n}"
+      }
+    },
+    {
+      "name": "Check a domain's history at a glance",
+      "text": "Set `outputMode` to `summary` for one row per input with first and last capture, total captures, captures per year, missing years and longest gap. It is charged per summary rather than per capture: $0.004 for an exact URL and $0.01 for a prefix, host or domain."
+    },
+    {
+      "name": "Know what this cannot tell you",
+      "text": "This is archived history, not live monitoring. A change appears only if archive.org captured the page before and after it, so infrequently crawled pages can hide many edits between captures, and very recent changes may not be archived yet. A page that reverts to earlier content is flagged as changed again, which is accurate. To be alerted to future changes as they happen you need a separate monitoring tool that fetches the live page on a schedule."
+    }
+  ],
+  "sampleInput": {
+    "urls": [
+      "https://apify.com/pricing"
+    ],
+    "matchType": "exact",
+    "collapse": "digest",
+    "statusFilter": "200",
+    "mimeFilter": "text/html",
+    "maxSnapshotsPerUrl": 300
+  },
+  "sampleOutputNote": "Each row is one archived capture with its time, status, MIME type, change flag and a direct Wayback link.",
+  "costExample": "Tracking the change history of 20 competitor pricing pages at up to 300 unique versions each is at most 6,000 snapshot rows, or $12.00; fetching the content of 50 of those versions adds 50 x $0.004 = $0.20. A summary of 100 whole domains costs 100 x $0.01 = $1.00.",
+  "tips": [
+    "Every snapshot row is charged, so `maxSnapshotsPerUrl` doubles as your cost cap per input.",
+    "On multi-URL results (prefix, host, domain) collapsing works per URL: `daily` keeps one capture per day for each URL, not for the whole site.",
+    "Prefix, host and domain results come in URL order and then time, not purely by date; sort by `capturedAt` yourself.",
+    "archive.org's CDX API is public, so `proxyConfiguration` is normally not needed. Turn on Apify Proxy only if runs keep hitting rate limits."
+  ],
+  "faq": [
+    {
+      "q": "Can I see exactly when a web page changed?",
+      "a": "You can see the captures where the archived content differed from the previous capture. The real change happened somewhere between that capture and the one before it, so precision depends on how often archive.org crawled the page."
+    },
+    {
+      "q": "Can this monitor a page for changes going forward?",
+      "a": "No. It reads the Internet Archive's past captures. It does not fetch the live page or send alerts, so new changes only appear once archive.org has captured them."
+    },
+    {
+      "q": "Why is my domain query slow?",
+      "a": "Prefix, host and domain queries walk archive.org's index page by page, and each page takes 20-40 seconds on their side. Exact URL lookups take about a second. Narrow the query with a path prefix or filters to speed it up."
+    },
+    {
+      "q": "Does it include pages excluded from the Wayback Machine?",
+      "a": "No. Captures the archive does not have, including sites whose owners excluded them, cannot be returned. Those inputs get a free row explaining that."
+    }
+  ],
+  "related": [
+    "audit-every-url-in-sitemap-seo",
+    "convert-pdf-to-markdown-for-rag"
+  ]
+}

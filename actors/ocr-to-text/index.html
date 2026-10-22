@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk OCR API: Scanned PDFs &amp; Images to Text | ActorForge</title>
+<meta name="description" content="One OCR API for mixed batches of scanned PDFs, PNG, JPEG, TIFF and more. Tesseract 5, 29 languages, per-page confidence. $3 per 1,000 OCR pages.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/ocr-to-text/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Bulk OCR API: Scanned PDFs &amp; Images to Text | ActorForge">
+<meta property="og:description" content="One OCR API for mixed batches of scanned PDFs, PNG, JPEG, TIFF and more. Tesseract 5, 29 languages, per-page confidence. $3 per 1,000 OCR pages.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/ocr-to-text/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"OCR — Scanned PDF & Image to Text (Tesseract, 29 Languages)","description":"One OCR API for mixed batches of scanned PDFs, PNG, JPEG, TIFF and more. Tesseract 5, 29 languages, per-page confidence. $3 per 1,000 OCR pages.","applicationCategory":"BusinessApplication","applicationSubCategory":"Documents, OCR & AI-Ready Text","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/ocr-to-text/","sameAs":"https://apify.com/actor-forge/ocr-to-text","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Page ocr","description":"Charged per image or scanned PDF page read by OCR","price":"0.003","priceCurrency":"USD","url":"https://apify.com/actor-forge/ocr-to-text"},{"@type":"Offer","name":"Page text","description":"Charged per PDF page that already has a text layer (read directly, no OCR)","price":"0.0003","priceCurrency":"USD","url":"https://apify.com/actor-forge/ocr-to-text"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Documents, OCR & AI-Ready Text","item":"https://devtaonas.github.io/actorforge-site/categories/documents-ai/"},{"@type":"ListItem","position":3,"name":"OCR — Scanned PDF & Image to Text (Tesseract, 29 Languages)","item":"https://devtaonas.github.io/actorforge-site/actors/ocr-to-text/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I send PDFs and images to the same OCR API call?","acceptedAnswer":{"@type":"Answer","text":"Yes. Put any mix of PDF, PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000 links in urls. Images are always one row each; PDFs are one row per file by default or one row per page with outputMode set to pages."}},{"@type":"Question","name":"Which OCR languages are supported and how many can I use at once?","acceptedAnswer":{"@type":"Answer","text":"29 languages, including English, German, French, Spanish, Arabic, Hebrew, Hindi, Russian, Chinese (simplified and traditional), Japanese, Korean and Thai. You can select up to 4 per run. Modern Greek is not available."}},{"@type":"Question","name":"How many files can one run handle?","acceptedAnswer":{"@type":"Answer","text":"maxFiles defaults to 1,000 and can be raised to 10,000 per run. Individual files can be up to 100 MB, and PDFs up to 2,000 pages each (200 by default via maxPagesPerPdf)."}},{"@type":"Question","name":"Am I charged for files that fail?","acceptedAnswer":{"@type":"Answer","text":"No. Failed downloads, unreadable files, blank pages and links that return a web page instead of a file are reported in the dataset and not charged. You pay $0.003 per OCR'd page and $0.0003 per PDF page read from its text layer."}},{"@type":"Question","name":"How do I cut noise from stamps and stains?","acceptedAnswer":{"@type":"Answer","text":"Set minWordConfidence to drop words Tesseract is unsure about. The README suggests 40 to 60 removes most noise from stains and stamps; 0 keeps everything."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a></li><li aria-current="page">OCR — Scanned PDF &amp; Image to Text (Tesseract, 29 Languages)</li></ol></nav><h1>OCR API for Bulk Scanned PDFs and Images in One Run</h1><p>A general-purpose OCR endpoint for pipelines that receive a bit of everything: scanned PDFs, phone photos, TIFF faxes and screenshots.</p><a class="btn" href="https://apify.com/actor-forge/ocr-to-text" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p>Document intake is rarely tidy. One supplier emails a scanned PDF, another sends a phone photo of the same invoice, the fax gateway produces TIFFs and a support form uploads screenshots. Building a separate path for each format is busywork. The OCR to Text actor takes all of them in one <code>urls</code> list and returns text in a consistent row format.</p><p>It accepts PDF, PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000. Each image counts as one page; each PDF is read page by page, with pages that already have a text layer read directly at a tenth of the OCR price. By default you get one row per file with all its text, which keeps downstream code simple whatever the input type.</p><p>Under the hood it runs Tesseract 5 with LSTM models in 29 languages, up to 4 per run. That makes it a good fit for automation work: back-office pipelines, AI agents that need a reliable OCR tool, and scheduled batch jobs where a run budget cap matters. Failed downloads, unreadable files and blank pages are never charged.</p><h3>How it works</h3><ol><li>You submit a list of file links in <code>urls</code>, mixing PDFs and image formats freely, and optionally cap the batch with <code>maxFiles</code>.</li><li>The actor detects each file's type; images go straight to OCR, PDFs are split into pages and text-layer pages are read without OCR in <code>auto</code> mode.</li><li>Tesseract 5 recognises the image pages in your chosen <code>languages</code>, dropping low-confidence words if you set <code>minWordConfidence</code>.</li><li>Each file becomes one dataset row by default (<code>outputMode</code> <code>document</code>), or one row per PDF page if you switch to <code>pages</code>.</li><li>Charges are per page read, and the run stops cleanly when it reaches the maximum total charge you set.</li></ol><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "urls": [
+    "https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf",
+    "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif",
+    "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png"
+  ],
+  "languages": [
+    "eng",
+    "fra"
+  ],
+  "pdfMode": "auto",
+  "outputMode": "document",
+  "minWordConfidence": 40,
+  "maxFiles": 5000
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>urls</code></td><td>array</td><td>yes</td><td></td><td class="cut">Links to scanned PDFs or images (PNG, JPEG, TIFF, WebP, GIF, BMP, JPEG 2000). Each image is one page.</td></tr><tr><td><code>languages</code></td><td>array</td><td>no</td><td><code>["eng"]</code></td><td class="cut">Languages in the documents (up to 4). Picking only the languages you need is faster and more accurate.</td></tr><tr><td><code>pdfMode</code></td><td>string</td><td>no</td><td><code>"auto"</code></td><td class="cut">Auto: pages that already contain text are read directly (exact, and charged at the cheaper text-layer price); only scanned pages are OCR'd. OCR all: OCR every page, e.g. when a PDF's hidden text layer is poor.</td></tr><tr><td><code>outputMode</code></td><td>string</td><td>no</td><td><code>"document"</code></td><td class="cut">For PDFs: one row per PDF with all pages, or one row per page. Images are always one row each.</td></tr><tr><td><code>includeWords</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Add every recognised word with its confidence and pixel box (left, top, width, height), e.g. for redaction, highlighting or form extraction.</td></tr><tr><td><code>minWordConfidence</code></td><td>integer</td><td>no</td><td><code>0</code></td><td class="cut">Drop words Tesseract is less sure of than this (0–100). 0 keeps everything; 40–60 removes most noise from stains and stamps.</td></tr><tr><td><code>pageSegmentation</code></td><td>string</td><td>no</td><td><code>"auto"</code></td><td class="cut">How Tesseract finds text. Auto suits most pages; Single column for uniform text; Single block for receipts and snippets; Sparse for scattered text like forms and screenshots.</td></tr><tr><td><code>dpi</code></td><td>integer</td><td>no</td><td><code>300</code></td><td class="cut">Resolution scanned PDF pages are rendered at before OCR. 300 is the accuracy sweet spot; 200 is faster for large print.</td></tr><tr><td><code>maxPagesPerPdf</code></td><td>integer</td><td>no</td><td><code>200</code></td><td class="cut">Process at most this many pages of each PDF (from the start). Longer PDFs are marked truncated.</td></tr><tr><td><code>maxFiles</code></td><td>integer</td><td>no</td><td><code>1000</code></td><td class="cut">Stop after this many files.</td></tr><tr><td><code>password</code></td><td>string</td><td>no</td><td></td><td class="cut">For password-protected PDFs you are entitled to open. Used for every PDF in the run.</td></tr></tbody></table></div></details><h2>Output example</h2><p>The sample shows a scanned PDF, a TIFF test image and a digital PDF processed in the same run, each as one row with its file type and page counts.</p><div class="tablewrap"><table><thead><tr><th scope="col">url</th><th scope="col">fileType</th><th scope="col">pagesOcr</th><th scope="col">confidence</th><th scope="col">wordCount</th><th scope="col">text</th><th scope="col">pagesTextLayer</th></tr></thead><tbody><tr><td class="cut">https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf</td><td class="cut">pdf</td><td class="cut">1</td><td class="cut">95.5</td><td class="cut">728</td><td class="cut">The LinnSequencer\n32 Track MIDI Sequence Recorder\n\nThe LinnSequencer is a state-of-the-art composition and performance tool…</td><td class="cut"></td></tr><tr><td class="cut">https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif</td><td class="cut">tiff</td><td class="cut">1</td><td class="cut">96.3</td><td class="cut">60</td><td class="cut">This is a lot of 12 point text to test the\nocr code and see if it works on all types\nof file format.</td><td class="cut"></td></tr><tr><td class="cut">https://arxiv.org/pdf/1706.03762</td><td class="cut">pdf</td><td class="cut">0</td><td class="cut"></td><td class="cut">6457</td><td class="cut">Provided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures…</td><td class="cut">15</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Page ocr</td><td class="cut">Charged per image or scanned PDF page read by OCR</td><td>$0.003</td><td>$3</td><td class="cut">A 10-page scanned PDF = $0.03; 1,000 receipts = $3.00</td></tr><tr><td>Page text</td><td class="cut">Charged per PDF page that already has a text layer (read directly, no OCR)</td><td>$0.0003</td><td>$0.30</td><td class="cut">A 100-page digital PDF = $0.03</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 4 GB = $0.0002</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try OCR on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/ocr-to-text" rel="noopener">Run on Apify →</a></div><h2>Use cases</h2><div class="uc"><h3>Back-office document intake</h3><p>Route every incoming attachment, whatever its format, to one OCR call and store the text next to the file. Because each file comes back as one row with <code>fileType</code>, <code>pagesOcr</code> and <code>confidence</code>, the same parser handles invoices, letters and forms.</p></div><div class="uc"><h3>OCR tool for AI agents</h3><p>Give an agent one tool that turns any document link into text instead of separate image and PDF tools. The confidence score lets the agent decide when to ask a human to check a result.</p></div><div class="uc"><h3>Migrating a document store</h3><p>When moving years of scans out of an old document management system, export file links in batches of up to 10,000 per run with <code>maxFiles</code> and keep the returned text for search in the new system.</p></div><div class="uc"><h3>Scheduled nightly OCR jobs</h3><p>Run the actor on a schedule against the day's new uploads and set a maximum total charge. If a batch is unexpectedly large the run stops at the cap rather than overrunning your budget.</p></div><h2>How it compares</h2><div class="tablewrap"><table><thead><tr><th scope="col"></th><th scope="col">ActorForge OCR to Text</th><th scope="col">Separate image and PDF tools</th><th scope="col">Self-hosted OCR service</th></tr></thead><tbody><tr><td>PDFs and images in the same request</td><td>Yes</td><td>No, one tool per format</td><td>Yes, if you build it</td></tr><tr><td>Formats</td><td>PDF, PNG, JPEG, TIFF, WebP, GIF, BMP, JPEG 2000</td><td>Depends on each tool</td><td>Whatever you install</td></tr><tr><td>Text-layer PDF pages skipped from OCR</td><td>Yes, at $0.30 per 1,000 pages</td><td>Varies</td><td>Only if you script it</td></tr><tr><td>Run budget cap</td><td>Yes, stops cleanly at the cap</td><td>Varies</td><td>Your responsibility</td></tr><tr><td>Maintenance</td><td>None</td><td>Several integrations to maintain</td><td>Servers, updates, scaling</td></tr><tr><td>HEIC/AVIF photos and SVG</td><td>No, convert to JPEG first</td><td>Some tools support them</td><td>Depends on your stack</td></tr></tbody></table></div><p class="muted">If you only ever process one kind of file, a dedicated tool such as <a href="../../actors/pdf-ocr/">PDF OCR</a> or <a href="../../actors/image-to-text-ocr/">Image to Text OCR</a> gives you the same engine with defaults tuned for that input. Teams with strict data residency needs may still prefer a self-hosted OCR service.</p><h2>Limits and honest notes</h2><ul><li>Tesseract reads printed and typed text very well (95%+ confidence on clean scans); handwriting, low-resolution photos, heavy stamps and decorative fonts come out poorly. The confidence score tells you which pages to check.</li><li>Output is plain text in reading order with line and paragraph breaks. Tables come out as lines of text, not structured tables. Images and charts have no text to extract.</li><li>Pages rotated by 90° or 180° are not auto-rotated; slightly skewed scans are fine.</li><li>Up to 4 languages per run; picking only the languages your documents use is faster and more accurate. Modern Greek is not available.</li><li>HEIC/AVIF photos and SVG are not supported (convert photos to JPEG). Files up to 100 MB; PDFs up to 2,000 pages each (200 by default).</li><li>Password-protected PDFs need the password input. Links that return a web page instead of a file are reported and not charged.</li><li>Respects your run budget: set a maximum total charge and processing stops cleanly at the cap, with no page charged twice.</li></ul><h2>FAQ</h2><details><summary>Can I send PDFs and images to the same OCR API call?</summary><p>Yes. Put any mix of PDF, PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000 links in <code>urls</code>. Images are always one row each; PDFs are one row per file by default or one row per page with <code>outputMode</code> set to <code>pages</code>.</p></details><details><summary>Which OCR languages are supported and how many can I use at once?</summary><p>29 languages, including English, German, French, Spanish, Arabic, Hebrew, Hindi, Russian, Chinese (simplified and traditional), Japanese, Korean and Thai. You can select up to 4 per run. Modern Greek is not available.</p></details><details><summary>How many files can one run handle?</summary><p><code>maxFiles</code> defaults to 1,000 and can be raised to 10,000 per run. Individual files can be up to 100 MB, and PDFs up to 2,000 pages each (200 by default via <code>maxPagesPerPdf</code>).</p></details><details><summary>Am I charged for files that fail?</summary><p>No. Failed downloads, unreadable files, blank pages and links that return a web page instead of a file are reported in the dataset and not charged. You pay $0.003 per OCR'd page and $0.0003 per PDF page read from its text layer.</p></details><details><summary>How do I cut noise from stamps and stains?</summary><p>Set <code>minWordConfidence</code> to drop words Tesseract is unsure about. The README suggests 40 to 60 removes most noise from stains and stamps; 0 keeps everything.</p></details><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~ocr-to-text/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"urls": ["https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf", "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif", "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png"], "languages": ["eng", "fra"], "pdfMode": "auto", "outputMode": "document", "minWordConfidence": 40, "maxFiles": 5000}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "urls": [
+    "https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf",
+    "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif",
+    "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png"
+  ],
+  "languages": [
+    "eng",
+    "fra"
+  ],
+  "pdfMode": "auto",
+  "outputMode": "document",
+  "minWordConfidence": 40,
+  "maxFiles": 5000
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~ocr-to-text/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "urls": [
+        "https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf",
+        "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif",
+        "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png"
+    ],
+    "languages": [
+        "eng",
+        "fra"
+    ],
+    "pdfMode": "auto",
+    "outputMode": "document",
+    "minWordConfidence": 40,
+    "maxFiles": 5000
+}
+
+run = client.actor("actor-forge/ocr-to-text").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Step-by-step guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/extract-text-from-images-screenshots/">How to Extract Text from Images and Screenshots in Bulk</a></h3><p>Send image URLs to the Image to Text OCR actor, use the sparse segmentation mode for screenshots, and read the text and confidence per image. It…</p></div><div class="card"><h3><a href="../../guides/ocr-scanned-pdf-to-text-api/">How to OCR Scanned PDFs to Text with an API</a></h3><p>Send scanned PDF links to the PDF OCR actor, get text back one row per page with a confidence score, and use that score to flag pages for review.…</p></div></div><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/pdf-ocr/">PDF OCR — Scanned PDF to Searchable Text (29 Languages)</a></h3><p>OCR scanned PDFs to text page by page with Tesseract 5 in 29 languages. Pages that already have a text layer are read directly at a tenth of the…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="../../actors/image-to-text-ocr/">Image to Text OCR — Extract Text from Photos &amp; Screenshots</a></h3><p>Extract text from images (PNG, JPEG, TIFF, WebP, GIF, BMP) with Tesseract 5 OCR in 29 languages: screenshots, photos of documents, receipts, scans…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="../../actors/any-url-to-markdown/">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></h3><p>Turn any URL into clean, LLM-ready Markdown: web pages, PDFs, Word, Excel, PowerPoint, EPUB, CSV and JSON, plus OCR for images and scanned PDFs. One…</p><span class="price">$1 per 1,000 · page result</span></div></div><div class="cta"><p><strong>Try OCR on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/ocr-to-text" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/documents-ai/">More Documents, OCR &amp; AI-Ready Text tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

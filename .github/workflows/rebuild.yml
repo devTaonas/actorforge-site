@@ -1,0 +1,80 @@
+name: Rebuild site
+
+# Regenerates every page from the public Apify Store API, commits if anything
+# changed, deploys to GitHub Pages and pings IndexNow with the changed URLs.
+# Uses only the default GITHUB_TOKEN.
+
+on:
+  schedule:
+    - cron: "23 5 * * 1"   # every Monday 05:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build and validate
+        run: python build.py
+      - name: Commit if changed
+        id: commit
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Rebuild site from Apify Store data"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Keep list of changed URLs
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-urls
+          path: .cache/changed.txt
+          include-hidden-files: true
+
+  deploy:
+    needs: rebuild
+    if: needs.rebuild.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: changed-urls
+          path: .cache
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Notify IndexNow
+        run: python indexnow.py --changed

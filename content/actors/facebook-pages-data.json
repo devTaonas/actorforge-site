@@ -1,0 +1,135 @@
+{
+  "name": "facebook-pages-data",
+  "category": "business-leads",
+  "h1": "Facebook Business Pages by City: Page URLs, Phones and Emails",
+  "metaTitle": "Facebook Business Pages by City, Open Data | ActorForge",
+  "metaDescription": "Find Facebook Business Pages by city with page URL and ID, phone, website, email and address from Overture open data. No login, no scraping. $4 per 1,000.",
+  "tagline": "One row per Facebook Business Page in a city: page link and ID, contacts and location, from open data, without ever visiting facebook.com.",
+  "intro": [
+    "Social media agencies and local marketers often want a simple list: which restaurants, gyms or salons in this city have a Facebook Page, and how do I reach them? Getting that from Facebook itself means logins, cookies, proxies and an account at risk, and the Graph API will not hand you pages by location.",
+    "This actor answers the question from a different direction. In the **Overture Maps places dataset**, Meta contributes its business places under CDLA-Permissive-2.0, so most businesses carry their Facebook Page link. The actor searches a city, bounding box or radius, keeps only places that link a real Page, normalises the URL and parses out the numeric page ID (or vanity handle), and returns the business name, category, address, coordinates, phone, website, business email and other social links. In central Lisbon, 24,243 places at confidence 0.6 or more link a Facebook Page (23,718 unique pages).",
+    "It is not a Facebook scraper and it is **not affiliated with or endorsed by Meta**. You get contact and location data, not page stats: no likes, followers, posts, ads, reviews or about text, and you cannot feed it a list of page URLs to look up. If that fits your workflow, it is fast, blocks nothing and costs $4 per 1,000 pages."
+  ],
+  "howItWorks": [
+    "You choose an area (city name, bbox or lat/lon plus radius) and optional categories such as restaurant, gym or dentist.",
+    "The actor reads the matching part of the newest monthly Overture places release and keeps places whose links include a Facebook Page.",
+    "Page links in many formats (numeric ids, vanity handles, /pages/ URLs, profile.php?id=, mobile hosts) are normalised and parsed into facebookPageId or pageHandle; groups, events and share links are skipped for free.",
+    "When several places point to the same page, only the highest-confidence one is returned, so you get one row per page.",
+    "Phones are normalised to E.164, personal-looking emails are removed, and each row carries sources, licence and attribution."
+  ],
+  "inputExample": {
+    "location": "Lisbon",
+    "categories": [
+      "restaurant"
+    ],
+    "maxResults": 100,
+    "minConfidence": 0.6,
+    "requirePhone": true
+  },
+  "outputNote": "Restaurants in Lisbon come back like this, one row per unique Facebook Page:",
+  "useCases": [
+    {
+      "title": "Prospecting for social media agencies",
+      "text": "Build a list of local businesses that already run a Facebook Page, with a phone and website to reach the owner. Filter by category to focus on the verticals you sell to."
+    },
+    {
+      "title": "Seeding ad audiences and outreach by area",
+      "text": "Get every gym or salon page inside a radius around a location, nearest first, with distanceKm on each row. Useful for hyper-local campaigns or field sales routes."
+    },
+    {
+      "title": "Matching pages to your CRM",
+      "text": "Each row has the page URL, numeric page ID, website and normalised phone, which gives you several keys to join Facebook presence onto existing company records."
+    },
+    {
+      "title": "Market checks on social adoption",
+      "text": "Compare how many businesses in a category link a Facebook Page across cities, with sourceUpdatedAt showing when each source last touched the record."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Facebook Pages by City",
+      "Typical Facebook page scrapers",
+      "Facebook Graph API yourself"
+    ],
+    "rows": [
+      [
+        "Find pages by city or radius",
+        "Yes",
+        "Varies",
+        "No"
+      ],
+      [
+        "Login, cookies or proxies needed",
+        "No",
+        "Often",
+        "Access token required"
+      ],
+      [
+        "Likes, followers, posts, reviews",
+        "No",
+        "Yes",
+        "Partial, for pages you have access to"
+      ],
+      [
+        "Look up a page URL you already have",
+        "No",
+        "Yes",
+        "Yes"
+      ],
+      [
+        "Phone, website, email, address",
+        "Yes, where published in the source data",
+        "Partial",
+        "Partial"
+      ],
+      [
+        "Licence for the data",
+        "CDLA-Permissive-2.0 and other permissive licences",
+        "Unclear",
+        "Meta platform terms"
+      ],
+      [
+        "Price",
+        "$4 per 1,000 pages + $0.003 per area query",
+        "About $12 per 1,000 for the leading scraper",
+        "No per-row fee"
+      ]
+    ]
+  },
+  "comparisonNote": "If you need engagement data (likes, followers, posts) or want to enrich URLs you already have, a page scraper or the Graph API is the right tool. This actor is for discovering which businesses in an area have a Page and how to contact them.",
+  "faq": [
+    {
+      "q": "How can I find all Facebook business pages in a city?",
+      "a": "Enter the city as location, optionally add categories, and run. The actor returns every business in that area whose Overture place record links a Facebook Page, up to 20,000 per run (maxResults). One run covers up to about one metro area."
+    },
+    {
+      "q": "Does this actor log in to Facebook or scrape facebook.com?",
+      "a": "No. It never visits facebook.com, graph.facebook.com or any Meta service and does not use the Graph API. The page links come from the Overture Maps open data, where Meta contributes its places under CDLA-Permissive-2.0."
+    },
+    {
+      "q": "Why are most page URLs numeric instead of a vanity name?",
+      "a": "That is how the links appear in the source data. Numeric links such as facebook.com/2113811702277065 open the page normally, and facebookPageId holds the id. A pageHandle is filled only when the source uses a vanity link, which is rare (about 0.1% of Lisbon pages)."
+    },
+    {
+      "q": "Can I get page likes or follower counts?",
+      "a": "No. There are no likes, followers, check-ins, ratings, reviews, posts, ads, opening hours, photos, creation dates or about text. The actor returns contact and location data only."
+    },
+    {
+      "q": "What share of pages include a phone or email?",
+      "a": "In central Lisbon (release 2026-09-23.1), of the top 20,000 pages 91% had a phone, 65% a website and 39% a business email after the personal-email filter. Coverage varies by country and is thinner in parts of Africa and Asia."
+    },
+    {
+      "q": "How much does it cost?",
+      "a": "$0.003 per area query plus $0.004 per page delivered. 50 restaurants in Lisbon cost $0.203 and 1,000 pages cost $4.003. Duplicate places pointing to the same page and rows you filter out are free."
+    }
+  ],
+  "related": [
+    "business-places-data",
+    "any-url-to-markdown",
+    "ads-transparency"
+  ],
+  "guides": [
+    "business-leads-without-google-maps"
+  ]
+}

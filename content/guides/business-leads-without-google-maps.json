@@ -1,0 +1,104 @@
+{
+  "slug": "business-leads-without-google-maps",
+  "category": "business-leads",
+  "title": "How to Get Local Business Leads Without Scraping Google Maps",
+  "metaTitle": "Business Leads Without Scraping Google Maps | ActorForge",
+  "metaDescription": "Build local business lead lists by city from open Overture Maps data: name, address, phone, website, email. No proxies, no blocks, no 120-result cap.",
+  "actor": "business-places-data",
+  "alsoActors": [
+    "facebook-pages-data"
+  ],
+  "summary": "Query the open Overture Maps places dataset by city and category with [Business Places Data](actor:business-places-data) to get names, addresses, phones, websites and emails for every matching business, then add Facebook Page links with [Facebook Pages by City](actor:facebook-pages-data). Nothing is scraped, so there are no blocks or result caps.",
+  "intro": [
+    "Google Maps is the default place people go for local leads, and scraping it is the default way people try to get them out. That route comes with proxies, CAPTCHAs, broken selectors and search results that stop at around 120 places, which is why a 'scrape every plumber in Leeds' job often turns into many overlapping searches stitched together.",
+    "There is another source for the same core fields. The Overture Maps Foundation publishes an open places dataset of 80M+ businesses worldwide, refreshed monthly and built from Meta, Microsoft, Foursquare, AllThePlaces, BrightQuery and others, under permissive licences that allow storage and resale with attribution. What it does not have is Google's review layer: no star ratings, review counts, opening hours or photos.",
+    "This guide walks through building a usable lead list from that data: finding the right category, defining the area, filtering to contactable businesses, running several cities and merging them, and adding Facebook Page links where you need a social touchpoint."
+  ],
+  "steps": [
+    {
+      "name": "Decide which lead fields you really need",
+      "text": "List the columns your outreach depends on. If it is name, category, address, phone, website and a role email such as info@, open data covers it. If you qualify leads by star rating or review count, or need opening hours, this approach will not give you those and a Google Maps scraper remains the right tool for that part."
+    },
+    {
+      "name": "Find the right category ids",
+      "text": "Plain words such as dentist, plumber, lawyer, coffee or hotel are mapped to Overture's taxonomy for you, and a parent category includes its children, so restaurant also returns italian_restaurant. For anything less common, run the actor once with listCategories on. It returns the category list with ids, parents and worldwide place counts, filtered by the Name contains text, and it is free.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"listCategories\": true,\n  \"keyword\": \"dent\"\n}"
+      }
+    },
+    {
+      "name": "Define the search area",
+      "text": "A city name is enough for most jobs; 32,000+ cities are built in, and countryCode picks the right one when a name exists in several countries. For a tighter catchment, give lat, lon and radiusKm, and results come back nearest first with a distanceKm field. A bounding box works too, up to 1.5 x 1.5 degrees, which is about one metro area.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"lat\": 53.8008,\n  \"lon\": -1.5491,\n  \"radiusKm\": 8,\n  \"categories\": [\"plumber\"],\n  \"maxPlaces\": 500\n}"
+      }
+    },
+    {
+      "name": "Filter to businesses you can actually contact",
+      "text": "Turn on requireWebsite, requirePhone or requireEmail so that places without those fields are skipped; skipped places are never charged. Keep minConfidence at the default 0.5 to drop most stale or duplicate records, or raise it to 0.9 if you only want well-corroborated places. Personal-looking emails are removed automatically and counted in droppedPersonalEmails."
+    },
+    {
+      "name": "Run several cities and merge the results",
+      "text": "Each run covers one area, so for a region you loop over cities. The script below runs one city at a time with the official Apify Python client, deduplicates on the place id and writes a CSV with the first phone, website and email for each business. Field values that are lists are joined so the CSV stays one row per place.",
+      "code": {
+        "lang": "python",
+        "code": "import csv\nimport os\n\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\ncities = [\"Austin, TX\", \"Dallas, TX\", \"Houston, TX\", \"San Antonio, TX\", \"Fort Worth, TX\"]\n\n\ndef first(value):\n    if isinstance(value, list):\n        return value[0] if value else \"\"\n    return value or \"\"\n\n\ndef joined(value):\n    if isinstance(value, list):\n        return \"; \".join(str(v) for v in value)\n    return value or \"\"\n\n\nplaces = {}\nfor city in cities:\n    run = client.actor(\"actor-forge/business-places-data\").call(run_input={\n        \"location\": city,\n        \"countryCode\": \"US\",\n        \"categories\": [\"dentist\"],\n        \"requireWebsite\": True,\n        \"maxPlaces\": 300,\n    })\n    for item in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n        places[item[\"id\"]] = item\n\nwith open(\"dentists_texas.csv\", \"w\", newline=\"\", encoding=\"utf-8\") as f:\n    writer = csv.writer(f)\n    writer.writerow([\"name\", \"fullAddress\", \"phone\", \"website\", \"email\", \"confidence\", \"attribution\"])\n    for p in places.values():\n        writer.writerow([\n            p.get(\"name\"), p.get(\"fullAddress\"), first(p.get(\"phones\")),\n            first(p.get(\"websites\")), first(p.get(\"emails\")),\n            p.get(\"confidence\"), joined(p.get(\"attribution\")),\n        ])\n\nprint(f\"{len(places)} unique places written\")"
+      }
+    },
+    {
+      "name": "Add Facebook Page links where you need them",
+      "text": "If your outreach includes social, run the same area through [Facebook Pages by City](actor:facebook-pages-data). It returns only businesses whose Overture record links a Facebook Page, with the normalised page URL and numeric page id alongside the same contact fields. Its cap is maxResults rather than maxPlaces. You can join the two datasets on website or phone.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"location\": \"Austin, TX\",\n  \"categories\": [\"dentist\"],\n  \"maxResults\": 300,\n  \"minConfidence\": 0.6\n}"
+      }
+    },
+    {
+      "name": "Keep attribution and use the contacts lawfully",
+      "text": "The licences (CDLA-Permissive-2.0, Apache-2.0, CC0) let you store, enrich and resell the rows, as long as the attribution and licence texts travel with them, so keep the attribution field if you republish. Phones and emails are business contacts as published, but you are still responsible for how you contact people under GDPR, CAN-SPAM and similar laws."
+    }
+  ],
+  "sampleInput": {
+    "location": "Austin, TX",
+    "categories": [
+      "dentist"
+    ],
+    "maxPlaces": 200,
+    "requireWebsite": true,
+    "countryCode": "US"
+  },
+  "sampleOutputNote": "A city-plus-category run returns one row per business like these:",
+  "costExample": "Five Texas cities at 300 dentists each cost 5 x $0.003 in area queries plus 1,500 x $0.001 in places, so $1.515 in total. Adding 300 Facebook Pages for one of those cities costs $0.003 + 300 x $0.004 = $1.203.",
+  "tips": [
+    "One run covers one area of up to about one metro area. For a county or country, loop over cities rather than drawing a huge box.",
+    "Email coverage varies a lot by place and trade: in testing about 75% of Austin dentists had an email but only about 32% of Berlin restaurants. Use requireEmail only if email is your sole channel.",
+    "operatingStatus is often empty, so a closed business can still appear until a source drops it. Raise minConfidence if bounced calls are costly for you.",
+    "Smaller towns outside the built-in city list need a region or country in the location, for example \"Dripping Springs, TX\".",
+    "Use includeFields to keep the dataset small if you only need a few columns, but keep attribution if the data will be shown to anyone else."
+  ],
+  "faq": [
+    {
+      "q": "Is open places data as complete as Google Maps?",
+      "a": "Not everywhere. Coverage is dense in North America and Europe and thinner in rural areas and parts of Africa and Asia. In the test cities almost every dentist and restaurant had a phone and a website."
+    },
+    {
+      "q": "Can I get more than 120 results for one search?",
+      "a": "Yes. There is no per-search cap; one run returns up to 20,000 places for an area, ordered by confidence or by distance for a radius search."
+    },
+    {
+      "q": "How do I find businesses that have no website?",
+      "a": "Leave requireWebsite off and filter the output for rows with an empty websites field. Those are often good prospects for web design or marketing services."
+    },
+    {
+      "q": "Do I need a proxy or a Google API key?",
+      "a": "No. The actor reads the public Overture GeoParquet files and never calls Google, so no proxies, keys or CAPTCHAs are involved."
+    }
+  ],
+  "related": [
+    "uk-company-directors-companies-house-export",
+    "uk-planning-applications-leads",
+    "find-company-job-board-ats"
+  ]
+}

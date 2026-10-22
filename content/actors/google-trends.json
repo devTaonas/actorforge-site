@@ -1,0 +1,141 @@
+{
+  "name": "google-trends",
+  "category": "seo-marketing",
+  "h1": "Google Trends Scraper & API Alternative — Trending Searches by Country",
+  "metaTitle": "Google Trends Scraper: Trending Now API | ActorForge",
+  "metaDescription": "Google Trends scraper for Trending Now in 125 countries: traffic, start time and news articles per trend, plus best-effort interest over time. $0.50 per 1,000.",
+  "tagline": "Pull what people are searching for right now in 125 countries, with traffic estimates and the news behind each trend, as clean rows you can schedule.",
+  "intro": [
+    "Google Trends has no official public API, and the website is built for clicking, not for feeding a newsroom alert, a content calendar or an ad team every hour. This actor reads Google's official **Trending Now RSS feed** for any of the **125 countries** the feed accepts and turns it into one row per trend: country, rank, keyword, approximate search traffic parsed to a number (`2K+` becomes 2000, with the original text kept), the time the trend started, a picture and the news articles behind it.",
+    "Switch on `onlyNewSinceLastRun` and schedule it, and each run returns only the trends it has not delivered before for that country, keyword and start day. Skipped trends are not charged, so an hourly monitor costs only what is genuinely new.",
+    "There is a second, best-effort part for keyword research: up to 20 keywords with **interest over time**, **interest by region** and **top + rising related queries**, for any timeframe, location, category and search type (web, news, YouTube, images or Google Shopping). Google rate-limits those endpoints, so when it answers with a 429, 403 or CAPTCHA the actor stops that part, keeps what it already has and charges nothing for unfinished keywords."
+  ],
+  "howItWorks": [
+    "For each country in `geos`, the actor requests Google's official Trending Now RSS feed (one request per country, paced at about one per second).",
+    "Each trend becomes a row with its rank, keyword, traffic bucket parsed to a number, start time, picture and news articles (title, URL, publisher, picture).",
+    "With `onlyNewSinceLastRun`, trends already returned under the same `monitorName` are skipped and not charged; the memory lives in the key-value store trends-seen-<name>.",
+    "If you add `keywords`, it calls the same JSON endpoints the Trends website uses, one request every 3 seconds, and returns timeline, region and related-query rows.",
+    "On any rate limit or CAPTCHA it stops the explore part for the rest of the run, never retries blocks, uses no proxies, and respects robots.txt and your run budget."
+  ],
+  "inputExample": {
+    "geos": [
+      "US",
+      "GB",
+      "DE",
+      "BR"
+    ],
+    "maxItemsPerGeo": 10,
+    "onlyNewSinceLastRun": true,
+    "monitorName": "newsroom-hourly",
+    "keywords": [],
+    "timeframe": "today 12-m",
+    "property": "web"
+  },
+  "outputNote": "Trending Now rows look like this, one per trend and country, with the parsed traffic number next to Google's original bucket text:",
+  "useCases": [
+    {
+      "title": "Newsroom and social alerts",
+      "text": "Schedule the actor hourly with only-new mode for the countries you cover and push each fresh row to Slack or a CMS. Each alert carries the top news headline and link, so an editor can see why a term is spiking without opening Google."
+    },
+    {
+      "title": "Content and SEO calendars",
+      "text": "Collect a daily snapshot of trending searches for your markets and look for topics that keep reappearing. The news articles attached to each trend give writers a starting point for a timely post."
+    },
+    {
+      "title": "Ad and campaign timing",
+      "text": "Spot sudden interest in a team, product or event in a specific country and adjust bids or creatives while the trend is still rising. Approximate traffic is a bucketed estimate, so treat it as a ranking signal rather than a volume figure."
+    },
+    {
+      "title": "Keyword comparison for a brief",
+      "text": "Add up to 20 keywords to get interest over time, interest by region and rising related queries in one dataset. This part is best-effort and may be cut short by Google's rate limits, but you only pay for keywords that were fully fetched."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Google Trends",
+      "Using the Trends website by hand",
+      "Unofficial Trends libraries on your own server"
+    ],
+    "rows": [
+      [
+        "Trending searches for many countries in one run",
+        "Yes, 125 countries",
+        "One country at a time",
+        "Partial, depends on the library"
+      ],
+      [
+        "Traffic parsed to a number",
+        "Yes, plus original text",
+        "No, text only",
+        "Partial"
+      ],
+      [
+        "News articles per trend",
+        "Yes, title, URL, publisher, picture",
+        "Yes, on screen",
+        "Partial"
+      ],
+      [
+        "Only-new monitoring for schedules",
+        "Built in, skipped trends free",
+        "No",
+        "You build it"
+      ],
+      [
+        "Full Trending Now page with 24/48-hour filters",
+        "No, the feed lists about 10 newest trends per country",
+        "Yes",
+        "Partial"
+      ],
+      [
+        "Interest over time and related queries",
+        "Best-effort, stops on rate limits",
+        "Yes, reliable for a person",
+        "Best-effort, same rate limits"
+      ],
+      [
+        "Cost",
+        "$0.50 per 1,000 trends, $3 per 1,000 keywords explored",
+        "Free, your time",
+        "Free code, your server and maintenance"
+      ]
+    ]
+  },
+  "comparisonNote": "If you need a handful of keyword comparisons once in a while, the Trends website itself is free and more reliable for a person than any automated call. This actor is the better fit when you want trending searches across many countries on a schedule, as structured data.",
+  "faq": [
+    {
+      "q": "Is there an official Google Trends API for trending searches?",
+      "a": "Google publishes Trending Now as an RSS feed per country, which this actor reads and normalizes. The interest-over-time, region and related-query data uses the same JSON endpoints the Trends website calls, which are rate-limited, so that part is best-effort."
+    },
+    {
+      "q": "How many trending searches per country does it return?",
+      "a": "The official feed currently lists up to about 10 of the newest trends per country, fewer for small countries. You can cap it lower with `maxItemsPerGeo`. It is not the full Trending Now page with its 24 and 48-hour filters."
+    },
+    {
+      "q": "Is the traffic number an exact search count?",
+      "a": "No. Traffic is Google's bucketed estimate such as 200+, 2K+ or 1M+. The actor parses it to a number (2K+ becomes 2000) so you can sort and filter, and keeps the original text in `approxTrafficText`."
+    },
+    {
+      "q": "What happens if Google blocks the keyword explore part?",
+      "a": "On a 429, 401/403, CAPTCHA or unusual-traffic page the actor stops the explore part for the rest of the run, delivers what it has and charges nothing for keywords it could not finish. Trending Now from the RSS feed is unaffected. Run smaller keyword lists and try again later."
+    },
+    {
+      "q": "How do I only get new trends on an hourly schedule?",
+      "a": "Set `onlyNewSinceLastRun` to true and give each schedule its own `monitorName`. Trends already returned for the same country, keyword and start day are skipped and not charged."
+    },
+    {
+      "q": "Are the interest values search volumes?",
+      "a": "No. They are Google's relative scores from 0 to 100 within each comparison (up to 5 keywords at once), and region values are 0-100 per keyword. Rising related queries show growth percentages, and Breakout means more than +5000%."
+    }
+  ],
+  "related": [
+    "keyword-suggestions",
+    "ads-transparency",
+    "china-trending-topics",
+    "app-store-scraper"
+  ],
+  "guides": [
+    "google-trends-trending-searches-by-country"
+  ]
+}

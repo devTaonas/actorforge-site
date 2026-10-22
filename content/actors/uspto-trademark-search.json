@@ -1,0 +1,140 @@
+{
+  "name": "uspto-trademark-search",
+  "category": "ecommerce-apps",
+  "h1": "USPTO Trademark Search: Bulk-Check If a Phrase Is Trademarked",
+  "metaTitle": "Bulk USPTO Trademark Check for Phrases | ActorForge",
+  "metaDescription": "Bulk-check phrases against the US trademark register before you list a T-shirt or mug. Verdict per phrase plus matching marks, owner and classes. $0.03 each.",
+  "tagline": "Paste up to 10,000 phrases and get a verdict for each (registered-live, pending, dead-only or clear) with the matching marks, owners, classes and TSDR links.",
+  "intro": [
+    "If you sell print-on-demand T-shirts, mugs or stickers, using a slogan someone else has registered is a risk you want to catch before upload. Checking phrases one at a time in USPTO Trademark Search works, but not when you have a few hundred designs in the queue.",
+    "This actor checks each phrase against the **official US trademark register** (the same database behind USPTO Trademark Search) and returns one row per phrase with a clear verdict: `registered-live`, `pending`, `dead-only` or `clear`, plus live, registered, pending and dead match counts. Each row lists the matching marks with word mark, serial and registration number, status, filing and registration dates, owner name with state and country, attorney, international classes, goods and services, mark type and a direct TSDR link. Choose exact, contains or words matching and narrow by Nice class, for example 25 for clothing or 21 for mugs.",
+    "It is built for Merch by Amazon, Etsy and Redbubble sellers, brand namers and agencies screening many phrases at once. **It is not legal advice.** A `clear` result only means no matching mark text was on the USPTO register at check time; it does not cover common-law use, state or foreign registrations, design-only marks or similar-but-not-identical marks. Talk to a trademark attorney before relying on a result. The actor is not affiliated with the USPTO."
+  ],
+  "howItWorks": [
+    "You paste phrases (case and extra spaces do not matter, duplicates are removed) and choose a match mode and optional international classes.",
+    "Each phrase is searched against the public backend of USPTO Trademark Search (tmsearch.uspto.gov) at no more than 2 requests per second, with back-off on rate limits.",
+    "All matching marks are counted by status to produce the verdict; the class filter, if set, applies to the verdict as well.",
+    "Up to maxResultsPerPhrase marks are listed per phrase (live first, then registered, newest first), filtered by statusFilter.",
+    "Invalid phrases, duplicates and failed checks are never charged, and the run stops cleanly at your spend limit."
+  ],
+  "inputExample": {
+    "phrases": [
+      "Just Do It",
+      "Mama Bear",
+      "Coffee Before Talkie"
+    ],
+    "searchMode": "contains",
+    "statusFilter": "live",
+    "classes": [
+      "25",
+      "21"
+    ],
+    "maxResultsPerPhrase": 20
+  },
+  "outputNote": "One row per phrase, with the verdict and match counts up front:",
+  "useCases": [
+    {
+      "title": "Screening print-on-demand designs",
+      "text": "Before uploading a batch of T-shirt or mug designs, run all the slogans with classes 25 and 21 and set aside anything that comes back registered-live or pending. The TSDR link lets you open the official case file for anything borderline."
+    },
+    {
+      "title": "Naming a product or brand",
+      "text": "Check a shortlist of candidate names in contains mode, which is the most cautious, to see which ones already appear inside live marks and who owns them."
+    },
+    {
+      "title": "Auditing an existing catalog",
+      "text": "Export the titles or slogans from your shop and check them in bulk to find listings that may clash with a registered mark."
+    },
+    {
+      "title": "Agency or marketplace screening",
+      "text": "Screen thousands of phrases for clients or sellers at once, about 7,000 phrases per hour, with owners and classes in the output for a quick human review."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge USPTO Trademark Search",
+      "USPTO Trademark Search website",
+      "Trademark attorney clearance search"
+    ],
+    "rows": [
+      [
+        "Data",
+        "Official US register",
+        "Official US register",
+        "US register plus wider sources"
+      ],
+      [
+        "Bulk phrases in one go",
+        "Yes, up to 10,000 per run",
+        "No, one search at a time",
+        "Usually per mark"
+      ],
+      [
+        "Verdict per phrase",
+        "Yes",
+        "No, you read the results",
+        "Yes, with a professional opinion"
+      ],
+      [
+        "Common-law, state and foreign marks",
+        "No",
+        "No",
+        "Yes"
+      ],
+      [
+        "Similar-sounding or design marks",
+        "No",
+        "Partial, with manual searching",
+        "Yes"
+      ],
+      [
+        "Legal advice",
+        "No",
+        "No",
+        "Yes"
+      ],
+      [
+        "Cost",
+        "$0.03 per phrase",
+        "Free",
+        "Professional fees"
+      ]
+    ]
+  },
+  "comparisonNote": "For a single important brand name, a trademark attorney's clearance search is the right call, and the free USPTO website is fine for occasional checks. This actor is a fast first-pass filter for large lists of phrases, not a substitute for legal advice.",
+  "faq": [
+    {
+      "q": "How do I check if a phrase is trademarked in the US?",
+      "a": "Add the phrase to phrases and run. The verdict tells you whether a live registered mark exists (registered-live), a live application is pending, only dead marks exist (dead-only) or nothing matches (clear), based on the USPTO register at the moment of the check."
+    },
+    {
+      "q": "Does a 'clear' result mean I can use the phrase?",
+      "a": "No. Clear means no matching mark text was found on the USPTO register. It does not cover unregistered common-law rights, state or foreign registrations, design-only marks or confusingly similar marks such as different spellings. This is not legal advice; consult a trademark attorney before relying on it."
+    },
+    {
+      "q": "What is the difference between exact, contains and words matching?",
+      "a": "exact matches marks whose whole text equals the phrase (a trailing . or ! is ignored). contains finds the phrase anywhere inside a mark, so CAT LOVER also finds CRAZY CAT LOVERS. words requires every word to appear in any order. When unsure, use contains, which is the most cautious."
+    },
+    {
+      "q": "Which trademark classes should I use for T-shirts and mugs?",
+      "a": "Class 25 covers clothing and class 21 covers mugs and housewares; 16 is paper goods, stickers and posters, 18 bags and 9 phone cases and software. The class filter also changes the verdict, so a phrase registered only in class 9 comes back clear for classes 25 and 21."
+    },
+    {
+      "q": "Can a pending application still block me?",
+      "a": "Yes. Pending means a live application is in examination and not yet registered, and it can still block you. The verdict and counts always cover every status, whatever you choose in statusFilter."
+    },
+    {
+      "q": "How much does it cost to check 1,000 phrases?",
+      "a": "$30.00, at $0.03 per phrase checked, with the verdict, counts and up to 100 matching marks included. maxResultsPerPhrase does not change the price, and invalid phrases, duplicates and failed checks are free."
+    }
+  ],
+  "related": [
+    "keyword-suggestions",
+    "shopify-store-scraper",
+    "google-trends"
+  ],
+  "guides": [
+    "check-if-phrase-is-trademarked-uspto"
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "name": "startup-funding-rounds",
+  "category": "business-leads",
+  "h1": "Recently Funded Startups from SEC Form D Filings",
+  "metaTitle": "Recently Funded Startups, SEC Form D Feed | ActorForge",
+  "metaDescription": "Track recently funded US startups from official SEC Form D filings: amount raised, round date, industry, exemption, address, filing link. $10 per 1,000 rounds.",
+  "tagline": "A daily list of US companies that just raised a private round, parsed from official SEC Form D filings, with amounts, industry and contact address.",
+  "intro": [
+    "When a US company raises a private round (seed, Series A and later, SAFEs, convertible notes), it has to file a **Form D** with the SEC within 15 days of the first sale. That makes Form D one of the earliest public signals that a startup has new money, whether or not the company announces it. The catch is that EDGAR is built for filings, not for lead lists: you get daily indexes and one XML document per filing.",
+    "This actor reads the EDGAR daily form indexes and each filing's primary document and returns **one row per Form D filing**: issuer name, city and state, business address and phone, industry group, entity type, year of incorporation, the exemption claimed (Rule 506(b) or 506(c)), total offering amount, amount sold so far, investor count, date of first sale and the filing link. By default it lists **technology and health care raises from the last 7 days**, with pooled investment funds and real estate deals left out so you see operating companies rather than hedge funds.",
+    "Use it for sales prospecting (newly funded companies buy tools and hire), VC and market research, recruiting leads, or a scheduled 'recently funded' feed into your CRM or an automation tool. It is public SEC data, fetched within the SEC's fair-access limits, and the actor is not affiliated with the SEC."
+  ],
+  "howItWorks": [
+    "You set a date window (daysBack, or dateFrom and dateTo, up to 366 days per run) and optional filters for industry, state, exemption, amount, issuer name or CIK.",
+    "The actor reads EDGAR's daily form indexes for Form D and D/A filings in that window, applying name, CIK and amendment filters before downloading anything.",
+    "Each remaining filing's XML is fetched at no more than 5 requests per second and parsed for issuer, offering, sales and exemption fields; state, industry, exemption and amount filters are applied here.",
+    "Rows are returned newest filing date first; related persons (officers, directors, promoters) are added only if you switch on includeRelatedPersons, and then without street addresses.",
+    "The run stops at maxResults or your spend limit, and every delivered filing is charged exactly once."
+  ],
+  "inputExample": {
+    "daysBack": 7,
+    "industries": [
+      "Technology",
+      "Health Care"
+    ],
+    "exemptions": [
+      "506b",
+      "506c"
+    ],
+    "includeAmendments": false,
+    "minAmountSold": 1000000,
+    "maxResults": 500
+  },
+  "outputNote": "Each row is one Form D filing; a week of tech and health care raises looks like this:",
+  "useCases": [
+    {
+      "title": "Sales prospecting on fresh funding",
+      "text": "Run it every morning for new Form D notices (includeAmendments off) and push companies that reported $1M or more sold into your CRM. Newly funded companies buy tools and hire, so a fresh round is a good moment to reach out."
+    },
+    {
+      "title": "Recruiting and talent sourcing",
+      "text": "Recently funded startups tend to hire. Filter by state and industry to build a list of companies in your market that just raised, then check their open roles."
+    },
+    {
+      "title": "VC and market research",
+      "text": "Backfill up to a year per run (Form D XML goes back to 2009) to study round sizes, 506(b) versus 506(c) usage or how many biotech raises came out of a given state."
+    },
+    {
+      "title": "Tracking specific companies or funds",
+      "text": "Pass CIKs to follow particular issuers and catch every D/A amendment, which updates the amount sold as a round fills."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Startup Funding Rounds",
+      "Paid 'recently funded' lead lists",
+      "Browsing SEC EDGAR yourself"
+    ],
+    "rows": [
+      [
+        "Source",
+        "Official SEC Form D filings",
+        "Mixed, often press and Form D",
+        "Official SEC filings"
+      ],
+      [
+        "Covers rounds without a press release",
+        "Yes, if a Form D was filed",
+        "Varies",
+        "Yes"
+      ],
+      [
+        "Investor names and valuation",
+        "No, Form D does not include them",
+        "Varies",
+        "No"
+      ],
+      [
+        "Filter by industry, state, exemption and amount",
+        "Yes",
+        "Yes",
+        "Partial, manual"
+      ],
+      [
+        "Structured rows for a CRM",
+        "Yes",
+        "Yes",
+        "No, one XML per filing"
+      ],
+      [
+        "Delay",
+        "Next morning, after EDGAR's nightly index",
+        "Varies",
+        "Same as EDGAR"
+      ],
+      [
+        "Price",
+        "$10 per 1,000 funding rounds",
+        "Typically $70-$80 per 1,000",
+        "Free, your time"
+      ]
+    ]
+  },
+  "comparisonNote": "Commercial funding databases add investor names, valuations and companies that raise outside the US, which Form D will never give you. For a cheap, official, daily list of who just raised money in the US, Form D is hard to beat.",
+  "faq": [
+    {
+      "q": "What is an SEC Form D filing?",
+      "a": "Form D is a notice a company files with the SEC when it sells securities in a private offering under an exemption such as Rule 506(b) or 506(c). It is due within 15 days of the first sale, which is why it works as an early signal of a new funding round."
+    },
+    {
+      "q": "How fresh is the funding data?",
+      "a": "EDGAR publishes each business day's index at about 10 pm US Eastern, so filings appear in the actor's results the next morning. Weekends and federal holidays have no index."
+    },
+    {
+      "q": "Is totalAmountSold the final size of the round?",
+      "a": "Not necessarily. Form D is a notice filed after the first sale, not a final close, so totalAmountSold is the amount sold so far as reported by the issuer. Later D/A amendments update it."
+    },
+    {
+      "q": "How do I exclude hedge funds and real estate deals?",
+      "a": "The default industries (Technology and Health Care) already leave out pooled investment funds and real estate. If you clear the industries filter you will see every Form D, including funds, whose offering size is often reported as indefinite."
+    },
+    {
+      "q": "Does it include founders' or directors' names?",
+      "a": "Only if you turn on includeRelatedPersons, and then just name, relationship, city and state, never street addresses. These are public SEC records but they are personal data, so enable it only with a lawful basis to process them."
+    },
+    {
+      "q": "How much does it cost?",
+      "a": "$0.01 per Form D or D/A filing delivered, so 1,000 filings cost $10.00, which the README puts at about 4 business days of every Form D filed. With the default filters a week of results is much smaller."
+    }
+  ],
+  "related": [
+    "career-site-jobs",
+    "uk-companies-house-enrichment",
+    "any-url-to-markdown"
+  ],
+  "guides": [
+    "sec-form-d-startup-funding-data"
+  ]
+}

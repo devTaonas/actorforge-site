@@ -1,0 +1,131 @@
+{
+  "name": "bilibili-scraper",
+  "category": "china-trends",
+  "h1": "Bilibili Scraper — 哔哩哔哩 Videos, Stats and Comments Without Login",
+  "metaTitle": "Bilibili Scraper — Videos & Stats, No Login | ActorForge",
+  "metaDescription": "Scrape Bilibili (哔哩哔哩) videos by keyword, BV id or popular feed: views, coins, favorites, danmaku, tags and uploader followers. No login. $4 per 1,000.",
+  "tagline": "Search Bilibili by keyword, look up BV ids or pull the 热门 popular feed, and get every video's engagement stats, tags and uploader follower count.",
+  "intro": [
+    "Bilibili (哔哩哔哩, B站) is where much of China's gaming, anime, tech and youth culture lives, but its interface is Chinese-only and its web API needs request signing and passes anti-bot checks. This actor handles that for you and needs **no login, no cookies and nothing to configure**.",
+    "Give it keywords in Chinese or English, specific video URLs, BV ids or av ids, or switch on the popular feed (热门). Each video row includes views, likes, coins (投币), favorites, shares, danmaku (弹幕) count and comment count, plus tags, category, duration, publish time, cover image, the uploader's channel and their follower count. Optionally, `includeComments` attaches a sample of top and newest comments, anonymised to text, time and likes.",
+    "It is used for China influencer and KOL discovery, brand and campaign monitoring, competitor content research and gaming or anime trend analysis. Videos cost $4 per 1,000 and anonymised comments $0.50 per 1,000. Text comes back in its original language, mostly Simplified Chinese, and is not translated."
+  ],
+  "howItWorks": [
+    "Keyword searches run against Bilibili's own search with your chosen `sortBy` order, up to `maxVideos` per term (Bilibili caps search at 1,000 results per term).",
+    "Each search hit is enriched with a per-video detail lookup to add coins, shares, tags and the uploader's follower count.",
+    "Video URLs, BV ids and av ids in `videoUrls` are fetched directly; deleted, private or region-locked videos are skipped and never charged.",
+    "With `includePopular` on, the current popular feed is added, again up to `maxVideos`.",
+    "With `includeComments` on, about 60 top and newest comments per video (including replies) are attached, with commenter names, IDs and avatars removed."
+  ],
+  "inputExample": {
+    "searchTerms": [
+      "原神",
+      "iPhone 17 review"
+    ],
+    "maxVideos": 50,
+    "sortBy": "click",
+    "includePopular": true,
+    "includeComments": false
+  },
+  "outputNote": "Every video becomes one row with Bilibili's full engagement stats, tags and the uploader's follower count, as in this sample:",
+  "useCases": [
+    {
+      "title": "KOL and influencer discovery in China",
+      "text": "Search a product category or game title and sort by most viewed to find the uploaders who dominate it. The uploader follower count on every row lets you size creators without opening each channel."
+    },
+    {
+      "title": "Campaign and brand monitoring",
+      "text": "Track videos mentioning your brand or a competitor and compare coins, favorites and danmaku, which on Bilibili signal stronger engagement than views alone."
+    },
+    {
+      "title": "Trend research from the popular feed",
+      "text": "Turn on `includePopular` and run on a schedule to record what is currently 热门, with tags and categories that show which topics are rising."
+    },
+    {
+      "title": "Audience reaction samples",
+      "text": "Switch on `includeComments` for a set of videos to get a sample of top and newest comments for qualitative or sentiment work, with no commenter identities in the data."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Bilibili Scraper",
+      "Browsing bilibili.com",
+      "Building your own client"
+    ],
+    "rows": [
+      [
+        "Login or cookies needed",
+        "No",
+        "No for browsing",
+        "Depends"
+      ],
+      [
+        "Request signing and anti-bot checks",
+        "Handled",
+        "Not applicable",
+        "You maintain it"
+      ],
+      [
+        "Coins, favorites, danmaku per video",
+        "Yes",
+        "Visible, by hand",
+        "Yes, if you build it"
+      ],
+      [
+        "Uploader follower count on every row",
+        "Yes",
+        "Separate page",
+        "Extra calls"
+      ],
+      [
+        "Full comment threads",
+        "No, about 60 per video sample",
+        "Logged-in users see more",
+        "Needs login"
+      ],
+      [
+        "Subtitles and 排行榜 ranking chart",
+        "No (need login)",
+        "Yes, logged in",
+        "Needs login"
+      ],
+      [
+        "Cost",
+        "$4 per 1,000 videos",
+        "Free, slow",
+        "Free, but engineering time"
+      ]
+    ]
+  },
+  "comparisonNote": "If you need full comment threads, subtitles or the 排行榜 ranking chart, a logged-in Bilibili account is the only route and this actor will not provide them. For public video stats at scale without an account, it saves you maintaining signing and anti-bot code.",
+  "faq": [
+    {
+      "q": "Can I scrape Bilibili without logging in?",
+      "a": "Yes. The actor uses only public data any visitor can see: videos, stats and channel info. It needs no account, no cookies and no configuration."
+    },
+    {
+      "q": "How many Bilibili search results can I get per keyword?",
+      "a": "Up to 1,000 per term, which is Bilibili's own cap (50 pages of 20). Set `maxVideos` to control how many you take; it ranges from 1 to 1,000."
+    },
+    {
+      "q": "Does it return all comments on a Bilibili video?",
+      "a": "No. Without a login Bilibili shows guests only a few top and newest threads, so you get a sample of about 60 comments per video including replies. Only text, time and likes are returned; commenter names, user IDs and avatars never are."
+    },
+    {
+      "q": "What are coins and danmaku in the output?",
+      "a": "Coins (投币) are a Bilibili-specific way viewers reward a video, and danmaku (弹幕) are the comments that scroll over the video while it plays. Both are returned per video alongside views, likes, favorites and shares."
+    },
+    {
+      "q": "Are titles translated into English?",
+      "a": "No. Titles, tags and comments are returned in their original language, mostly Simplified Chinese. Pass them to your own translator or LLM if you need English."
+    }
+  ],
+  "related": [
+    "china-trending-topics",
+    "douyin-hot-search",
+    "weibo-hot-search",
+    "youtube-search-api"
+  ],
+  "guides": []
+}

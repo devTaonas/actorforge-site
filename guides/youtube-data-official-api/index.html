@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get YouTube Data With the Official API (No Code)</title>
+<meta name="description" content="Pull YouTube video stats, channel uploads, search results and comments from the official Data API v3 with a free key and no client code to write.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Get YouTube Data With the Official API (No Code)">
+<meta property="og:description" content="Pull YouTube video stats, channel uploads, search results and comments from the official Data API v3 with a free key and no client code to write.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Get YouTube Data With the Official API (Free Key, No Code)","description":"Pull YouTube video stats, channel uploads, search results and comments from the official Data API v3 with a free key and no client code to write.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"YouTube Scraper (Official API) — Videos, Search & Stats","url":"https://devtaonas.github.io/actorforge-site/actors/youtube-api-scraper/"},"dateModified":"2026-10-22"},{"@type":"HowTo","name":"How to Get YouTube Data With the Official API (Free Key, No Code)","description":"Pull YouTube video stats, channel uploads, search results and comments from the official Data API v3 with a free key and no client code to write.","tool":[{"@type":"HowToTool","name":"YouTube Scraper (Official API) — Videos, Search & Stats"}],"step":[{"@type":"HowToStep","position":1,"name":"Create a free YouTube Data API v3 key","text":"Open the Google Cloud Console, sign in with any Google account and create a project. Under APIs & Services, open the Library, search for YouTube Data API v3 and enable it. Then go to Credentials, create an API key and copy it; it starts with AIza. You do not need to add a billing account. If you restrict the key, allow YouTube Data API v3 but leave out HTTP-referrer and IP restrictions, because Apify runs on changing server IPs.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-1"},{"@type":"HowToStep","position":2,"name":"Pick the actor that matches your job","text":"All four actors share the same mode field and the same key. Use YouTube Scraper for details and stats on a list of video URLs or IDs, YouTube Channel Scraper for a channel's stats plus its uploads, YouTube Search Scraper for ranked keyword results, and YouTube Comments Scraper for comments and replies with author fields stripped. The listings differ mainly in default mode and pricing: video rows are $0.40 per 1,000 on the scraper and channel actors, while the search actor charges $0.30 per…","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-2"},{"@type":"HowToStep","position":3,"name":"Budget your daily quota before a big run","text":"Each Google Cloud project gets 10,000 free units a day, reset at midnight Pacific Time. Video lookups cost 1 unit per 50 videos, channel mode about 1 unit per channel plus about 2 per 50 videos, comments 1 unit per 100, and search 101 units per page of 50. In practice that is about 500,000 video lookups, 250,000 channel videos, 1,000,000 comments, or only about 5,000 search results a day. The run log prints an estimate before any call is made, so check it on your first run.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-3"},{"@type":"HowToStep","position":4,"name":"Run channel mode and compute engagement","text":"A common first job is to export a channel's recent uploads and rank them by engagement. Channel mode returns one row with type channel and then one row per video. Likes can be null when a creator hides them, so convert to numbers before dividing.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-4"},{"@type":"HowToStep","position":5,"name":"Use search mode sparingly and split big topics","text":"Search is where quota goes fastest, and YouTube returns at most about 500 results per query. Rather than asking for 500 results on one broad term, run several narrower queries or slice by date with publishedAfter and publishedBefore. Duplicates across queries are removed, so overlapping queries do not double-bill the same video.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-5"},{"@type":"HowToStep","position":6,"name":"Export comments for text analysis","text":"For sentiment or topic work, switch to comments mode. Commenter names, channel IDs and avatars are stripped from every row, and replies arrive as their own rows linked by parentId. Keep maxRepliesPerComment modest so one huge thread does not dominate the dataset.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-6"},{"@type":"HowToStep","position":7,"name":"Schedule refreshes and respect the 30-day rule","text":"YouTube's Developer Policies require stored API data to be refreshed or deleted at least every 30 days, and stats such as views change constantly anyway. Create an Apify schedule that re-runs the actor with the same input, for example weekly, and set a retention period on the datasets you keep. ActorForge keeps no copy of the data after the run.","url":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/#step-7"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Get YouTube Data With the Official API (Free Key, No Code)","item":"https://devtaonas.github.io/actorforge-site/guides/youtube-data-official-api/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the YouTube Data API free to use?","acceptedAnswer":{"@type":"Answer","text":"Yes, within the quota. Each Google Cloud project gets 10,000 units per day at no charge and no billing account is needed. The ActorForge actors charge per row delivered on top of that, but never for the API itself."}},{"@type":"Question","name":"Can I use these actors without creating my own API key?","acceptedAnswer":{"@type":"Answer","text":"No. There is no built-in or shared key; every run uses your own key and quota. ActorForge sells the API client, not access to someone else's key."}},{"@type":"Question","name":"Is my API key safe in the actor input?","acceptedAnswer":{"@type":"Answer","text":"The apiKey field is a secret input, so Apify stores it encrypted. The actor uses it only for that run's calls to googleapis.com and never logs it or writes it to the output. You can revoke or rotate it at any time in the Google Cloud Console."}},{"@type":"Question","name":"Which method gets the most data from a free key?","acceptedAnswer":{"@type":"Answer","text":"Video lookups and comments are cheap in quota (1 unit per 50 videos or per 100 comments), while search costs 100 units per page. If you already have video IDs, look them up in videos mode instead of re-finding them through search."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Get YouTube Data With the Official API (Free Key, No Code)</li></ol></nav><h1>How to Get YouTube Data With the Official API (Free Key, No Code)</h1><p>Uses <a href="../../actors/youtube-api-scraper/" style="color:#fff">YouTube Scraper (Official API) — Videos, Search &amp; Stats</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Create a free YouTube Data API v3 key in Google Cloud (no billing account), paste it into an ActorForge YouTube actor, and get video, channel, search or comment rows without writing or maintaining your own API client. You still use your own key and its 10,000 free daily quota units.</div><p>The official YouTube Data API v3 is the reliable way to get YouTube data: no page scraping, no proxies, no blocks. The catch is the work around it. You have to batch video IDs 50 at a time, page through uploads playlists, call a second endpoint to get stats for search results, handle reply threads, and stop gracefully when the quota runs out.</p><p>The ActorForge YouTube actors do that client work for you, but they do not hide the key: every run uses <strong>your own</strong> API key and quota. There is no shared or built-in key, ActorForge never holds or pools keys, and the data is fetched under your key into your own dataset. What you skip is the code, not the Google Cloud step.</p><p>This guide walks through creating the key, choosing the right actor and mode for your job, budgeting quota, and post-processing the results. ActorForge is not affiliated with or endorsed by YouTube or Google.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Create a free YouTube Data API v3 key</h3><p>Open the Google Cloud Console, sign in with any Google account and create a project. Under APIs &amp; Services, open the Library, search for YouTube Data API v3 and enable it. Then go to Credentials, create an API key and copy it; it starts with AIza. You do not need to add a billing account. If you restrict the key, allow YouTube Data API v3 but leave out HTTP-referrer and IP restrictions, because Apify runs on changing server IPs.</p></li><li id="step-2"><h3>Pick the actor that matches your job</h3><p>All four actors share the same <code>mode</code> field and the same key. Use <a href="../../actors/youtube-api-scraper/">YouTube Scraper</a> for details and stats on a list of video URLs or IDs, <a href="../../actors/youtube-channel-api/">YouTube Channel Scraper</a> for a channel's stats plus its uploads, <a href="../../actors/youtube-search-api/">YouTube Search Scraper</a> for ranked keyword results, and <a href="../../actors/youtube-comments-api/">YouTube Comments Scraper</a> for comments and replies with author fields stripped. The listings differ mainly in default mode and pricing: video rows are $0.40 per 1,000 on the scraper and channel actors, while the search actor charges $0.30 per 1,000 results.</p></li><li id="step-3"><h3>Budget your daily quota before a big run</h3><p>Each Google Cloud project gets 10,000 free units a day, reset at midnight Pacific Time. Video lookups cost 1 unit per 50 videos, channel mode about 1 unit per channel plus about 2 per 50 videos, comments 1 unit per 100, and search 101 units per page of 50. In practice that is about 500,000 video lookups, 250,000 channel videos, 1,000,000 comments, or only about 5,000 search results a day. The run log prints an estimate before any call is made, so check it on your first run.</p><pre><code class="language-python"># Rough quota estimate for a planned run (units per the actor README)
+import math
+
+def quota_units(videos=0, channels=0, channel_videos=0, comments=0, search_results=0):
+    units = math.ceil(videos / 50)
+    units += channels + 2 * math.ceil(channel_videos / 50)
+    units += math.ceil(comments / 100)
+    units += 101 * math.ceil(search_results / 50)
+    return units
+
+print(quota_units(channels=20, channel_videos=4000))  # 180
+print(quota_units(search_results=2000))               # 4040
+print(quota_units(comments=50000))                    # 500</code></pre></li><li id="step-4"><h3>Run channel mode and compute engagement</h3><p>A common first job is to export a channel's recent uploads and rank them by engagement. Channel mode returns one row with <code>type</code> channel and then one row per video. Likes can be null when a creator hides them, so convert to numbers before dividing.</p><pre><code class="language-python">import os
+import pandas as pd
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/youtube-channel-api").call(run_input={
+    "apiKey": os.environ["YOUTUBE_API_KEY"],
+    "mode": "channel",
+    "channels": ["https://www.youtube.com/@googledevelopers"],
+    "maxVideosPerChannel": 200,
+    "publishedAfter": "2026-01-01",
+})
+rows = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+
+videos = pd.DataFrame([r for r in rows if r.get("type") == "video"])
+for col in ["viewCount", "likeCount", "commentCount"]:
+    videos[col] = pd.to_numeric(videos[col], errors="coerce")
+videos["engagement"] = (videos["likeCount"].fillna(0) + videos["commentCount"].fillna(0)) / videos["viewCount"]
+print(videos.sort_values("engagement", ascending=False)[["title", "viewCount", "engagement"]].head(10))</code></pre></li><li id="step-5"><h3>Use search mode sparingly and split big topics</h3><p>Search is where quota goes fastest, and YouTube returns at most about 500 results per query. Rather than asking for 500 results on one broad term, run several narrower queries or slice by date with <code>publishedAfter</code> and <code>publishedBefore</code>. Duplicates across queries are removed, so overlapping queries do not double-bill the same video.</p><pre><code class="language-json">{
+  "apiKey": "AIzaSy...your-own-key",
+  "mode": "search",
+  "searchQueries": ["n8n tutorial", "n8n workflow automation", "n8n vs zapier"],
+  "maxResultsPerQuery": 100,
+  "order": "viewCount",
+  "publishedAfter": "2026-01-01",
+  "videoDuration": "medium"
+}</code></pre></li><li id="step-6"><h3>Export comments for text analysis</h3><p>For sentiment or topic work, switch to comments mode. Commenter names, channel IDs and avatars are stripped from every row, and replies arrive as their own rows linked by <code>parentId</code>. Keep <code>maxRepliesPerComment</code> modest so one huge thread does not dominate the dataset.</p><pre><code class="language-python">import os, csv
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/youtube-comments-api").call(run_input={
+    "apiKey": os.environ["YOUTUBE_API_KEY"],
+    "mode": "comments",
+    "videoUrls": ["https://www.youtube.com/watch?v=jNQXAC9IVRw"],
+    "maxCommentsPerVideo": 300,
+    "includeReplies": True,
+    "maxRepliesPerComment": 10,
+})
+
+with open("comments.csv", "w", newline="", encoding="utf-8") as f:
+    w = csv.writer(f)
+    w.writerow(["videoId", "isReply", "likeCount", "publishedAt", "text"])
+    for r in client.dataset(run["defaultDatasetId"]).iterate_items():
+        if r.get("type") == "error":
+            continue
+        w.writerow([r.get("videoId"), r.get("isReply"), r.get("likeCount"), r.get("publishedAt"), r.get("text")])</code></pre></li><li id="step-7"><h3>Schedule refreshes and respect the 30-day rule</h3><p>YouTube's Developer Policies require stored API data to be refreshed or deleted at least every 30 days, and stats such as views change constantly anyway. Create an Apify schedule that re-runs the actor with the same input, for example weekly, and set a retention period on the datasets you keep. ActorForge keeps no copy of the data after the run.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "apiKey": "AIzaSy...your-own-key",
+  "mode": "videos",
+  "videoUrls": [
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "https://youtu.be/jNQXAC9IVRw"
+  ]
+}</code></pre><h2>Sample output</h2><p>In videos mode, each URL or ID comes back as one row with full stats, like these:</p><div class="tablewrap"><table><thead><tr><th scope="col">title</th><th scope="col">channelTitle</th><th scope="col">publishedAt</th><th scope="col">durationSec</th><th scope="col">viewCount</th><th scope="col">likeCount</th><th scope="col">commentCount</th><th scope="col">categoryId</th><th scope="col">isShort</th><th scope="col">searchQuery</th></tr></thead><tbody><tr><td class="cut">Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)</td><td class="cut">Rick Astley</td><td class="cut">2009-10-25T06:57:33Z</td><td class="cut">214</td><td class="cut">1828596530</td><td class="cut">19490833</td><td class="cut">2460128</td><td class="cut">10</td><td class="cut">false</td><td class="cut"></td></tr><tr><td class="cut">Me at the zoo</td><td class="cut">jawed</td><td class="cut">2005-04-24T03:31:52Z</td><td class="cut">19</td><td class="cut">445426986</td><td class="cut">20095698</td><td class="cut">10642771</td><td class="cut">1</td><td class="cut">true</td><td class="cut"></td></tr><tr><td class="cut">PSY - GANGNAM STYLE(강남스타일) M/V</td><td class="cut">officialpsy</td><td class="cut">2012-07-15T07:46:32Z</td><td class="cut">253</td><td class="cut">6098344051</td><td class="cut">32321298</td><td class="cut">5465487</td><td class="cut">10</td><td class="cut">false</td><td class="cut"></td></tr><tr><td class="cut">Web Scraping with Python - Beautiful Soup Crash Course</td><td class="cut">freeCodeCamp.org</td><td class="cut">2020-11-18T16:05:43Z</td><td class="cut">4103</td><td class="cut">1827575</td><td class="cut">39425</td><td class="cut">1102</td><td class="cut">27</td><td class="cut">false</td><td class="cut">web scraping tutorial</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~youtube-api-scraper/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"apiKey": "AIzaSy...your-own-key", "mode": "videos", "videoUrls": ["https://www.youtube.com/watch?v=dQw4w9WgXcQ", "https://youtu.be/jNQXAC9IVRw"]}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "apiKey": "AIzaSy...your-own-key",
+  "mode": "videos",
+  "videoUrls": [
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "https://youtu.be/jNQXAC9IVRw"
+  ]
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~youtube-api-scraper/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "apiKey": "AIzaSy...your-own-key",
+    "mode": "videos",
+    "videoUrls": [
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "https://youtu.be/jNQXAC9IVRw"
+    ]
+}
+
+run = client.actor("actor-forge/youtube-api-scraper").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Looking up 1,000 videos by ID costs 1,000 × $0.0004 = $0.40 and about 20 quota units. Exporting one channel with 500 uploads costs $0.0005 for the channel row plus 500 × $0.0004 = $0.20, so $0.2005 in total, plus the small actor start fee.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Video result</td><td class="cut">Charged per video row delivered (full details and stats)</td><td>$0.0004</td><td>$0.40</td><td class="cut">1,000 videos = $0.40 (streamers/youtube-scraper: $4.00 per 1,000)</td></tr><tr><td>Channel result</td><td class="cut">Charged per channel row delivered (stats, country, uploads playlist)</td><td>$0.0005</td><td>$0.50</td><td class="cut">100 channels = $0.05; their videos are video-result rows</td></tr><tr><td>Comment result</td><td class="cut">Charged per comment or reply row delivered (author fields stripped)</td><td>$0.0005</td><td>$0.50</td><td class="cut">10,000 comments = $5.00 (streamers/youtube-comments-scraper: $20)</td></tr><tr><td>Search page</td><td class="cut">Charged per search page of up to 50 results that returned rows (search mode; it costs 100 of your quota units)</td><td>$0.002</td><td>$2</td><td class="cut">50 search results = $0.002 + 50 × $0.0004 = $0.022</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB = $0.0000125</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> YouTube Scraper (Official API) — Videos, Search &amp; Stats runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/youtube-api-scraper" rel="noopener">Run on Apify →</a> <a href="../../actors/youtube-api-scraper/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>Without a key the run stops at once with instructions and nothing is charged, so a missing key will not cost you anything.</li><li>A <code>403 quotaExceeded</code> error stops the run cleanly and keeps the rows already delivered; wait for the midnight Pacific reset rather than re-running immediately.</li><li>Quota is per Google Cloud project, not per actor, so the four YouTube actors all draw from the same 10,000 daily units when they use the same key.</li><li>Do not expect dislike counts, watch time, revenue or subscriber lists: the public API does not return them, and hidden like counts come back as null.</li><li><code>isShort</code> is a heuristic (3 minutes or less and not live); turning off <code>includeShorts</code> in channel mode also drops regular videos of that length.</li></ul><h2>FAQ</h2><details><summary>Is the YouTube Data API free to use?</summary><p>Yes, within the quota. Each Google Cloud project gets 10,000 units per day at no charge and no billing account is needed. The ActorForge actors charge per row delivered on top of that, but never for the API itself.</p></details><details><summary>Can I use these actors without creating my own API key?</summary><p>No. There is no built-in or shared key; every run uses your own key and quota. ActorForge sells the API client, not access to someone else's key.</p></details><details><summary>Is my API key safe in the actor input?</summary><p>The <code>apiKey</code> field is a secret input, so Apify stores it encrypted. The actor uses it only for that run's calls to googleapis.com and never logs it or writes it to the output. You can revoke or rotate it at any time in the Google Cloud Console.</p></details><details><summary>Which method gets the most data from a free key?</summary><p>Video lookups and comments are cheap in quota (1 unit per 50 videos or per 100 comments), while search costs 100 units per page. If you already have video IDs, look them up in videos mode instead of re-finding them through search.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/youtube-api-scraper/">YouTube Scraper (Official API) — Videos, Search &amp; Stats</a></h3><p>Bring your own free YouTube API key. Get video details and stats (views, likes, comments, duration, tags), YouTube search results, channel uploads…</p><span class="price">$0.40 per 1,000 · video result</span></div><div class="card"><h3><a href="../../actors/youtube-channel-api/">YouTube Channel Scraper (Official API) — All Videos &amp; Stats</a></h3><p>Bring your own free YouTube API key. Get any channel&#x27;s stats (subscribers, total views, video count, country) and every upload with views, likes…</p><span class="price">$0.40 per 1,000 · video result</span></div><div class="card"><h3><a href="../../actors/youtube-search-api/">YouTube Search Scraper (Official API) — Videos by Keyword</a></h3><p>Bring your own free YouTube API key. YouTube search by keyword with sort, date, region, language and length filters — every result enriched with…</p><span class="price">$0.30 per 1,000 · video result</span></div><div class="card"><h3><a href="../../actors/youtube-comments-api/">YouTube Comments Scraper (Official API) — No Usernames</a></h3><p>Bring your own free YouTube API key. Export YouTube comments and replies (text, likes, reply count, dates) for any video via the official YouTube…</p><span class="price">$0.50 per 1,000 · comment result</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/google-trends-trending-searches-by-country/">How to Track Google Trends Trending Searches by Country</a></h3><p>Run the ActorForge Google Trends actor with a list of country codes, schedule it daily with only-new mode, and keep a small pandas history to see…</p></div><div class="card"><h3><a href="../../guides/monitor-competitor-ads-google-ads-transparency/">How to Monitor Competitor Ads in Google Ads Transparency Center</a></h3><p>List your competitors&#x27; domains or advertiser names, run the ActorForge Ads Transparency actor daily with only-new mode, and route the new ads into…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

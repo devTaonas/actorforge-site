@@ -1,0 +1,95 @@
+{
+  "slug": "audit-every-url-in-sitemap-seo",
+  "category": "seo-marketing",
+  "title": "How to Audit Every URL in Your Sitemap and Find Orphan Pages",
+  "metaTitle": "Audit Every URL in Your Sitemap & Find Orphan Pages",
+  "metaDescription": "Crawl your site plus its sitemap.xml, audit every URL for SEO issues and list orphan pages that nothing links to. Priced per audited page: $6 per 1,000.",
+  "actor": "seo-audit",
+  "alsoActors": [],
+  "summary": "Run the SEO Audit Crawler with `useSitemap` on and `maxPages` above your site's size; it audits every page it can reach plus every sitemap URL, and flags sitemap URLs no page links to as `orphan-page`. Each audited page costs $0.006, so this is a paid audit, not a free sitemap URL lister.",
+  "intro": [
+    "Your sitemap tells search engines which URLs you care about, but it does not guarantee those pages are healthy or linked from anywhere. Pages that sit only in the sitemap, with no internal links pointing at them, are orphans: they get little internal link equity and are often forgotten, outdated or duplicated.",
+    "Finding them by hand means downloading the sitemap, crawling the site, and diffing the two lists, then checking each page for titles, canonicals and status codes. The SEO Audit Crawler does both halves at once: it crawls links like a search engine, reads sitemap.xml and the sitemaps listed in robots.txt, audits the sitemap URLs nothing links to, and flags them.",
+    "To be clear about cost: every HTML page audited is charged at $0.006 ($6 per 1,000). If all you need is the list of URLs in a sitemap, parse the XML yourself for free, as shown in the last step."
+  ],
+  "steps": [
+    {
+      "name": "Estimate your site size and set maxPages",
+      "text": "Orphan detection is only conclusive when the crawl covers the whole site, because an orphan is a sitemap URL that no audited page links to. Count the URLs in your sitemap and set `maxPages` comfortably above that number; the default is 200. The run summary includes `orphanCheckComplete`, which tells you whether the result is conclusive.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"startUrls\": [\"https://example.com/\"],\n  \"maxPages\": 3000,\n  \"maxDepth\": 20,\n  \"useSitemap\": true,\n  \"respectRobotsTxt\": true,\n  \"excludeGlobs\": [\"**/tag/**\", \"**/page/*\"]\n}"
+      }
+    },
+    {
+      "name": "Keep the sitemap on and trim noise",
+      "text": "Leave `useSitemap` on (the default). The actor reads sitemap.xml and any sitemaps listed in robots.txt, and after the pages reachable by links it audits sitemap URLs that no page links to. Use `excludeGlobs` to skip tag archives and pagination you do not want to pay for, but do not exclude sections that link to sitemap pages, or those pages may be wrongly reported as orphans."
+    },
+    {
+      "name": "List the orphan pages",
+      "text": "Each page row has an `issues` list; orphan sitemap URLs carry the `orphan-page` issue code. Pull the dataset and filter. The snippet accepts issues as plain codes or as objects with a `code` field, since you will see the exact structure in your first run.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/seo-audit\").call(run_input={\n    \"startUrls\": [\"https://example.com/\"],\n    \"maxPages\": 3000,\n    \"useSitemap\": True,\n})\nrows = list(client.dataset(run[\"defaultDatasetId\"]).iterate_items())\n\ndef codes(row):\n    return {i if isinstance(i, str) else i.get(\"code\") for i in row.get(\"issues\") or []}\n\norphans = [r for r in rows if \"orphan-page\" in codes(r)]\npd.DataFrame(orphans)[[\"url\", \"statusCode\", \"indexable\", \"score\", \"wordCount\"]] \\\n  .to_csv(\"orphan_pages.csv\", index=False)\nprint(len(orphans), \"orphan pages of\", len(rows), \"audited\")\n\nsummary = client.key_value_store(run[\"defaultKeyValueStoreId\"]).get_record(\"OUTPUT\")\nprint(\"Orphan check complete:\", (summary or {}).get(\"value\", {}).get(\"orphanCheckComplete\"))"
+      }
+    },
+    {
+      "name": "Triage the rest of the sitemap URLs",
+      "text": "Orphans are just one signal. For every audited URL you also get status code, redirect chain, indexability (noindex and canonical), title and meta description problems, H1 count, thin content and broken internal links. A sitemap should list only indexable, 200-status, self-canonical pages, so filter for rows where `indexable` is false or `statusCode` is not 200 and remove or fix them in the sitemap.",
+      "code": {
+        "lang": "python",
+        "code": "df = pd.DataFrame(rows)\nbad_in_sitemap = df[(df[\"indexable\"] == False) | (df[\"statusCode\"] != 200)]\nprint(bad_in_sitemap[[\"url\", \"statusCode\", \"indexable\"]].head(50))\n\ntop = df.explode(\"issues\")[\"issues\"].map(lambda i: i if isinstance(i, str) else (i or {}).get(\"code\"))\nprint(top.value_counts().head(15))  # most common issues across the site"
+      }
+    },
+    {
+      "name": "Decide what to do with each orphan",
+      "text": "For each orphan, choose: link to it from a relevant hub or category page if it still matters, merge it into a stronger page and redirect, or remove it from the sitemap if it should not be indexed. Re-run the audit afterwards; pages you linked should lose the `orphan-page` flag."
+    },
+    {
+      "name": "Audit only a fixed list of sitemap URLs (optional)",
+      "text": "If you only want the pages in one sitemap audited, without crawling the rest of the site, fetch and parse the sitemap yourself (free), then pass the URLs as `startUrls` with `maxDepth` 0, which audits only the start pages. Turn `useSitemap` off in this mode. Inlinks and orphan detection are not meaningful here, because the crawl does not follow links.",
+      "code": {
+        "lang": "python",
+        "code": "import requests\nimport xml.etree.ElementTree as ET\n\nNS = {\"sm\": \"http://www.sitemaps.org/schemas/sitemap/0.9\"}\nxml = requests.get(\"https://example.com/sitemap.xml\", timeout=30).content\nurls = [loc.text.strip() for loc in ET.fromstring(xml).findall(\".//sm:loc\", NS)]\nprint(len(urls), \"URLs in sitemap\")  # a sitemap index lists child sitemaps instead\n\nrun_input = {\n    \"startUrls\": urls,\n    \"maxDepth\": 0,\n    \"maxPages\": len(urls),\n    \"useSitemap\": False,\n}"
+      }
+    }
+  ],
+  "sampleInput": {
+    "startUrls": [
+      "https://crawlee.dev/js/docs/guides"
+    ],
+    "maxPages": 500,
+    "maxDepth": 20,
+    "useSitemap": true,
+    "respectRobotsTxt": true
+  },
+  "sampleOutputNote": "The sample includes a page flagged `orphan-page` with zero inlinks next to well-linked pages from the same section.",
+  "costExample": "Auditing a site with 2,500 HTML pages costs 2,500 x $0.006 = $15.00; a 100-page site costs $0.60. Pages that answer 4xx/5xx, time out or are blocked are reported free and do not count.",
+  "tips": [
+    "Orphan results are only reliable when `orphanCheckComplete` in the summary is true; if the crawl hit `maxPages`, raise it and re-run.",
+    "Pages are fetched as static HTML. Links that only appear after JavaScript runs are not seen, so a JavaScript-rendered menu can make linked pages look orphaned.",
+    "Starting at a sub-path such as /blog keeps the crawl under that path; use the homepage as the start URL for a site-wide orphan check.",
+    "The crawler sends at most 3 requests at a time and pauses on HTTP 429, so large sites take a while; schedule big audits off-peak."
+  ],
+  "faq": [
+    {
+      "q": "What is an orphan page in SEO?",
+      "a": "A page with no internal links pointing to it. Here it specifically means a URL listed in your sitemap that none of the audited pages link to, which the actor flags with the `orphan-page` issue."
+    },
+    {
+      "q": "Can I just get a list of all URLs in my sitemap?",
+      "a": "This actor audits pages and charges per audited page, so it is not a free URL lister. To list sitemap URLs only, parse the sitemap XML with a few lines of Python as in the last step, at no cost."
+    },
+    {
+      "q": "Does it follow sitemap index files and robots.txt sitemaps?",
+      "a": "It reads sitemap.xml and the sitemaps listed in robots.txt when `useSitemap` is on. Sitemap URLs that the link crawl did not reach are audited afterwards and checked for inbound links."
+    },
+    {
+      "q": "Why does a page I link to show up as an orphan?",
+      "a": "Usually because the linking page was not audited: it was beyond `maxPages`, excluded by a glob, outside the start path, or the link is only added by JavaScript. Check `orphanCheckComplete` and your crawl settings."
+    }
+  ],
+  "related": [
+    "wayback-machine-snapshots-api"
+  ]
+}

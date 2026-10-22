@@ -1,0 +1,100 @@
+{
+  "slug": "find-company-job-board-ats",
+  "category": "business-leads",
+  "title": "How to Find a Company's Job Board and ATS (Workday, Greenhouse, Lever, Ashby)",
+  "metaTitle": "Find a Company's ATS Job Board: Workday, Greenhouse, Lever",
+  "metaDescription": "Work out which ATS a company uses (Workday, Greenhouse, Lever, Ashby and more), find its job board URL and pull every open job into one clean dataset.",
+  "actor": "career-site-jobs",
+  "alsoActors": [],
+  "summary": "Open any job on the company's careers page and look at the host: myworkdayjobs.com, greenhouse.io, lever.co, ashbyhq.com and similar tell you the ATS. Pass that URL (or an ats:slug shortcut) to [Career Site Jobs](actor:career-site-jobs) and you get every open role in one schema.",
+  "intro": [
+    "Most company careers pages are a thin wrapper around an applicant tracking system. The 'Careers' link on the main site might look custom, but the job listings and apply buttons usually live on a Workday, Greenhouse, Lever or Ashby board, and that board is where the clean, current data is.",
+    "Knowing which ATS a company uses matters if you want its jobs in bulk. Each system has its own URL pattern and its own public feed, Workday hides real posting dates behind labels like 'Posted 30+ Days Ago', and job boards that copy the listings can lag or drop fields such as salary.",
+    "This guide shows how to identify the ATS from a careers URL, when you can skip that step by using the built-in index, how to feed boards into the actor, and what to do when a company uses a system that is not supported."
+  ],
+  "steps": [
+    {
+      "name": "Open a job from the company's careers page",
+      "text": "Go to the company's careers page and click into any single job. The address bar or the apply button usually reveals the real board: adobe.wd5.myworkdayjobs.com/external_experienced, boards.greenhouse.io/gusto, jobs.lever.co/spotify or jobs.ashbyhq.com/amplitude. Copy the URL up to the company's board, not the individual job."
+    },
+    {
+      "name": "Identify the ATS from the host name",
+      "text": "The host is enough to classify the board. The function below maps the nine systems the actor supports, including EU Greenhouse and Lever hosts, and returns None for anything else, such as SmartRecruiters or a fully custom careers site.",
+      "code": {
+        "lang": "python",
+        "code": "from urllib.parse import urlparse\n\nATS_HOSTS = [\n    (\"myworkdayjobs.com\", \"workday\"),\n    (\"greenhouse.io\", \"greenhouse\"),\n    (\"lever.co\", \"lever\"),\n    (\"ashbyhq.com\", \"ashby\"),\n    (\"workable.com\", \"workable\"),\n    (\"recruitee.com\", \"recruitee\"),\n    (\"teamtailor.com\", \"teamtailor\"),\n    (\"jobs.personio.de\", \"personio\"),\n    (\"jobs.personio.com\", \"personio\"),\n    (\"bamboohr.com\", \"bamboohr\"),\n]\n\n\ndef detect_ats(url):\n    if \"://\" not in url:\n        url = \"https://\" + url\n    host = (urlparse(url).hostname or \"\").lower()\n    for suffix, ats in ATS_HOSTS:\n        if host == suffix or host.endswith(\".\" + suffix):\n            return ats\n    return None\n\n\nfor u in [\n    \"https://adobe.wd5.myworkdayjobs.com/external_experienced\",\n    \"https://job-boards.greenhouse.io/gusto\",\n    \"jobs.lever.co/spotify\",\n    \"https://careers.example.com/jobs\",\n]:\n    print(u, \"->\", detect_ats(u))"
+      }
+    },
+    {
+      "name": "Skip the detective work for indexed companies",
+      "text": "The actor ships with an index of 811 Greenhouse, Lever and Ashby companies, YC startups plus well-known employers. For those you can simply put the company name or domain into companies and the actor resolves the board itself. Or set searchAllCompanies to true and filter by keywords and locations to find every indexed company hiring for a role, without naming any of them. Workday and the other ATS always need the careers URL; the actor never guesses slugs.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"searchAllCompanies\": true,\n  \"ats\": [\"ashby\"],\n  \"keywords\": [\"data engineer\"],\n  \"remoteOnly\": true,\n  \"maxJobs\": 300\n}"
+      }
+    },
+    {
+      "name": "Use the ats:slug shortcut when you know the board name",
+      "text": "If you already know a company's board slug, you can write it as ats:slug instead of a full URL, for example greenhouse:gusto. This is handy when you keep a list of target companies in a spreadsheet with one column for the ATS and one for the slug."
+    },
+    {
+      "name": "Pull every open job and confirm the ATS",
+      "text": "Run the actor with your list. Each output row carries an ats field, so you can confirm which system each company's jobs came from, and a jobUrl that points to the original posting. Postings from different systems share one schema: title, company, department, team, location, workplace type, salary where published and posted date. Turn on includeDescription if you need the full text; it costs nothing extra."
+    },
+    {
+      "name": "Keep a watch on new roles",
+      "text": "To follow a set of companies over time, schedule the run and set postedWithinDays so each run returns only recently published jobs. The snippet groups a run's results by company and ATS so you can see who is hiring most.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nfrom collections import Counter\n\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/career-site-jobs\").call(run_input={\n    \"companies\": [\n        \"greenhouse:gusto\",\n        \"https://jobs.lever.co/spotify\",\n        \"https://adobe.wd5.myworkdayjobs.com/external_experienced\",\n    ],\n    \"postedWithinDays\": 7,\n    \"maxJobs\": 500,\n})\n\ncounts = Counter()\nfor job in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n    counts[(job.get(\"companyName\"), job.get(\"ats\"))] += 1\n\nfor (company, ats), n in counts.most_common():\n    print(f\"{company} ({ats}): {n} new jobs\")"
+      }
+    },
+    {
+      "name": "Know what to do when the ATS is not supported",
+      "text": "If detect_ats returns None, the company uses something the actor cannot read, such as SmartRecruiters or a custom-built careers page. Those companies are skipped and not charged. For them you would need a general web scraper or a job board that aggregates their listings."
+    }
+  ],
+  "sampleInput": {
+    "companies": [
+      "greenhouse:gusto",
+      "https://jobs.lever.co/spotify",
+      "https://jobs.ashbyhq.com/amplitude",
+      "https://adobe.wd5.myworkdayjobs.com/external_experienced"
+    ],
+    "keywords": [
+      "engineer"
+    ],
+    "maxJobs": 200
+  },
+  "sampleOutputNote": "Jobs from Workday, Ashby, Greenhouse and Lever boards come back side by side in one schema:",
+  "costExample": "Pulling 200 engineering jobs from four company boards costs 200 x $0.003 = $0.60. A full index scan for remote data roles of about 400 jobs comes to roughly $1.20.",
+  "tips": [
+    "Copy the board URL, not a single job URL; the board is what lists every opening.",
+    "Workday searches stop at 2,000 results, but larger sites are split by job family or location automatically, so you do not need to do it yourself.",
+    "Workday makes one detail request per job, so a 300-job site takes about a minute. Big Workday employers make for longer runs than Greenhouse or Lever boards.",
+    "Keyword and location filters are case-insensitive substring matches, so 'engineer' also matches 'Engineering Manager'. Use excludeKeywords to drop titles like 'intern'.",
+    "A Workday site whose robots.txt disallows its job pages is skipped and not charged."
+  ],
+  "faq": [
+    {
+      "q": "How can I tell if a company uses Workday?",
+      "a": "Its job links point to a host ending in myworkdayjobs.com, such as adobe.wd5.myworkdayjobs.com. Pass that board URL to the actor to read the jobs with real posting dates."
+    },
+    {
+      "q": "Can the actor find a company's ATS from its domain alone?",
+      "a": "Only for companies in the built-in index of 811 Greenhouse, Lever and Ashby employers. For anyone else, find the board URL on the careers page and pass it in; the actor does not guess company slugs."
+    },
+    {
+      "q": "Why scrape the ATS instead of a job board?",
+      "a": "The ATS is the original source, so listings are fresher, include the employer's own departments and teams, and carry salary ranges where the employer publishes them in structured form."
+    },
+    {
+      "q": "Does it work for companies on SmartRecruiters?",
+      "a": "No. SmartRecruiters and custom-built careers pages are not supported."
+    }
+  ],
+  "related": [
+    "sec-form-d-startup-funding-data",
+    "business-leads-without-google-maps"
+  ]
+}

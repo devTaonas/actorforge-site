@@ -1,0 +1,95 @@
+{
+  "slug": "check-if-phrase-is-trademarked-uspto",
+  "category": "ecommerce-apps",
+  "title": "How to Check If a Phrase Is Trademarked (USPTO, in Bulk)",
+  "metaTitle": "How to Check If a Phrase Is Trademarked (USPTO)",
+  "metaDescription": "Check whether a slogan or phrase is trademarked in the US before you print it. Bulk-check phrases against the USPTO register by class, with clear verdicts.",
+  "actor": "uspto-trademark-search",
+  "alsoActors": [],
+  "summary": "Run your phrases through [USPTO Trademark Search](actor:uspto-trademark-search) in contains mode with the classes for your product (25 for clothing, 21 for mugs). Anything marked registered-live or pending needs a closer look; clear means only that no matching mark text is on the US register, not that the phrase is safe. This is not legal advice.",
+  "intro": [
+    "Print-on-demand sellers, Etsy shops and brand namers all hit the same question: has someone already trademarked this phrase? The USPTO's own Trademark Search answers it one query at a time, which is fine for a single name and painful for a spreadsheet of 300 slogans.",
+    "The other difficulty is reading the results. A phrase can match dead marks that no longer matter, live marks in classes unrelated to your product, or a pending application that has not been registered yet but can still block you. What you want is a quick triage: which phrases are obviously taken for your product type, which need a human look, and which have nothing on the register.",
+    "This guide shows how to do that triage in bulk against the official US register, and where its limits are. It is a first-pass filter, not legal advice, and it does not replace a trademark attorney for anything you plan to build a brand on."
+  ],
+  "steps": [
+    {
+      "name": "Be clear about what a register check can tell you",
+      "text": "The check reports what is on the USPTO register at the moment you run it. It does not cover unregistered common-law rights, state registrations, marks in other countries, design-only marks with no matching text, or confusingly similar marks such as a different spelling. Treat a clear verdict as 'nothing found on the register', not 'free to use'."
+    },
+    {
+      "name": "Prepare your phrase list",
+      "text": "Put one phrase, slogan or brand name per entry, up to 10,000 per run. Case and extra spaces do not matter, a trailing . or ! is ignored in exact mode, and duplicates are removed and never charged, so you can paste straight from a design sheet without cleaning it first."
+    },
+    {
+      "name": "Pick a match mode",
+      "text": "exact only finds marks whose whole text equals your phrase. contains finds your phrase anywhere inside a mark, so CAT LOVER also finds CRAZY CAT LOVERS. words requires every word of the phrase in any order, with very common words such as IT or THE ignored by the USPTO index. For screening designs, contains is the cautious default."
+    },
+    {
+      "name": "Limit the check to your product's classes",
+      "text": "Trademarks are registered for specific Nice classes. For apparel use 25, for mugs and housewares 21, for stickers, posters and paper goods 16, for bags 18 and for phone cases 9. The class filter applies to the verdict too, so a phrase registered only for software comes back clear when you check classes 25 and 21. Leave classes empty if you want to see every registration.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"phrases\": [\"Mama Bear\", \"Coffee Before Talkie\", \"Plant Mom Club\"],\n  \"searchMode\": \"contains\",\n  \"classes\": [\"25\"],\n  \"statusFilter\": \"all\",\n  \"maxResultsPerPhrase\": 10\n}"
+      }
+    },
+    {
+      "name": "Triage the results by verdict",
+      "text": "Each row has a verdict of registered-live, pending, dead-only or clear, plus match counts. Pending still counts as a risk: it is a live application in examination. The script below sorts a run's results into three CSV files: blocked, needs review and nothing found. It lists the first matching owner and the TSDR link so the review pile is quick to work through.",
+      "code": {
+        "lang": "python",
+        "code": "import csv\nimport os\n\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nphrases = [line.strip() for line in open(\"phrases.txt\", encoding=\"utf-8\") if line.strip()]\n\nrun = client.actor(\"actor-forge/uspto-trademark-search\").call(run_input={\n    \"phrases\": phrases,\n    \"searchMode\": \"contains\",\n    \"classes\": [\"25\", \"21\"],\n    \"maxResultsPerPhrase\": 5,\n})\n\nbuckets = {\"blocked\": [], \"review\": [], \"nothing_found\": []}\nfor row in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n    verdict = row.get(\"verdict\")\n    matches = row.get(\"matches\") or []\n    top = matches[0] if matches else {}\n    record = [row.get(\"phrase\"), verdict, top.get(\"mark\", \"\"), top.get(\"owner\", \"\"), top.get(\"tsdrUrl\", \"\")]\n    if verdict == \"registered-live\":\n        buckets[\"blocked\"].append(record)\n    elif verdict in (\"pending\", \"dead-only\"):\n        buckets[\"review\"].append(record)\n    elif verdict == \"clear\":\n        buckets[\"nothing_found\"].append(record)\n\nfor name, rows in buckets.items():\n    with open(f\"{name}.csv\", \"w\", newline=\"\", encoding=\"utf-8\") as f:\n        writer = csv.writer(f)\n        writer.writerow([\"phrase\", \"verdict\", \"mark\", \"owner\", \"tsdrUrl\"])\n        writer.writerows(rows)\n    print(name, len(rows))"
+      }
+    },
+    {
+      "name": "Open the official record for anything borderline",
+      "text": "Every listed mark has a TSDR link to the official USPTO case file, along with the owner name, state and country, international classes, goods and services, status text and filing and registration dates. Reading the goods and services description is usually the fastest way to see whether a live mark actually covers what you sell."
+    },
+    {
+      "name": "Re-check before you reprint or scale",
+      "text": "The register changes as new applications are filed; the data is usually updated daily. Re-run your active phrases before a big reprint or a new marketplace launch, and talk to a trademark attorney before relying on any result for a brand you plan to invest in."
+    }
+  ],
+  "sampleInput": {
+    "phrases": [
+      "Just Do It",
+      "Mama Bear",
+      "Webvan",
+      "Coffee Before Talkie"
+    ],
+    "searchMode": "exact",
+    "statusFilter": "live",
+    "maxResultsPerPhrase": 20
+  },
+  "sampleOutputNote": "Each phrase gets one row with its verdict and live, registered, pending and dead match counts:",
+  "costExample": "Checking a batch of 250 slogans costs 250 x $0.03 = $7.50, and 1,000 phrases cost $30.00. Duplicates, invalid phrases and failed checks are not charged.",
+  "tips": [
+    "Use contains rather than exact when screening, because a longer registered mark that includes your phrase can still be a problem.",
+    "statusFilter only changes which marks are listed in matches; the verdict and counts always cover every status.",
+    "Set maxResultsPerPhrase to 0 if you only want verdicts and counts; the price is the same either way.",
+    "The actor checks about 7,000 phrases per hour. For lists over about 6,000 phrases, raise the run timeout above the default one hour.",
+    "Owner street addresses, emails and phone numbers are never returned, only the owner's name, entity type and state or country."
+  ],
+  "faq": [
+    {
+      "q": "Can I put a trademarked phrase on a T-shirt if the mark is in a different class?",
+      "a": "The class filter shows whether a mark is registered for your product class, but whether a use infringes is a legal question that depends on more than the class. Treat the result as information and ask a trademark attorney if it matters."
+    },
+    {
+      "q": "What does dead-only mean?",
+      "a": "Only abandoned, cancelled or expired marks match the phrase. There is no live registration or pending application for it on the register, though older dead marks can be worth a look."
+    },
+    {
+      "q": "Does this check trademarks outside the US?",
+      "a": "No. It checks only the US register held by the USPTO. Marks in other countries and EU registrations are not covered."
+    },
+    {
+      "q": "Is the data official?",
+      "a": "It comes from the public backend of USPTO Trademark Search (tmsearch.uspto.gov) and is as fresh as that service, usually updated daily. The actor is not affiliated with the USPTO."
+    }
+  ],
+  "related": [
+    "export-shopify-store-product-data",
+    "google-trends-trending-searches-by-country"
+  ]
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://devtaonas.github.io/actorforge-site/sitemap.xml

@@ -1,0 +1,95 @@
+{
+  "slug": "uk-planning-applications-leads",
+  "category": "business-leads",
+  "title": "How to Use UK Planning Applications as Sales Leads",
+  "metaTitle": "UK Planning Applications as Sales Leads | ActorForge",
+  "metaDescription": "Turn newly validated UK planning applications into weekly sales leads for builders, scaffolders and architects, across 15 council portals in one dataset.",
+  "actor": "uk-planning-applications",
+  "alsoActors": [],
+  "summary": "Pull each council's weekly list of newly validated applications with [UK Planning Applications](actor:uk-planning-applications), filter the proposal text for the work you do, and send the list to your team every Monday. 15 councils are covered.",
+  "intro": [
+    "A validated planning application means a council has accepted a proposal as complete and building work may be coming. For builders, scaffolders, architects, roofers and other trades, that is an early, public signal of a project.",
+    "The friction is the portals. Each council publishes its own weekly lists on its own site, with search forms that differ in small ways, so watching even a handful of areas every week takes real time, and copying results into a spreadsheet takes more.",
+    "This guide shows how to turn those weekly lists into a lead feed: checking coverage, choosing validated or decided applications, filtering proposals for your trade, pulling out postcodes and running it on a schedule without repeats."
+  ],
+  "steps": [
+    {
+      "name": "Check that your area is covered",
+      "text": "The actor reads 15 council portals: Isle of Wight, Durham, Barnet (London), Leeds, York, Cornwall, Trafford, Gateshead, Bradford, Aberdeen, Aberdeenshire, Sunderland, Southampton, Greater Cambridge and Oxford. Use the lowercase ids in councils, for example leeds or greater-cambridge, or leave the field empty for all 15."
+    },
+    {
+      "name": "Pick validated or decided applications",
+      "text": "For lead generation, use dateType validated: these are newly accepted applications, so the project is live and decisions are still ahead. Use decided if you sell to people who have just been granted permission, or to track approvals in an area.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"councils\": [\"trafford\", \"barnet\"],\n  \"dateType\": \"decided\",\n  \"weeksBack\": 1,\n  \"maxResults\": 300\n}"
+      }
+    },
+    {
+      "name": "Fetch at least one full week",
+      "text": "Weekly lists roll over on Mondays, so the newest list can be nearly empty early in the week. Set weeksBack to 2 so each run always includes a complete week. Each weekly list is read up to 20 result pages, about 200 applications, which covers a normal week for most councils."
+    },
+    {
+      "name": "Filter proposals for the work you do",
+      "text": "The proposal field holds the council's description of the work, such as 'Erection of single storey rear extension and conversion of garage to habitable room'. A simple keyword filter separates likely jobs from tree works and signage. Adjust the pattern list to your trade.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport re\n\nfrom apify_client import ApifyClient\n\nPATTERNS = re.compile(r\"extension|loft|dormer|conversion|new dwelling|erection of\", re.I)\nEXCLUDE = re.compile(r\"\\btree\\b|advertisement|signage\", re.I)\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/uk-planning-applications\").call(run_input={\n    \"councils\": [\"leeds\", \"bradford\", \"york\"],\n    \"dateType\": \"validated\",\n    \"weeksBack\": 2,\n    \"maxResults\": 1000,\n})\n\nleads = []\nfor app in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n    text = app.get(\"proposal\") or \"\"\n    if PATTERNS.search(text) and not EXCLUDE.search(text):\n        leads.append(app)\n\nfor app in leads:\n    print(app[\"council\"], app[\"reference\"], \"|\", app[\"address\"], \"|\", app[\"url\"])\nprint(len(leads), \"matching applications\")"
+      }
+    },
+    {
+      "name": "Pull out postcodes for routing and mapping",
+      "text": "Site addresses usually end with a UK postcode, as in 'Land Adjacent To 6 Withyfields Shalfleet Newport Isle Of Wight PO30 4QA'. Extracting the postcode lets you sort leads by district, assign them to a rep or plot them on a map.",
+      "code": {
+        "lang": "python",
+        "code": "import re\n\nPOSTCODE = re.compile(r\"\\b([A-Z]{1,2}\\d[A-Z\\d]?)\\s*(\\d[A-Z]{2})\\b\", re.I)\n\n\ndef postcode(address):\n    m = POSTCODE.search(address or \"\")\n    return f\"{m.group(1).upper()} {m.group(2).upper()}\" if m else None\n\n\ndef district(address):\n    pc = postcode(address)\n    return pc.split()[0] if pc else None\n\n\nprint(postcode(\"12 Example Road Oxford OX4 1AB\"), district(\"12 Example Road Oxford OX4 1AB\"))"
+      }
+    },
+    {
+      "name": "Schedule weekly runs without repeats",
+      "text": "Schedule the actor every Monday morning with weeksBack 2. Because consecutive runs overlap by a week, deduplicate on the council plus reference pair before sending leads on, so the same application is not followed up twice. Every row links to the council's own application page, where your team can read the documents."
+    },
+    {
+      "name": "Follow up through the right channels",
+      "text": "Applicant and agent personal details are deliberately not collected, so the dataset gives you the site, the proposal and the link, not a contact list. Use the address and the council record to plan how you reach the project, and keep your outreach within data protection and marketing rules."
+    }
+  ],
+  "sampleInput": {
+    "councils": [
+      "leeds"
+    ],
+    "weeksBack": 2,
+    "dateType": "validated",
+    "maxResults": 200
+  },
+  "sampleOutputNote": "Applications from every council share one layout with a deep link to the official record:",
+  "costExample": "At $0.003 per application, a typical single-council week of about 25 applications costs around $0.08. If three councils produce 400 validated applications across two weeks, that run costs 400 x $0.003 = $1.20.",
+  "tips": [
+    "A council portal outage only affects that council; it is flagged in the run log and exit message and the rest of the run continues.",
+    "Busy weeks at a large council can be cut off after about 200 applications, so check the count if a big council looks light.",
+    "Decided lists are useful a second time: an approved extension that you quoted for is a reason to follow up.",
+    "The actor makes no more than one request per second per council portal, so all-council runs take a little longer than single-council ones."
+  ],
+  "faq": [
+    {
+      "q": "Are UK planning applications public information?",
+      "a": "Councils publish weekly lists of applications on their planning portals. The actor reads those published lists and returns the reference, proposal, site address, status, dates and a link."
+    },
+    {
+      "q": "Can I get leads for councils outside the 15 covered?",
+      "a": "Not with this actor. It covers 15 verified Idox council portals; other councils would need to be checked on their own portals."
+    },
+    {
+      "q": "How do I find the company behind a development?",
+      "a": "The dataset does not include applicant details. If the applicant is a company you identify another way, [Companies House Enrichment](actor:uk-companies-house-enrichment) can return its directors and filings."
+    },
+    {
+      "q": "What does the status field mean?",
+      "a": "It is the status text as published by the council, such as 'Registered'. Wording varies between portals, so check the council's page for the latest position."
+    }
+  ],
+  "related": [
+    "uk-company-directors-companies-house-export",
+    "business-leads-without-google-maps"
+  ]
+}

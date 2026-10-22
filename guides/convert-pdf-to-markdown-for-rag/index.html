@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert PDF to Markdown for RAG (with Python Chunking)</title>
+<meta name="description" content="Convert PDFs to clean Markdown for RAG, then split by heading into token-sized chunks in Python. Scanned pages handled with OCR. $2 per 1,000 documents.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Convert PDF to Markdown for RAG (with Python Chunking)">
+<meta property="og:description" content="Convert PDFs to clean Markdown for RAG, then split by heading into token-sized chunks in Python. Scanned pages handled with OCR. $2 per 1,000 documents.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Convert PDF to Markdown for RAG Pipelines","description":"Convert PDFs to clean Markdown for RAG, then split by heading into token-sized chunks in Python. Scanned pages handled with OCR. $2 per 1,000 documents.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"Any URL to Markdown — Web Pages, PDF, Word, Excel & OCR","url":"https://devtaonas.github.io/actorforge-site/actors/any-url-to-markdown/"},"dateModified":"2026-10-22"},{"@type":"HowTo","name":"How to Convert PDF to Markdown for RAG Pipelines","description":"Convert PDFs to clean Markdown for RAG, then split by heading into token-sized chunks in Python. Scanned pages handled with OCR. $2 per 1,000 documents.","tool":[{"@type":"HowToTool","name":"Any URL to Markdown — Web Pages, PDF, Word, Excel & OCR"}],"step":[{"@type":"HowToStep","position":1,"name":"Collect the PDF links","text":"List the PDFs you want in your knowledge base as URLs. The actor fetches each link itself, so the files must be reachable without a login; password-protected PDFs cannot be read. You can pass up to 1,000 links per run in urls, and duplicates are removed. If your PDFs are on your own storage, use pre-signed or public links.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/#step-1"},{"@type":"HowToStep","position":2,"name":"Set PDF and OCR limits","text":"maxPdfPages (500 by default) caps how many pages of each PDF are read. Scanned pages are read by OCR when ocr is on, up to maxOcrPages per PDF (20 by default, $0.003 each); pages beyond that are left out and the row is marked truncated. If your corpus is all digital, set ocr to false so scanned files are reported for free instead of being charged.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/#step-2"},{"@type":"HowToStep","position":3,"name":"Run the conversion and keep the good rows","text":"Each result has url, title, markdown, tokenEstimate, route and a status. Failed or unsupported files come back as rows with an error and are not charged. Keep only rows that have Markdown, and log the rest so you can follow up on them.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/#step-3"},{"@type":"HowToStep","position":4,"name":"Split the Markdown by heading into token-sized chunks","text":"Split each document at Markdown headings first, so a chunk never straddles two sections, then pack paragraphs into chunks up to a target size. The actor's tokenEstimate is characters divided by 4, so the same rule is used here to stay consistent. Each chunk keeps the heading path as context, which helps retrieval when a paragraph on its own is ambiguous.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/#step-4"},{"@type":"HowToStep","position":5,"name":"Write JSONL for your vector store","text":"Attach the source URL, title and heading path to every chunk so answers can cite where they came from. JSONL loads easily into most vector databases and into LangChain or LlamaIndex document loaders.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/#step-5"},{"@type":"HowToStep","position":6,"name":"Handle heavily scanned or non-English PDFs","text":"OCR in this actor covers 7 languages (English, German, French, Spanish, Italian, Portuguese and Dutch) and up to maxOcrPages pages per PDF. For long scanned documents, other languages or per-page confidence scores, run those files through PDF OCR instead and chunk its page text the same way. Note that OCR output is plain text without Markdown headings, so the chunker falls back to paragraph packing.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/#step-6"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Convert PDF to Markdown for RAG Pipelines","item":"https://devtaonas.github.io/actorforge-site/guides/convert-pdf-to-markdown-for-rag/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why convert PDFs to Markdown instead of plain text for RAG?","acceptedAnswer":{"@type":"Answer","text":"Markdown keeps headings, lists and tables, so you can split chunks at section boundaries and store the heading path as context. Plain text loses that structure and forces fixed-size splitting."}},{"@type":"Question","name":"What chunk size should I use?","acceptedAnswer":{"@type":"Answer","text":"It depends on your embedding model and how specific your questions are. The code above uses about 500 estimated tokens per chunk as a starting point; measure retrieval quality on real questions and adjust."}},{"@type":"Question","name":"Does it work with scanned PDFs?","acceptedAnswer":{"@type":"Answer","text":"Yes, pages without a text layer are read with Tesseract OCR when ocr is on, up to maxOcrPages per PDF. OCR'd text has no Markdown headings, so heading-based splitting does less for those pages."}},{"@type":"Question","name":"Can I convert Word and PowerPoint files in the same run?","acceptedAnswer":{"@type":"Answer","text":"Yes. The same actor converts Word, Excel, PowerPoint, OpenDocument text and spreadsheets, EPUB, CSV and JSON, and the chunking code works on their Markdown too."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Convert PDF to Markdown for RAG Pipelines</li></ol></nav><h1>How to Convert PDF to Markdown for RAG Pipelines</h1><p>Uses <a href="../../actors/any-url-to-markdown/" style="color:#fff">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Send your PDF links to the Any URL to Markdown actor, read the <code>markdown</code> field of each result, then split it by heading into token-sized chunks before embedding. Digital PDFs cost $0.002 per started 50 pages.</div><p>Retrieval quality depends heavily on what you feed the embedder. Plain text extracted from a PDF loses the headings that tell you where one topic ends and the next begins, and naive fixed-size splitting cuts sections in half. Markdown keeps that structure, so you can chunk along it.</p><p>The usual approach is a stack of libraries: one PDF parser for digital files, an OCR engine for scans, and glue code for the cases where they disagree. The Any URL to Markdown actor reads the PDF text layer with heading and paragraph detection, falls back to Tesseract OCR for pages without text, and returns Markdown plus a token estimate in one row per file.</p><p>This guide converts a batch of PDFs, filters out failures, splits the Markdown into heading-aware chunks of a target size in Python, and writes JSONL ready for your vector store.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Collect the PDF links</h3><p>List the PDFs you want in your knowledge base as URLs. The actor fetches each link itself, so the files must be reachable without a login; password-protected PDFs cannot be read. You can pass up to 1,000 links per run in <code>urls</code>, and duplicates are removed. If your PDFs are on your own storage, use pre-signed or public links.</p></li><li id="step-2"><h3>Set PDF and OCR limits</h3><p><code>maxPdfPages</code> (500 by default) caps how many pages of each PDF are read. Scanned pages are read by OCR when <code>ocr</code> is on, up to <code>maxOcrPages</code> per PDF (20 by default, $0.003 each); pages beyond that are left out and the row is marked truncated. If your corpus is all digital, set <code>ocr</code> to false so scanned files are reported for free instead of being charged.</p><pre><code class="language-json">{
+  "urls": [
+    "https://arxiv.org/pdf/1706.03762",
+    "https://example.com/reports/annual-report-2025.pdf"
+  ],
+  "ocr": true,
+  "ocrLanguages": ["eng"],
+  "maxOcrPages": 50,
+  "maxPdfPages": 500
+}</code></pre></li><li id="step-3"><h3>Run the conversion and keep the good rows</h3><p>Each result has <code>url</code>, <code>title</code>, <code>markdown</code>, <code>tokenEstimate</code>, <code>route</code> and a <code>status</code>. Failed or unsupported files come back as rows with an <code>error</code> and are not charged. Keep only rows that have Markdown, and log the rest so you can follow up on them.</p><pre><code class="language-python">import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/any-url-to-markdown").call(run_input={
+    "urls": [
+        "https://arxiv.org/pdf/1706.03762",
+    ],
+    "maxOcrPages": 50,
+})
+
+docs, failed = [], []
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    if item.get("markdown"):
+        docs.append(item)
+    else:
+        failed.append((item.get("url"), item.get("error")))
+
+print(f"{len(docs)} converted, {len(failed)} failed")
+for url, err in failed:
+    print("FAILED", url, err)</code></pre></li><li id="step-4"><h3>Split the Markdown by heading into token-sized chunks</h3><p>Split each document at Markdown headings first, so a chunk never straddles two sections, then pack paragraphs into chunks up to a target size. The actor's <code>tokenEstimate</code> is characters divided by 4, so the same rule is used here to stay consistent. Each chunk keeps the heading path as context, which helps retrieval when a paragraph on its own is ambiguous.</p><pre><code class="language-python">import re
+
+HEADING = re.compile(r"^(#{1,6})\s+(.*)$")
+
+def est_tokens(text):
+    return len(text) // 4  # same rule as tokenEstimate
+
+def split_sections(markdown):
+    """Yield (heading_path, body) pairs, one per Markdown section."""
+    path, body = [], []
+    for line in markdown.splitlines():
+        m = HEADING.match(line)
+        if m:
+            if body:
+                yield " &gt; ".join(path), "\n".join(body).strip()
+            level = len(m.group(1))
+            path = path[: level - 1] + [m.group(2).strip()]
+            body = []
+        else:
+            body.append(line)
+    if body:
+        yield " &gt; ".join(path), "\n".join(body).strip()
+
+def chunk_markdown(markdown, max_tokens=500):
+    chunks = []
+    for heading, body in split_sections(markdown):
+        if not body:
+            continue
+        current = ""
+        for para in re.split(r"\n\s*\n", body):
+            candidate = (current + "\n\n" + para).strip()
+            if current and est_tokens(candidate) &gt; max_tokens:
+                chunks.append({"heading": heading, "text": current})
+                current = para
+            else:
+                current = candidate
+        if current:
+            chunks.append({"heading": heading, "text": current})
+    return chunks</code></pre></li><li id="step-5"><h3>Write JSONL for your vector store</h3><p>Attach the source URL, title and heading path to every chunk so answers can cite where they came from. JSONL loads easily into most vector databases and into LangChain or LlamaIndex document loaders.</p><pre><code class="language-python">import json
+
+with open("chunks.jsonl", "w", encoding="utf-8") as f:
+    for doc in docs:
+        for i, ch in enumerate(chunk_markdown(doc["markdown"], max_tokens=500)):
+            f.write(json.dumps({
+                "id": f"{doc['url']}#{i}",
+                "source": doc["url"],
+                "title": doc.get("title"),
+                "heading": ch["heading"],
+                "text": ch["text"],
+            }, ensure_ascii=False) + "\n")</code></pre></li><li id="step-6"><h3>Handle heavily scanned or non-English PDFs</h3><p>OCR in this actor covers 7 languages (English, German, French, Spanish, Italian, Portuguese and Dutch) and up to <code>maxOcrPages</code> pages per PDF. For long scanned documents, other languages or per-page confidence scores, run those files through <a href="../../actors/pdf-ocr/">PDF OCR</a> instead and chunk its page text the same way. Note that OCR output is plain text without Markdown headings, so the chunker falls back to paragraph packing.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "url": "https://arxiv.org/pdf/1706.03762",
+  "ocr": true,
+  "ocrLanguages": [
+    "eng"
+  ],
+  "maxOcrPages": 20,
+  "maxPdfPages": 500
+}</code></pre><h2>Sample output</h2><p>Each converted URL becomes one row; for PDFs, the <code>markdown</code> column holds the full document and <code>tokenEstimate</code> tells you how much context it will use.</p><div class="tablewrap"><table><thead><tr><th scope="col">url</th><th scope="col">detectedFormat</th><th scope="col">route</th><th scope="col">title</th><th scope="col">tokenEstimate</th><th scope="col">markdown</th></tr></thead><tbody><tr><td class="cut">https://arxiv.org/pdf/1706.03762</td><td class="cut">pdf</td><td class="cut">pdf-text</td><td class="cut">Attention Is All You Need</td><td class="cut">9600</td><td class="cut">Provided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures…</td></tr><tr><td class="cut">https://en.wikipedia.org/wiki/Retrieval-augmented_generation</td><td class="cut">html</td><td class="cut">html</td><td class="cut">Retrieval-augmented generation - Wikipedia</td><td class="cut">5811</td><td class="cut">Retrieval-augmented generation (RAG) is a technique that enables large language models…</td></tr><tr><td class="cut">https://calibre-ebook.com/downloads/demos/demo.docx</td><td class="cut">docx</td><td class="cut">office</td><td class="cut">DOCX Demo</td><td class="cut">2604</td><td class="cut"># Demonstration of DOCX support in calibre\n\nThis document demonstrates the ability of the calibre DOCX Input plugin…</td></tr><tr><td class="cut">https://raw.githubusercontent.com/apache/poi/trunk/test-data/spreadsheet/SampleSS.xlsx</td><td class="cut">xlsx</td><td class="cut">office</td><td class="cut">Sample Spreadsheet</td><td class="cut">96</td><td class="cut">## First Sheet\n\n| Test spreadsheet | column_B |\n| --- | --- |\n| 2nd row | 2nd row 2nd column |…</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~any-url-to-markdown/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://arxiv.org/pdf/1706.03762", "ocr": true, "ocrLanguages": ["eng"], "maxOcrPages": 20, "maxPdfPages": 500}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "url": "https://arxiv.org/pdf/1706.03762",
+  "ocr": true,
+  "ocrLanguages": [
+    "eng"
+  ],
+  "maxOcrPages": 20,
+  "maxPdfPages": 500
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~any-url-to-markdown/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "url": "https://arxiv.org/pdf/1706.03762",
+    "ocr": True,
+    "ocrLanguages": [
+        "eng"
+    ],
+    "maxOcrPages": 20,
+    "maxPdfPages": 500
+}
+
+run = client.actor("actor-forge/any-url-to-markdown").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Converting 1,000 digital PDFs of up to 50 pages each costs 1,000 x $0.002 = $2.00. If 100 of those were 120-page reports instead, each counts three times, adding 100 x 2 x $0.002 = $0.40, and every scanned page read by OCR adds $0.003.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Page result</td><td class="cut">Charged per web page converted to Markdown</td><td>$0.001</td><td>$1</td><td class="cut">1,000 web pages = $1.00</td></tr><tr><td>Document converted</td><td class="cut">Charged per PDF (each started 50 text pages), Word, Excel, PowerPoint, OpenDocument, EPUB, CSV or JSON file converted</td><td>$0.002</td><td>$2</td><td class="cut">A 15-page PDF = $0.002; a 120-page PDF = $0.006; 1,000 Word files = $2.00</td></tr><tr><td>Page ocr</td><td class="cut">Charged per image, or scanned PDF page, read by OCR</td><td>$0.003</td><td>$3</td><td class="cut">A 10-page scanned PDF = $0.03</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 1 GB = $0.00005</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/any-url-to-markdown" rel="noopener">Run on Apify →</a> <a href="../../actors/any-url-to-markdown/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>Check <code>tokenEstimate</code> before chunking to spot unusually large files; very large results are cut at about 3.5 million characters and marked truncated.</li><li>Tables in digital PDFs are detected as layout, but complex tables can still come out imperfect; spot-check a few before indexing financial reports.</li><li>Keep <code>respectRobotsTxt</code> on for public sites. If a host answers 429 or 403, the remaining URLs on that host are skipped as free error rows, so spread big batches over time.</li><li>Files are limited to 50 MB. Split or compress larger PDFs before converting.</li></ul><h2>FAQ</h2><details><summary>Why convert PDFs to Markdown instead of plain text for RAG?</summary><p>Markdown keeps headings, lists and tables, so you can split chunks at section boundaries and store the heading path as context. Plain text loses that structure and forces fixed-size splitting.</p></details><details><summary>What chunk size should I use?</summary><p>It depends on your embedding model and how specific your questions are. The code above uses about 500 estimated tokens per chunk as a starting point; measure retrieval quality on real questions and adjust.</p></details><details><summary>Does it work with scanned PDFs?</summary><p>Yes, pages without a text layer are read with Tesseract OCR when <code>ocr</code> is on, up to <code>maxOcrPages</code> per PDF. OCR'd text has no Markdown headings, so heading-based splitting does less for those pages.</p></details><details><summary>Can I convert Word and PowerPoint files in the same run?</summary><p>Yes. The same actor converts Word, Excel, PowerPoint, OpenDocument text and spreadsheets, EPUB, CSV and JSON, and the chunking code works on their Markdown too.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/any-url-to-markdown/">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></h3><p>Turn any URL into clean, LLM-ready Markdown: web pages, PDFs, Word, Excel, PowerPoint, EPUB, CSV and JSON, plus OCR for images and scanned PDFs. One…</p><span class="price">$1 per 1,000 · page result</span></div><div class="card"><h3><a href="../../actors/pdf-ocr/">PDF OCR — Scanned PDF to Searchable Text (29 Languages)</a></h3><p>OCR scanned PDFs to text page by page with Tesseract 5 in 29 languages. Pages that already have a text layer are read directly at a tenth of the…</p><span class="price">$3 per 1,000 · page ocr</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/ocr-scanned-pdf-to-text-api/">How to OCR Scanned PDFs to Text with an API</a></h3><p>Send scanned PDF links to the PDF OCR actor, get text back one row per page with a confidence score, and use that score to flag pages for review.…</p></div><div class="card"><h3><a href="../../guides/extract-text-from-images-screenshots/">How to Extract Text from Images and Screenshots in Bulk</a></h3><p>Send image URLs to the Image to Text OCR actor, use the sparse segmentation mode for screenshots, and read the text and confidence per image. It…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

@@ -1,0 +1,137 @@
+{
+  "name": "business-places-data",
+  "category": "business-leads",
+  "h1": "Google Maps Scraper Alternative: Local Business Leads from Open Data",
+  "metaTitle": "Google Maps Scraper Alternative, 80M+ Places | ActorForge",
+  "metaDescription": "Local business leads by city from open Overture Maps data: name, category, address, phone, website, email. No scraping, no 120-result cap. $1 per 1,000 places.",
+  "tagline": "Type a city and a business type, get one clean row per business with contacts, coordinates and licence, from 80M+ open places worldwide.",
+  "intro": [
+    "Most local lead lists start with a Google Maps scraper, and most of the pain comes with it: blocked requests, proxies, CAPTCHAs and a results list that stops at around 120 places per search. If what you actually need is names, addresses, phone numbers and websites for every dentist in Austin or every restaurant in Berlin, you do not need Google at all.",
+    "**Business Places Data** reads the **Overture Maps Foundation places dataset**, an open GeoParquet release of 80M+ business points of interest refreshed monthly and built from Meta, Microsoft, Foursquare, AllThePlaces, BrightQuery and other sources. Nothing is scraped, so a whole city comes back in seconds. Each row carries the business name, category, full address, latitude/longitude, E.164 phone numbers, website, business email, social links and brand, plus a plain Google Maps search link.",
+    "It is built for agencies, SDR teams and data people who want permissive, resellable lead data. Every row lists its sources, licence and attribution, and the licences (CDLA-Permissive-2.0, Apache-2.0, CC0) are not share-alike, so you may store, enrich and resell the leads as long as attribution travels with them. The trade-off is honest: this is not Google data, so there are no reviews, star ratings, opening hours or photos."
+  ],
+  "howItWorks": [
+    "You give a city name (32,000+ cities are built in), a bounding box, or a lat/lon centre with a radius, plus optional categories such as dentist or plumber.",
+    "The actor finds the newest monthly Overture release and reads only the GeoParquet row groups that overlap your area, typically 15-45 MB for a city.",
+    "Places are filtered by category (2,100+ Overture ids, with plain-word synonyms), name, confidence and whether they have a website, phone or email.",
+    "Phones are normalised to E.164, possibly personal emails are removed, and each row is written with its sources, licence and attribution.",
+    "Results are ordered by confidence (or by distance for a radius search) and the run stops at your maxPlaces cap or spend limit."
+  ],
+  "inputExample": {
+    "location": "Austin, TX",
+    "categories": [
+      "dentist"
+    ],
+    "maxPlaces": 200,
+    "minConfidence": 0.5,
+    "requireWebsite": true,
+    "countryCode": "US"
+  },
+  "outputNote": "A run for dentists in Austin, TX returns rows like these, one per place, with contacts and licence on every row:",
+  "useCases": [
+    {
+      "title": "Local outreach lists for agencies",
+      "text": "Pull every plumber, dentist or law firm in a city with phone, website and role email in one run. Use requireWebsite or requireEmail so you only pay for places you can actually contact."
+    },
+    {
+      "title": "Territory and market sizing",
+      "text": "Count how many coffee shops or hotels sit inside a bounding box or radius before opening a branch or assigning sales territories. Run listCategories (free) first to find the right Overture category ids."
+    },
+    {
+      "title": "Enriching a CRM with coordinates",
+      "text": "Each place comes with latitude/longitude, a full address and a Google Maps search link, which makes it easy to map, geocode-match or deduplicate against records you already hold."
+    },
+    {
+      "title": "Resellable datasets",
+      "text": "Because the source licences are permissive and not share-alike, you can merge the rows into your own product or data offering, provided you keep the attribution field with them."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Business Places Data",
+      "Typical Google Maps scrapers",
+      "Manual research in a spreadsheet"
+    ],
+    "rows": [
+      [
+        "Data source",
+        "Overture Maps open data",
+        "Google Maps pages",
+        "Search engines, directories"
+      ],
+      [
+        "Blocks, CAPTCHAs, proxies",
+        "None, nothing is scraped",
+        "Common",
+        "No"
+      ],
+      [
+        "Results per search",
+        "Whole city, up to 20,000 per run",
+        "Often capped around 120 per search",
+        "As many as you have time for"
+      ],
+      [
+        "Reviews, ratings, opening hours, photos",
+        "No",
+        "Yes",
+        "Partial"
+      ],
+      [
+        "Licence to store and resell",
+        "Yes, permissive licences with attribution",
+        "Unclear",
+        "Depends on sources"
+      ],
+      [
+        "Freshness",
+        "Monthly Overture release",
+        "Live",
+        "Live"
+      ],
+      [
+        "Price",
+        "$1 per 1,000 places + $0.003 per area query",
+        "About $4 per 1,000 for the leading scraper",
+        "Your time"
+      ]
+    ]
+  },
+  "comparisonNote": "If you need Google reviews, star ratings, opening hours or same-day freshness, a Google Maps scraper is the better tool. If you need contactable business rows at city scale with a clear licence, open data is cheaper and does not break.",
+  "faq": [
+    {
+      "q": "Is this Google Maps data?",
+      "a": "No. Rows come from the Overture Maps Foundation places dataset, which is built from Meta, Microsoft, Foursquare, AllThePlaces, BrightQuery and other sources. The Google Maps link in each row is a plain search URL built from the name and address; nothing is fetched from Google."
+    },
+    {
+      "q": "How many businesses can I get from one city?",
+      "a": "One run covers one area of up to 1.5 x 1.5 degrees, roughly a metro area, and returns up to 20,000 places (maxPlaces). There is no 120-result cap. For a region or country, run once per city."
+    },
+    {
+      "q": "How often is the business data updated?",
+      "a": "Freshness follows Overture's monthly releases, and the newest release is picked automatically. You can pin an older one with the release field. A closed business can still appear until a source drops it; the default minConfidence of 0.5 filters most stale records."
+    },
+    {
+      "q": "Does it return business email addresses?",
+      "a": "Yes, where the source data has them. Emails on the business's own domain and role mailboxes such as info@ are kept; free-mail addresses are kept only when they contain the business name, and others are dropped and counted in droppedPersonalEmails. In testing, about 75% of Austin dentists had an email but only about 32% of Berlin restaurants."
+    },
+    {
+      "q": "Can I use the leads commercially?",
+      "a": "The source licences (CDLA-Permissive-2.0, Apache-2.0, CC0) allow commercial use, storage and redistribution as long as the attribution and licence texts travel with the rows. You remain responsible for how you contact people under GDPR, CAN-SPAM and similar laws."
+    },
+    {
+      "q": "What does a typical run cost?",
+      "a": "$0.003 per area query plus $0.001 per place delivered. 200 dentists in Austin cost $0.203; 1,000 restaurants in Berlin cost $1.003. Places filtered out or beyond your cap are never charged."
+    }
+  ],
+  "related": [
+    "facebook-pages-data",
+    "uk-companies-house-enrichment",
+    "any-url-to-markdown",
+    "seo-audit"
+  ],
+  "guides": [
+    "business-leads-without-google-maps"
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "name": "seo-audit",
+  "category": "seo-marketing",
+  "h1": "SEO Audit Crawler: On-Page and Technical SEO Check for Every Page",
+  "metaTitle": "SEO Audit Crawler: Check Every Page of a Site | ActorForge",
+  "metaDescription": "Crawl a whole site and audit every page: titles, metas, H1s, canonicals, broken links, hreflang, schema, orphan pages. 0-100 score. $6 per 1,000 pages.",
+  "tagline": "A cloud site audit that crawls like a search engine and gives every page a list of issues, a severity for each and a 0-100 score.",
+  "intro": [
+    "Spot-checking a few pages misses the problems that only show up across a site: duplicate titles, pages nothing links to, internal links that hit 404s or redirect chains. The SEO Audit Crawler follows your links and your sitemap, respects robots.txt and runs more than 40 technical and on-page checks on every HTML page it fetches.",
+    "Each page gets HTTP status and redirect chain, indexability (meta robots, X-Robots-Tag, canonical), title and meta description checks including duplicates, H1 and heading outline, word count and thin content, images missing alt text, link counts, broken internal links, inlinks, hreflang, Open Graph and Twitter cards, schema.org JSON-LD, mixed content and URL hygiene. Issues are graded error, warning or notice, and the page score starts at 100 and drops 10, 5 or 1 point per distinct issue.",
+    "A site summary adds average score, top issues by pages affected, duplicate title and description groups, the most-linked broken URLs and orphan pages that are in your sitemap but linked from nowhere. It costs $6 per 1,000 pages audited ($0.60 for a 100-page site), and pages that answer an error are reported free. It suits SEOs, agencies and developers who want a scheduled audit without installing desktop software."
+  ],
+  "howItWorks": [
+    "You give one or more `startUrls`; the crawl stays on that site and under each URL's path unless you set `includeGlobs`.",
+    "It follows links up to `maxDepth` clicks and, with `useSitemap` on, reads sitemap.xml and sitemaps listed in robots.txt, then audits sitemap URLs no page links to as orphan pages.",
+    "Pages are fetched as static HTML, at most 3 requests at a time, pausing on HTTP 429 for the Retry-After period.",
+    "Once the crawl finishes it computes the cross-page checks (duplicates, broken internal links, inlinks, hreflang return links) and writes one row per page.",
+    "The site-level summary is saved to the run's key-value store as the `OUTPUT` record."
+  ],
+  "inputExample": {
+    "startUrls": [
+      "https://crawlee.dev/js/docs/guides"
+    ],
+    "maxPages": 500,
+    "maxDepth": 20,
+    "includeSubdomains": false,
+    "excludeGlobs": [
+      "**/tag/**",
+      "**/page/*"
+    ],
+    "useSitemap": true,
+    "respectRobotsTxt": true
+  },
+  "outputNote": "Each audited page is one row with its score, status, indexability, key lengths, inlinks and issue codes, as in the sample below.",
+  "useCases": [
+    {
+      "title": "Pre-launch or post-migration check",
+      "text": "Audit a staging or freshly migrated site to catch missing titles, noindex tags left on by mistake, canonicals pointing elsewhere and redirect chains before search engines find them."
+    },
+    {
+      "title": "Find orphan pages in your sitemap",
+      "text": "With `useSitemap` on, sitemap URLs that no crawled page links to are audited and flagged `orphan-page`. Raise `maxPages` to cover the whole site so the result is conclusive. The [sitemap audit guide](guide:audit-every-url-in-sitemap-seo) walks through it."
+    },
+    {
+      "title": "Weekly score tracking",
+      "text": "Schedule a weekly run and compare the average score and top issues in the summary. A sudden jump in errors usually points to a template change or a deploy that broke something."
+    },
+    {
+      "title": "Audit one section only",
+      "text": "Start at `https://example.com/blog` to audit just the blog, or use `includeGlobs` and `excludeGlobs` to target docs and skip tag and pagination archives."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge SEO Audit",
+      "Desktop SEO crawler",
+      "SaaS site audit platform"
+    ],
+    "rows": [
+      [
+        "Install required",
+        "No, runs in the cloud",
+        "Yes",
+        "No"
+      ],
+      [
+        "Pricing model",
+        "$6 per 1,000 pages audited",
+        "Licence, often with free tier",
+        "Monthly subscription"
+      ],
+      [
+        "JavaScript rendering",
+        "No, static HTML only",
+        "Often optional",
+        "Often optional"
+      ],
+      [
+        "Core Web Vitals",
+        "No",
+        "Often via integrations",
+        "Often yes"
+      ],
+      [
+        "Orphan sitemap pages",
+        "Yes",
+        "Usually yes",
+        "Usually yes"
+      ],
+      [
+        "External link checking",
+        "No, internal links only",
+        "Usually yes",
+        "Usually yes"
+      ],
+      [
+        "Output",
+        "JSON, CSV or Excel via the dataset, plus API",
+        "Exports from the app",
+        "Dashboards and exports"
+      ]
+    ]
+  },
+  "comparisonNote": "If your site renders content client-side or you need Core Web Vitals and external link checks, a desktop crawler with JavaScript rendering or a full SaaS platform covers more. This actor is for fast, cheap static-HTML audits you can schedule and pull through an API.",
+  "faq": [
+    {
+      "q": "How do I audit every page of my website for SEO?",
+      "a": "Put your homepage in `startUrls` and set `maxPages` above your site's page count (it defaults to 200). Leave `useSitemap` on so pages only reachable via the sitemap are included too. Each page becomes one row with its issues and score."
+    },
+    {
+      "q": "What counts as a title that is too long or a thin page?",
+      "a": "Titles are checked against 30-60 characters and meta descriptions against 70-160. Thin content means under 200 words in the page body, excluding navigation, header, footer, sidebars and scripts. URLs over 115 characters and responses slower than 2 seconds are also flagged."
+    },
+    {
+      "q": "Does it render JavaScript?",
+      "a": "No. Pages are fetched as static HTML, which is fast and cheap but means content that only appears after JavaScript runs is not seen. That is also how many search engine and AI crawlers first see a site."
+    },
+    {
+      "q": "Are pages that return errors charged?",
+      "a": "No. Pages that answer 4xx/5xx, time out or are refused by bot protection are reported as rows free of charge. Only HTML pages fetched and audited are charged, at $0.006 each."
+    },
+    {
+      "q": "Where is the site-wide summary?",
+      "a": "It is saved in the run's default key-value store as the `OUTPUT` record. It lists pages audited, average score, top issues, duplicate groups, broken internal links, orphan sitemap pages and whether robots.txt and a sitemap exist."
+    }
+  ],
+  "related": [
+    "keyword-suggestions",
+    "wayback-snapshots",
+    "google-trends"
+  ],
+  "guides": [
+    "audit-every-url-in-sitemap-seo"
+  ]
+}

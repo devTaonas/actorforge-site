@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Google Trends Trending Searches by Country</title>
+<meta name="description" content="Collect Google Trends trending searches for any of 125 countries on a daily schedule, then dedupe and compare days with pandas. Costs cents per day.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Track Google Trends Trending Searches by Country">
+<meta property="og:description" content="Collect Google Trends trending searches for any of 125 countries on a daily schedule, then dedupe and compare days with pandas. Costs cents per day.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Track Google Trends Trending Searches by Country","description":"Collect Google Trends trending searches for any of 125 countries on a daily schedule, then dedupe and compare days with pandas. Costs cents per day.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"Google Trends Scraper — Trending Now & Interest Over Time","url":"https://devtaonas.github.io/actorforge-site/actors/google-trends/"},"dateModified":"2026-10-22"},{"@type":"HowTo","name":"How to Track Google Trends Trending Searches by Country","description":"Collect Google Trends trending searches for any of 125 countries on a daily schedule, then dedupe and compare days with pandas. Costs cents per day.","tool":[{"@type":"HowToTool","name":"Google Trends Scraper — Trending Now & Interest Over Time"}],"step":[{"@type":"HowToStep","position":1,"name":"Pick your countries","text":"Decide which markets you want to watch and list their two-letter codes in geos, for example US, GB, DE, FR and BR. The input offers all 125 countries the official feed accepts; Google answers unknown codes with an error, so pick from that list. Each country is one request, so a long list only adds a second or so per country.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-1"},{"@type":"HowToStep","position":2,"name":"Set how many trends to keep per country","text":"The feed currently lists up to about 10 of the newest trends per country, fewer for small countries. Leave maxItemsPerGeo at 10 to keep everything, or lower it if you only care about the top few. Leave keywords empty for this workflow: the keyword explore part is separate, rate-limited by Google and not needed to track trending searches.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-2"},{"@type":"HowToStep","position":3,"name":"Turn on only-new mode with a monitor name","text":"Set onlyNewSinceLastRun to true and give the schedule its own monitorName. The actor then remembers what it already returned (per country, keyword and start day) in the key-value store trends-seen-<name> and skips those trends on later runs without charging for them. Use a different monitor name for each schedule so they do not share memory.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-3"},{"@type":"HowToStep","position":4,"name":"Schedule a daily run","text":"In Apify Console, save the input above as a task (or use the actor directly) and create a schedule with a cron expression such as 0 7 * * * for 07:00 every day in your chosen timezone. If you need fresher alerts, an hourly expression like 0 * * * * works the same way, and only-new mode keeps the cost tied to trends that are genuinely new. Optionally add a webhook on run success to trigger the next step automatically.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-4"},{"@type":"HowToStep","position":5,"name":"Collect each run into a history file","text":"After each scheduled run, pull its dataset and append the trend rows to a CSV, stamped with the snapshot date. The dataset can also contain other row types if you ever add keywords, so filter on type == \"trend\".","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-5"},{"@type":"HowToStep","position":6,"name":"Dedupe and compare days with pandas","text":"Normalize keywords, drop duplicates on country, keyword and start day, then compare the latest snapshot with the one before it. The first output lists trends that are new today per country, the second shows topics trending in more than one country, often the most useful signal for a global team. You need at least two snapshot days in the file before the comparison runs.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-6"},{"@type":"HowToStep","position":7,"name":"Act on the rows","text":"Each row carries topNewsTitle, topNewsUrl and the full newsArticles list, so an editor or marketer can see why a term is trending without opening Google. Sort by approxTraffic to rank within a country, but remember it is Google's bucketed estimate (200+, 2K+, 1M+), not an exact count. trendsUrl is a link you can open to explore the term further on trends.google.com.","url":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/#step-7"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Track Google Trends Trending Searches by Country","item":"https://devtaonas.github.io/actorforge-site/guides/google-trends-trending-searches-by-country/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How often does the Trending Now feed change?","acceptedAnswer":{"@type":"Answer","text":"The feed lists the newest trends per country, so its contents shift through the day as new searches spike. A daily run gives a snapshot; an hourly schedule with only-new mode catches more short-lived trends at the same per-row price."}},{"@type":"Question","name":"Can I track trending searches for a US state or a city?","acceptedAnswer":{"@type":"Answer","text":"Trending Now in this actor is per country, using the two-letter codes in geos. Region-level data (states, cities) is only available in the keyword explore part, via exploreGeo and interest by region."}},{"@type":"Question","name":"Why does a small country return fewer than 10 trends?","acceptedAnswer":{"@type":"Answer","text":"The official feed lists fewer trends for small countries. The actor returns whatever the feed contains up to maxItemsPerGeo, and you only pay for rows delivered."}},{"@type":"Question","name":"Will a trend that lasts two days show up twice?","acceptedAnswer":{"@type":"Answer","text":"With only-new mode on, a trend is identified by country, keyword and start day, so the same trend with the same start day is skipped on later runs. The pandas step uses the same key to dedupe your history file."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Track Google Trends Trending Searches by Country</li></ol></nav><h1>How to Track Google Trends Trending Searches by Country</h1><p>Uses <a href="../../actors/google-trends/" style="color:#fff">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Run the ActorForge Google Trends actor with a list of country codes, schedule it daily with only-new mode, and keep a small pandas history to see what is new each day and what trends in several countries at once.</div><p>Google's Trending Now page answers "what is everyone searching for right now?", but only for one country at a time and only while you are looking. If you run content, news or campaigns across several markets, you want that list captured every day, per country, in a format you can sort and compare.</p><p>Doing that by hand means visiting the page for each country and copying rows. Unofficial libraries break when Google changes things and leave you to handle storage and deduplication. The <a href="../../actors/google-trends/">Google Trends actor</a> reads Google's official Trending Now RSS feed for any of 125 countries and returns one structured row per trend, with traffic parsed to a number and the news articles attached.</p><p>This guide sets up a country list, schedules a daily run, and uses pandas to keep a history, drop repeats and compare today with yesterday.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Pick your countries</h3><p>Decide which markets you want to watch and list their two-letter codes in <code>geos</code>, for example US, GB, DE, FR and BR. The input offers all 125 countries the official feed accepts; Google answers unknown codes with an error, so pick from that list. Each country is one request, so a long list only adds a second or so per country.</p></li><li id="step-2"><h3>Set how many trends to keep per country</h3><p>The feed currently lists up to about 10 of the newest trends per country, fewer for small countries. Leave <code>maxItemsPerGeo</code> at 10 to keep everything, or lower it if you only care about the top few. Leave <code>keywords</code> empty for this workflow: the keyword explore part is separate, rate-limited by Google and not needed to track trending searches.</p></li><li id="step-3"><h3>Turn on only-new mode with a monitor name</h3><p>Set <code>onlyNewSinceLastRun</code> to true and give the schedule its own <code>monitorName</code>. The actor then remembers what it already returned (per country, keyword and start day) in the key-value store trends-seen-&lt;name&gt; and skips those trends on later runs without charging for them. Use a different monitor name for each schedule so they do not share memory.</p><pre><code class="language-json">{
+  "geos": ["US", "GB", "DE", "FR", "BR"],
+  "maxItemsPerGeo": 10,
+  "onlyNewSinceLastRun": true,
+  "monitorName": "daily-5-markets",
+  "keywords": []
+}</code></pre></li><li id="step-4"><h3>Schedule a daily run</h3><p>In Apify Console, save the input above as a task (or use the actor directly) and create a schedule with a cron expression such as <code>0 7 * * *</code> for 07:00 every day in your chosen timezone. If you need fresher alerts, an hourly expression like <code>0 * * * *</code> works the same way, and only-new mode keeps the cost tied to trends that are genuinely new. Optionally add a webhook on run success to trigger the next step automatically.</p></li><li id="step-5"><h3>Collect each run into a history file</h3><p>After each scheduled run, pull its dataset and append the trend rows to a CSV, stamped with the snapshot date. The dataset can also contain other row types if you ever add keywords, so filter on <code>type == "trend"</code>.</p><pre><code class="language-python">import os
+from datetime import date
+import pandas as pd
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+
+# Read the dataset of the most recent finished scheduled run
+runs = client.actor("actor-forge/google-trends").runs().list(desc=True, limit=1, status="SUCCEEDED").items
+run = runs[0]
+rows = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+
+df = pd.DataFrame([r for r in rows if r.get("type") == "trend"])
+df["snapshotDate"] = date.today().isoformat()
+
+# Append to a local history file
+path = "trends_history.csv"
+df.to_csv(path, mode="a", index=False, header=not os.path.exists(path))
+print(len(df), "trend rows added")
+</code></pre></li><li id="step-6"><h3>Dedupe and compare days with pandas</h3><p>Normalize keywords, drop duplicates on country, keyword and start day, then compare the latest snapshot with the one before it. The first output lists trends that are new today per country, the second shows topics trending in more than one country, often the most useful signal for a global team. You need at least two snapshot days in the file before the comparison runs.</p><pre><code class="language-python">import pandas as pd
+
+hist = pd.read_csv("trends_history.csv", parse_dates=["startedAt"])
+hist["keywordNorm"] = hist["keyword"].str.strip().str.lower()
+hist["startDay"] = hist["startedAt"].dt.date
+
+# One row per country + keyword + start day (the same key the actor uses),
+# keeping the snapshot in which each trend was first seen
+hist = hist.sort_values("snapshotDate")
+dedup = hist.drop_duplicates(subset=["geo", "keywordNorm", "startDay"], keep="first")
+
+days = sorted(dedup["snapshotDate"].unique())
+today, yesterday = days[-1], days[-2]
+t = dedup[dedup["snapshotDate"] == today]
+y = dedup[dedup["snapshotDate"] == yesterday]
+
+# Trends first seen today whose keyword did not trend yesterday in that country
+merged = t.merge(y[["geo", "keywordNorm"]], on=["geo", "keywordNorm"],
+                 how="left", indicator=True)
+new_today = merged[merged["_merge"] == "left_only"]
+print(new_today[["geo", "rank", "keyword", "approxTraffic", "topNewsTitle"]])
+
+# Topics trending in several countries at once
+multi = (t.groupby("keywordNorm")["geo"].nunique()
+           .sort_values(ascending=False))
+print(multi[multi &gt; 1])
+</code></pre></li><li id="step-7"><h3>Act on the rows</h3><p>Each row carries <code>topNewsTitle</code>, <code>topNewsUrl</code> and the full <code>newsArticles</code> list, so an editor or marketer can see why a term is trending without opening Google. Sort by <code>approxTraffic</code> to rank within a country, but remember it is Google's bucketed estimate (200+, 2K+, 1M+), not an exact count. <code>trendsUrl</code> is a link you can open to explore the term further on trends.google.com.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "geos": [
+    "US",
+    "GB",
+    "DE",
+    "FR",
+    "BR"
+  ],
+  "maxItemsPerGeo": 10,
+  "onlyNewSinceLastRun": true,
+  "monitorName": "daily-5-markets",
+  "keywords": []
+}</code></pre><h2>Sample output</h2><p>Each run returns rows like these, one per trend and country, with traffic as a number and the top news headline:</p><div class="tablewrap"><table><thead><tr><th scope="col">geo</th><th scope="col">rank</th><th scope="col">keyword</th><th scope="col">approxTraffic</th><th scope="col">approxTrafficText</th><th scope="col">startedAt</th><th scope="col">newsCount</th><th scope="col">topNewsTitle</th></tr></thead><tbody><tr><td class="cut">US</td><td class="cut">3</td><td class="cut">slayground</td><td class="cut">2000</td><td class="cut">2000+</td><td class="cut">2026-10-20T14:00:00.000Z</td><td class="cut">3</td><td class="cut">The First ‘Slayground’ Trailer Teases Death as a Treat</td></tr><tr><td class="cut">GB</td><td class="cut">1</td><td class="cut">interest rate</td><td class="cut">200</td><td class="cut">200+</td><td class="cut">2026-10-20T14:10:00.000Z</td><td class="cut">3</td><td class="cut">The Treasury market has been acting weird lately</td></tr><tr><td class="cut">DE</td><td class="cut">2</td><td class="cut">psg barca</td><td class="cut">500</td><td class="cut">500+</td><td class="cut">2026-10-20T14:10:00.000Z</td><td class="cut">3</td><td class="cut">Fußball: Wird der Champions-League-Knaller verschoben? PSG – Barça</td></tr><tr><td class="cut">BR</td><td class="cut">2</td><td class="cut">tocantins</td><td class="cut">2000</td><td class="cut">2000+</td><td class="cut">2026-10-20T13:30:00.000Z</td><td class="cut">3</td><td class="cut">Os números da pesquisa Real Time Big Data para governo do Tocantins no 2º turno</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~google-trends/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"geos": ["US", "GB", "DE", "FR", "BR"], "maxItemsPerGeo": 10, "onlyNewSinceLastRun": true, "monitorName": "daily-5-markets", "keywords": []}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "geos": [
+    "US",
+    "GB",
+    "DE",
+    "FR",
+    "BR"
+  ],
+  "maxItemsPerGeo": 10,
+  "onlyNewSinceLastRun": true,
+  "monitorName": "daily-5-markets",
+  "keywords": []
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~google-trends/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "geos": [
+        "US",
+        "GB",
+        "DE",
+        "FR",
+        "BR"
+    ],
+    "maxItemsPerGeo": 10,
+    "onlyNewSinceLastRun": True,
+    "monitorName": "daily-5-markets",
+    "keywords": []
+}
+
+run = client.actor("actor-forge/google-trends").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Trending Now rows cost $0.0005 each, so 5 countries × 10 trends is at most 50 rows or $0.025 per daily run, about $0.75 over 30 days before only-new mode skips repeats. The platform start fee at 256 MB adds $0.0000125 per run.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Trend result</td><td class="cut">Charged per Trending Now row (keyword, traffic, start time, picture, news articles)</td><td>$0.0005</td><td>$0.50</td><td class="cut">10 countries × 10 trends = $0.05; an hourly 'only new' schedule pays only for trends it hasn't returned before</td></tr><tr><td>Keyword explored</td><td class="cut">Charged per keyword whose interest over time, interest by region and related queries were all fetched (every row for it included)</td><td>$0.003</td><td>$3</td><td class="cut">5 keywords = $0.015 for ~90 timeline rows + regions + 50 related queries each; keywords Google rate-limited are free</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB = $0.0000125</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> Google Trends Scraper — Trending Now &amp; Interest Over Time runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/google-trends" rel="noopener">Run on Apify →</a> <a href="../../actors/google-trends/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>The feed shows the newest trends only, about 10 per country. It is not the full Trending Now page with its 24 and 48-hour filters, so schedule frequently if you do not want to miss short-lived spikes.</li><li>Traffic values are buckets, not counts. Two trends both at 2000 may differ a lot in reality; use the value to rank, not to forecast volume.</li><li>Keep one <code>monitorName</code> per schedule. Reusing a name across an hourly and a daily schedule makes one of them skip trends the other already delivered.</li><li>If you later add <code>keywords</code> for interest-over-time data, expect Google to rate-limit that part. Keywords it could not finish are free, and the Trending Now rows are unaffected.</li><li>Set a maximum total charge on the run if you are cost-sensitive; the actor stops cleanly at the cap.</li></ul><h2>FAQ</h2><details><summary>How often does the Trending Now feed change?</summary><p>The feed lists the newest trends per country, so its contents shift through the day as new searches spike. A daily run gives a snapshot; an hourly schedule with only-new mode catches more short-lived trends at the same per-row price.</p></details><details><summary>Can I track trending searches for a US state or a city?</summary><p>Trending Now in this actor is per country, using the two-letter codes in <code>geos</code>. Region-level data (states, cities) is only available in the keyword explore part, via <code>exploreGeo</code> and interest by region.</p></details><details><summary>Why does a small country return fewer than 10 trends?</summary><p>The official feed lists fewer trends for small countries. The actor returns whatever the feed contains up to <code>maxItemsPerGeo</code>, and you only pay for rows delivered.</p></details><details><summary>Will a trend that lasts two days show up twice?</summary><p>With only-new mode on, a trend is identified by country, keyword and start day, so the same trend with the same start day is skipped on later runs. The pandas step uses the same key to dedupe your history file.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/google-trends/">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></h3><p>Google Trends scraper and API: Trending Now searches for 125 countries from the official feed (traffic, start time, picture, news articles), plus…</p><span class="price">$0.50 per 1,000 · trend result</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/monitor-competitor-ads-google-ads-transparency/">How to Monitor Competitor Ads in Google Ads Transparency Center</a></h3><p>List your competitors&#x27; domains or advertiser names, run the ActorForge Ads Transparency actor daily with only-new mode, and route the new ads into…</p></div><div class="card"><h3><a href="../../guides/check-if-phrase-is-trademarked-uspto/">How to Check If a Phrase Is Trademarked (USPTO, in Bulk)</a></h3><p>Run your phrases through USPTO Trademark Search in contains mode with the classes for your product (25 for clothing, 21 for mugs). Anything marked…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

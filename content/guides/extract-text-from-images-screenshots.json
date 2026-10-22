@@ -1,0 +1,97 @@
+{
+  "slug": "extract-text-from-images-screenshots",
+  "category": "documents-ai",
+  "title": "How to Extract Text from Images and Screenshots in Bulk",
+  "metaTitle": "Extract Text from Images & Screenshots in Bulk (OCR)",
+  "metaDescription": "Extract text from screenshots, photos and receipts in bulk with OCR. Pick the right segmentation mode, filter noisy words and redact with word boxes.",
+  "actor": "image-to-text-ocr",
+  "alsoActors": [
+    "ocr-to-text"
+  ],
+  "summary": "Send image URLs to the Image to Text OCR actor, use the `sparse` segmentation mode for screenshots, and read the text and confidence per image. It costs $3 per 1,000 images.",
+  "intro": [
+    "Copying text out of one screenshot is easy. Doing it for a few thousand support screenshots, receipt photos or saved social posts is not, and the results vary a lot depending on whether the image is a clean UI capture or a skewed phone photo.",
+    "Generic OCR settings are tuned for full pages of text, so they often miss the scattered labels in a screenshot or merge columns in a receipt. The Image to Text OCR actor runs Tesseract 5 with a choice of page segmentation modes, returns a confidence score per image, and can return every word with its pixel box.",
+    "This guide picks settings for different image types, filters out unreliable results in Python, and uses word boxes to find and redact sensitive text."
+  ],
+  "steps": [
+    {
+      "name": "Get public links to the images",
+      "text": "The actor reads images by URL: PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000. HEIC and AVIF photos from phones and SVG are not supported, so convert photos to JPEG first. Files can be up to 100 MB each."
+    },
+    {
+      "name": "Pick a segmentation mode for the image type",
+      "text": "`pageSegmentation` controls how Tesseract looks for text. `auto` suits photos of documents and scanned pages. `sparse` looks for text anywhere and is the best start for UI screenshots, forms and infographics. `single-block` suits receipts and short snippets, and `single-column` suits uniform text. If you are unsure, run a small sample of images in two modes and compare confidence scores.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"urls\": [\n    \"https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png\"\n  ],\n  \"languages\": [\"eng\"],\n  \"pageSegmentation\": \"sparse\",\n  \"minWordConfidence\": 50\n}"
+      }
+    },
+    {
+      "name": "Set languages and noise filtering",
+      "text": "Choose up to 4 of the 29 languages in `languages`; screenshots from a localised app may need two. `minWordConfidence` drops words Tesseract is unsure about, which helps with compression artefacts, icons mistaken for letters and background patterns. Start around 40-60 and lower it if real words go missing."
+    },
+    {
+      "name": "Keep reliable results and queue the rest",
+      "text": "Each image is one row with `text`, `wordCount` and `confidence`. Very low confidence or very few words usually means a blurry photo, handwriting or an image with no real text. Split results into accepted and needs-review lists.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport requests\n\nurl = \"https://api.apify.com/v2/acts/actor-forge~image-to-text-ocr/run-sync-get-dataset-items\"\npayload = {\n    \"urls\": [\n        \"https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png\",\n        \"https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif\",\n    ],\n    \"pageSegmentation\": \"sparse\",\n}\nresp = requests.post(url, params={\"token\": os.environ[\"APIFY_TOKEN\"]}, json=payload, timeout=300)\nresp.raise_for_status()\n\naccepted, review = [], []\nfor row in resp.json():\n    conf = row.get(\"confidence\") or 0\n    if row.get(\"error\") or conf < 75 or (row.get(\"wordCount\") or 0) < 3:\n        review.append(row)\n    else:\n        accepted.append(row)\n\nprint(len(accepted), \"accepted;\", len(review), \"need review\")"
+      }
+    },
+    {
+      "name": "Find and redact sensitive text with word boxes",
+      "text": "Turn on `includeWords` to get every recognised word with its confidence and pixel box (left, top, width, height). The exact field names inside each word entry can be checked in your first run's dataset; the snippet below reads them defensively. With Pillow you can then draw filled rectangles over matching words, for example email addresses, before sharing the screenshot.",
+      "code": {
+        "lang": "python",
+        "code": "import io, re\nimport requests\nfrom PIL import Image, ImageDraw\n\nEMAIL = re.compile(r\"[\\w.+-]+@[\\w-]+\\.[\\w.]+\")\n\ndef redact(row, out_path):\n    img = Image.open(io.BytesIO(requests.get(row[\"url\"], timeout=60).content)).convert(\"RGB\")\n    draw = ImageDraw.Draw(img)\n    for w in row.get(\"words\") or []:\n        text = w.get(\"text\", \"\")\n        if EMAIL.search(text):\n            box = w.get(\"bbox\") or w\n            l, t = box[\"left\"], box[\"top\"]\n            draw.rectangle([l, t, l + box[\"width\"], t + box[\"height\"]], fill=\"black\")\n    img.save(out_path)"
+      }
+    },
+    {
+      "name": "Mix in scanned PDFs if you need to",
+      "text": "Scanned PDFs work in this actor too, page by page. If your batches regularly mix PDFs and images, [OCR to Text](actor:ocr-to-text) uses the same engine and pricing and is set up for mixed document intake."
+    }
+  ],
+  "sampleInput": {
+    "urls": [
+      "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png",
+      "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif"
+    ],
+    "languages": [
+      "eng"
+    ],
+    "pageSegmentation": "sparse",
+    "includeWords": true,
+    "minWordConfidence": 50
+  },
+  "sampleOutputNote": "Each image becomes one row with its file type, word count, confidence and the extracted text, as in the sample below.",
+  "costExample": "Extracting text from 2,500 support screenshots costs 2,500 x $0.003 = $7.50, with no compute charge on top. Images that fail to download or turn out blank are not charged.",
+  "tips": [
+    "Low-resolution thumbnails OCR badly; link to the full-size image whenever you can.",
+    "Images rotated by 90 or 180 degrees are not auto-rotated; slightly skewed photos are fine.",
+    "Handwriting and decorative fonts come out poorly. Use the confidence score rather than assuming every result is usable.",
+    "Charts and pictures with no text return little or nothing; that is expected, not an error."
+  ],
+  "faq": [
+    {
+      "q": "What is the best OCR setting for screenshots?",
+      "a": "Start with `pageSegmentation` set to `sparse`, which looks for text anywhere on the image rather than assuming a page layout. Compare it with `auto` on a few samples and keep the one with higher confidence."
+    },
+    {
+      "q": "Can I extract text from images on a web page?",
+      "a": "Yes, if you have the direct image URLs. Collect the image links first, then pass them in `urls`. Links that return a web page instead of an image are reported and not charged."
+    },
+    {
+      "q": "Does OCR keep the layout of the screenshot?",
+      "a": "It keeps line and paragraph breaks in reading order, not the visual layout. For positions, turn on `includeWords` to get each word's pixel box."
+    },
+    {
+      "q": "How do I process thousands of images?",
+      "a": "Pass them in batches via `urls`; `maxFiles` defaults to 1,000 per run and can go up to 10,000. Set a maximum total charge so a large batch stops cleanly at your budget."
+    }
+  ],
+  "related": [
+    "ocr-scanned-pdf-to-text-api",
+    "convert-pdf-to-markdown-for-rag"
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "name": "uk-planning-applications",
+  "category": "business-leads",
+  "h1": "UK Planning Applications Scraper: Weekly Lists from 15 Councils",
+  "metaTitle": "UK Planning Applications Scraper, 15 Councils | ActorForge",
+  "metaDescription": "New and decided UK planning applications from 15 council portals in one dataset: reference, proposal, address, status, dates, link. $3 per 1,000 applications.",
+  "tagline": "Each council's official weekly list of validated or decided planning applications, unified into one clean dataset with a link to every application.",
+  "intro": [
+    "Planning applications are one of the few public signals that building work is about to happen. The trouble is that every council publishes them on its own portal, with its own search forms and weekly lists, so checking a dozen areas each Monday is a morning's work.",
+    "This actor reads the weekly lists from **15 UK council planning portals** (all verified Idox portals) and returns them as one dataset: council, application reference, proposal text, site address, status, received and validated dates, and a deep link to the council's own application page. Choose `validated` for newly accepted applications or `decided` for fresh decisions, and how many recent weeks to fetch.",
+    "Validated applications are a proven lead source for builders, scaffolders, architects and other trades; decisions are useful to developers, land sourcers and analysts. Applicant and agent personal details are deliberately not collected, and the actor is polite to councils at no more than one request per second per portal."
+  ],
+  "howItWorks": [
+    "You pick councils from the list (or leave it empty for all 15), the list type (validated or decided) and how many weeks back to go.",
+    "For each council the actor opens the portal's weekly list and reads up to 20 result pages, about 200 applications at the usual page size.",
+    "Rows are normalised into one schema with council, reference, proposal, address, status, dates and the application URL.",
+    "If one council portal is down, that council is flagged in the run log and exit message and the run carries on with the rest.",
+    "The run stops at maxResults or your spend limit, and you are charged only for applications delivered."
+  ],
+  "inputExample": {
+    "councils": [
+      "leeds",
+      "bradford",
+      "york"
+    ],
+    "weeksBack": 2,
+    "dateType": "validated",
+    "maxResults": 500
+  },
+  "outputNote": "Every application comes back in the same shape whichever council it came from:",
+  "useCases": [
+    {
+      "title": "Weekly leads for trades",
+      "text": "Schedule a Monday run of validated applications for the councils you cover and send the list to your sales team. Proposal text such as 'erection of single storey rear extension' tells you what the job is, so you can filter for the work you do."
+    },
+    {
+      "title": "Land and development monitoring",
+      "text": "Switch dateType to decided to follow approvals and refusals in your target areas, and keep a history by appending each week's dataset."
+    },
+    {
+      "title": "Market analysis across councils",
+      "text": "Compare application volumes or proposal types across the 15 councils over several weeks to see where activity is picking up."
+    },
+    {
+      "title": "Alerts on specific sites or streets",
+      "text": "Filter the address field for postcodes or roads you care about, for example near a site you own, and get notified when something new is lodged."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge UK Planning Applications",
+      "Checking council portals by hand",
+      "Commercial planning data platforms"
+    ],
+    "rows": [
+      [
+        "Councils in one dataset",
+        "15",
+        "One portal at a time",
+        "Usually national"
+      ],
+      [
+        "National coverage",
+        "No, 15 councils",
+        "Yes, if you visit every portal",
+        "Often yes"
+      ],
+      [
+        "Validated and decided weekly lists",
+        "Yes",
+        "Yes",
+        "Yes"
+      ],
+      [
+        "Applicant and agent personal details",
+        "Not collected",
+        "Shown on some portals",
+        "Varies"
+      ],
+      [
+        "Output",
+        "JSON, CSV, Excel via the dataset",
+        "Web pages",
+        "Platform exports"
+      ],
+      [
+        "Link back to the official application",
+        "Yes, on every row",
+        "Yes",
+        "Varies"
+      ],
+      [
+        "Cost",
+        "$3 per 1,000 applications",
+        "Free, your time",
+        "Subscription"
+      ]
+    ]
+  },
+  "comparisonNote": "If you need every council in the country, a commercial planning data platform or the portals themselves will reach further. If your patch is covered by the 15 councils here, this is a low-cost way to get clean weekly lists without visiting each portal.",
+  "faq": [
+    {
+      "q": "Which UK councils are covered?",
+      "a": "Isle of Wight, Durham, Barnet (London), Leeds, York, Cornwall, Trafford, Gateshead, Bradford, Aberdeen, Aberdeenshire, Sunderland, Southampton, Greater Cambridge and Oxford. Leave councils empty to fetch all 15."
+    },
+    {
+      "q": "What is the difference between validated and decided applications?",
+      "a": "Validated means the council has accepted the application as complete and it is now being considered, which is the lead-generation signal that work may be coming. Decided lists applications that have just received a decision."
+    },
+    {
+      "q": "Why does my run return very few applications early in the week?",
+      "a": "Weekly lists roll over on Mondays, so the newest list can be nearly empty at the start of the week. Set weeksBack to 2 if you always want at least one full week."
+    },
+    {
+      "q": "Does it include the applicant's name or contact details?",
+      "a": "No. Applicant and agent personal details are deliberately not collected. You get the reference, proposal, site address, status, dates and a link to the council's page."
+    },
+    {
+      "q": "Can a busy council's week be cut off?",
+      "a": "Possibly. Each weekly list is read up to 20 result pages, about 200 applications, which covers a normal week for most councils. An unusually busy week at a large council can be truncated at that point."
+    },
+    {
+      "q": "How much does a weekly run cost?",
+      "a": "$0.003 per application. A typical single-council week of about 25 applications costs around $0.08, and 1,000 applications cost $3.00."
+    }
+  ],
+  "related": [
+    "uk-companies-house-enrichment",
+    "business-places-data"
+  ],
+  "guides": [
+    "uk-planning-applications-leads"
+  ]
+}

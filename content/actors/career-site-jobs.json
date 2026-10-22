@@ -1,0 +1,140 @@
+{
+  "name": "career-site-jobs",
+  "category": "business-leads",
+  "h1": "Career Site Jobs Scraper for Workday, Greenhouse, Lever and Ashby",
+  "metaTitle": "Workday, Greenhouse, Lever & Ashby Jobs API | ActorForge",
+  "metaDescription": "Scrape jobs straight from company career sites on Workday, Greenhouse, Lever, Ashby and 5 more ATS. One schema, salary where published. $3 per 1,000 jobs.",
+  "tagline": "Every open job from a company's own careers site, across nine applicant tracking systems, in one clean schema with salary where the employer publishes it.",
+  "intro": [
+    "Job boards are a copy of a copy. The original posting lives on the company's own careers site, which is almost always powered by an applicant tracking system such as Workday, Greenhouse, Lever or Ashby. Reading those directly gives you fresher, more complete listings, real posting dates and salary ranges where the employer publishes them.",
+    "This actor reads the public job feeds of **nine ATS: Workday, Greenhouse, Lever, Ashby, Workable, Recruitee, Teamtailor, Personio and BambooHR**. Pass careers URLs or `ats:slug` shortcuts, or switch on `searchAllCompanies` to scan the built-in index of 811 Greenhouse, Lever and Ashby companies (YC startups plus well-known employers) without knowing any names. Every posting comes back with title, company, department, team, location, country, remote/hybrid/onsite, employment type, salary min/max/currency, posted date and apply link, plus an optional full description.",
+    "Workday sites are read through the same JSON the careers page uses, so you get real posting dates instead of 'Posted 30+ Days Ago', and searches past Workday's 2,000-result cap are split automatically. It is built for recruiters, job-board and newsletter builders, hiring-signal sales teams, labor-market researchers and AI agents that need a jobs tool."
+  ],
+  "howItWorks": [
+    "Each entry in companies is recognized as a careers URL, an ats:slug pair (for example greenhouse:gusto) or a company name or domain from the built-in index; with searchAllCompanies on, the whole index is scanned instead.",
+    "The actor calls each ATS's public job feed. For Workday it makes one detail request per job, at most 5 at a time per company, to get the real posting date and description.",
+    "Keyword, exclude-keyword, location, remote and recency filters are applied as case-insensitive substring matches; filtered-out jobs are never charged.",
+    "Salary is parsed where the employer publishes it in structured form, and every posting is mapped into one schema.",
+    "The run stops at maxJobs or your spend limit; sites whose robots.txt disallows job pages are skipped and not charged."
+  ],
+  "inputExample": {
+    "companies": [
+      "https://boards.greenhouse.io/gusto",
+      "https://jobs.lever.co/spotify",
+      "https://jobs.ashbyhq.com/amplitude",
+      "https://adobe.wd5.myworkdayjobs.com/external_experienced"
+    ],
+    "keywords": [
+      "engineer"
+    ],
+    "postedWithinDays": 30,
+    "maxJobs": 200,
+    "includeDescription": false
+  },
+  "outputNote": "Postings from different ATS come back in one shared schema, like these:",
+  "useCases": [
+    {
+      "title": "Hiring-signal prospecting",
+      "text": "Find out who is hiring data engineers, security staff or sales reps right now by scanning the index with keywords."
+    },
+    {
+      "title": "Job boards and newsletters",
+      "text": "Feed a niche board or a weekly jobs email with postings straight from career sites, filtered by keyword, location and remoteOnly, with posted dates you can trust."
+    },
+    {
+      "title": "Recruiting and sourcing",
+      "text": "Track every open role at a list of target companies across Workday, Greenhouse and Lever in one dataset, and spot new openings with postedWithinDays."
+    },
+    {
+      "title": "Salary and labor-market research",
+      "text": "Collect salary ranges where employers publish them (common on Ashby) and compare titles, locations and workplace types across hundreds of companies."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Career Site Jobs",
+      "Job board scrapers",
+      "Single-ATS scrapers"
+    ],
+    "rows": [
+      [
+        "Source",
+        "Company careers sites (9 ATS)",
+        "Aggregated job boards",
+        "One ATS"
+      ],
+      [
+        "Workday real posting dates",
+        "Yes",
+        "Varies",
+        "Only if Workday-specific"
+      ],
+      [
+        "Search without knowing company names",
+        "Yes, 811-company index",
+        "Yes, whole board",
+        "No"
+      ],
+      [
+        "Companies with custom-built careers pages",
+        "No",
+        "Yes, if they post to the board",
+        "No"
+      ],
+      [
+        "SmartRecruiters",
+        "No",
+        "Varies",
+        "Varies"
+      ],
+      [
+        "Salary",
+        "Where the employer publishes it in structured form",
+        "Varies",
+        "Varies"
+      ],
+      [
+        "Price",
+        "$3 per 1,000 jobs",
+        "Varies",
+        "Varies; the leading multi-ATS actor is $12 per 1,000 plus a start fee"
+      ]
+    ]
+  },
+  "comparisonNote": "Job board scrapers reach companies with custom careers pages or unsupported ATS such as SmartRecruiters, which this actor cannot read. If the companies you care about use one of the nine supported ATS, going to the source is fresher and cheaper.",
+  "faq": [
+    {
+      "q": "Which applicant tracking systems are supported?",
+      "a": "Workday (*.myworkdayjobs.com), Greenhouse, Lever, Ashby (including EU Greenhouse and Lever hosts), Workable, Recruitee, Teamtailor, Personio and BambooHR. SmartRecruiters and custom-built careers pages are not supported."
+    },
+    {
+      "q": "Can I search jobs without listing company names?",
+      "a": "Yes. Set searchAllCompanies to true to scan the built-in index of 811 Greenhouse, Lever and Ashby companies verified on 2026-10-18, then narrow with keywords, locations, remoteOnly, industries and postedWithinDays. Workday and the other ATS need the company's careers URL."
+    },
+    {
+      "q": "Why are Workday posting dates more accurate here?",
+      "a": "Workday's careers page shows relative labels like 'Posted 30+ Days Ago'. The actor makes one detail request per job, which is where the real posting date and description live, so postedAt is an actual date."
+    },
+    {
+      "q": "Does every job include a salary?",
+      "a": "No. Salary is returned only where the employer publishes it in structured form, which is common on Ashby, sometimes on Lever and Recruitee and rare elsewhere. Otherwise the salary fields are null."
+    },
+    {
+      "q": "Are recruiter names or emails included?",
+      "a": "No. The actor lists only currently open, publicly listed jobs as shown on the careers page. Recruiter names, job mailboxes and application-form fields are never returned."
+    },
+    {
+      "q": "How much does it cost?",
+      "a": "$0.003 per job delivered, with the full description included at no extra cost. 100 jobs cost $0.30 and 1,000 jobs cost $3; a full index scan for remote data roles (about 400 jobs) is roughly $1.20."
+    }
+  ],
+  "related": [
+    "startup-funding-rounds",
+    "any-url-to-markdown",
+    "business-places-data"
+  ],
+  "guides": [
+    "find-company-job-board-ats"
+  ]
+}

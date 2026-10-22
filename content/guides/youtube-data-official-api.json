@@ -1,0 +1,104 @@
+{
+  "slug": "youtube-data-official-api",
+  "category": "video-social",
+  "title": "How to Get YouTube Data With the Official API (Free Key, No Code)",
+  "metaTitle": "Get YouTube Data With the Official API (No Code)",
+  "metaDescription": "Pull YouTube video stats, channel uploads, search results and comments from the official Data API v3 with a free key and no client code to write.",
+  "actor": "youtube-api-scraper",
+  "alsoActors": [
+    "youtube-channel-api",
+    "youtube-search-api",
+    "youtube-comments-api"
+  ],
+  "summary": "Create a free YouTube Data API v3 key in Google Cloud (no billing account), paste it into an ActorForge YouTube actor, and get video, channel, search or comment rows without writing or maintaining your own API client. You still use your own key and its 10,000 free daily quota units.",
+  "intro": [
+    "The official YouTube Data API v3 is the reliable way to get YouTube data: no page scraping, no proxies, no blocks. The catch is the work around it. You have to batch video IDs 50 at a time, page through uploads playlists, call a second endpoint to get stats for search results, handle reply threads, and stop gracefully when the quota runs out.",
+    "The ActorForge YouTube actors do that client work for you, but they do not hide the key: every run uses **your own** API key and quota. There is no shared or built-in key, ActorForge never holds or pools keys, and the data is fetched under your key into your own dataset. What you skip is the code, not the Google Cloud step.",
+    "This guide walks through creating the key, choosing the right actor and mode for your job, budgeting quota, and post-processing the results. ActorForge is not affiliated with or endorsed by YouTube or Google."
+  ],
+  "steps": [
+    {
+      "name": "Create a free YouTube Data API v3 key",
+      "text": "Open the Google Cloud Console, sign in with any Google account and create a project. Under APIs & Services, open the Library, search for YouTube Data API v3 and enable it. Then go to Credentials, create an API key and copy it; it starts with AIza. You do not need to add a billing account. If you restrict the key, allow YouTube Data API v3 but leave out HTTP-referrer and IP restrictions, because Apify runs on changing server IPs."
+    },
+    {
+      "name": "Pick the actor that matches your job",
+      "text": "All four actors share the same `mode` field and the same key. Use [YouTube Scraper](actor:youtube-api-scraper) for details and stats on a list of video URLs or IDs, [YouTube Channel Scraper](actor:youtube-channel-api) for a channel's stats plus its uploads, [YouTube Search Scraper](actor:youtube-search-api) for ranked keyword results, and [YouTube Comments Scraper](actor:youtube-comments-api) for comments and replies with author fields stripped. The listings differ mainly in default mode and pricing: video rows are $0.40 per 1,000 on the scraper and channel actors, while the search actor charges $0.30 per 1,000 results."
+    },
+    {
+      "name": "Budget your daily quota before a big run",
+      "text": "Each Google Cloud project gets 10,000 free units a day, reset at midnight Pacific Time. Video lookups cost 1 unit per 50 videos, channel mode about 1 unit per channel plus about 2 per 50 videos, comments 1 unit per 100, and search 101 units per page of 50. In practice that is about 500,000 video lookups, 250,000 channel videos, 1,000,000 comments, or only about 5,000 search results a day. The run log prints an estimate before any call is made, so check it on your first run.",
+      "code": {
+        "lang": "python",
+        "code": "# Rough quota estimate for a planned run (units per the actor README)\nimport math\n\ndef quota_units(videos=0, channels=0, channel_videos=0, comments=0, search_results=0):\n    units = math.ceil(videos / 50)\n    units += channels + 2 * math.ceil(channel_videos / 50)\n    units += math.ceil(comments / 100)\n    units += 101 * math.ceil(search_results / 50)\n    return units\n\nprint(quota_units(channels=20, channel_videos=4000))  # 180\nprint(quota_units(search_results=2000))               # 4040\nprint(quota_units(comments=50000))                    # 500"
+      }
+    },
+    {
+      "name": "Run channel mode and compute engagement",
+      "text": "A common first job is to export a channel's recent uploads and rank them by engagement. Channel mode returns one row with `type` channel and then one row per video. Likes can be null when a creator hides them, so convert to numbers before dividing.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/youtube-channel-api\").call(run_input={\n    \"apiKey\": os.environ[\"YOUTUBE_API_KEY\"],\n    \"mode\": \"channel\",\n    \"channels\": [\"https://www.youtube.com/@googledevelopers\"],\n    \"maxVideosPerChannel\": 200,\n    \"publishedAfter\": \"2026-01-01\",\n})\nrows = list(client.dataset(run[\"defaultDatasetId\"]).iterate_items())\n\nvideos = pd.DataFrame([r for r in rows if r.get(\"type\") == \"video\"])\nfor col in [\"viewCount\", \"likeCount\", \"commentCount\"]:\n    videos[col] = pd.to_numeric(videos[col], errors=\"coerce\")\nvideos[\"engagement\"] = (videos[\"likeCount\"].fillna(0) + videos[\"commentCount\"].fillna(0)) / videos[\"viewCount\"]\nprint(videos.sort_values(\"engagement\", ascending=False)[[\"title\", \"viewCount\", \"engagement\"]].head(10))"
+      }
+    },
+    {
+      "name": "Use search mode sparingly and split big topics",
+      "text": "Search is where quota goes fastest, and YouTube returns at most about 500 results per query. Rather than asking for 500 results on one broad term, run several narrower queries or slice by date with `publishedAfter` and `publishedBefore`. Duplicates across queries are removed, so overlapping queries do not double-bill the same video.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"apiKey\": \"AIzaSy...your-own-key\",\n  \"mode\": \"search\",\n  \"searchQueries\": [\"n8n tutorial\", \"n8n workflow automation\", \"n8n vs zapier\"],\n  \"maxResultsPerQuery\": 100,\n  \"order\": \"viewCount\",\n  \"publishedAfter\": \"2026-01-01\",\n  \"videoDuration\": \"medium\"\n}"
+      }
+    },
+    {
+      "name": "Export comments for text analysis",
+      "text": "For sentiment or topic work, switch to comments mode. Commenter names, channel IDs and avatars are stripped from every row, and replies arrive as their own rows linked by `parentId`. Keep `maxRepliesPerComment` modest so one huge thread does not dominate the dataset.",
+      "code": {
+        "lang": "python",
+        "code": "import os, csv\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/youtube-comments-api\").call(run_input={\n    \"apiKey\": os.environ[\"YOUTUBE_API_KEY\"],\n    \"mode\": \"comments\",\n    \"videoUrls\": [\"https://www.youtube.com/watch?v=jNQXAC9IVRw\"],\n    \"maxCommentsPerVideo\": 300,\n    \"includeReplies\": True,\n    \"maxRepliesPerComment\": 10,\n})\n\nwith open(\"comments.csv\", \"w\", newline=\"\", encoding=\"utf-8\") as f:\n    w = csv.writer(f)\n    w.writerow([\"videoId\", \"isReply\", \"likeCount\", \"publishedAt\", \"text\"])\n    for r in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n        if r.get(\"type\") == \"error\":\n            continue\n        w.writerow([r.get(\"videoId\"), r.get(\"isReply\"), r.get(\"likeCount\"), r.get(\"publishedAt\"), r.get(\"text\")])"
+      }
+    },
+    {
+      "name": "Schedule refreshes and respect the 30-day rule",
+      "text": "YouTube's Developer Policies require stored API data to be refreshed or deleted at least every 30 days, and stats such as views change constantly anyway. Create an Apify schedule that re-runs the actor with the same input, for example weekly, and set a retention period on the datasets you keep. ActorForge keeps no copy of the data after the run."
+    }
+  ],
+  "sampleInput": {
+    "apiKey": "AIzaSy...your-own-key",
+    "mode": "videos",
+    "videoUrls": [
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "https://youtu.be/jNQXAC9IVRw"
+    ]
+  },
+  "sampleOutputNote": "In videos mode, each URL or ID comes back as one row with full stats, like these:",
+  "costExample": "Looking up 1,000 videos by ID costs 1,000 × $0.0004 = $0.40 and about 20 quota units. Exporting one channel with 500 uploads costs $0.0005 for the channel row plus 500 × $0.0004 = $0.20, so $0.2005 in total, plus the small actor start fee.",
+  "tips": [
+    "Without a key the run stops at once with instructions and nothing is charged, so a missing key will not cost you anything.",
+    "A `403 quotaExceeded` error stops the run cleanly and keeps the rows already delivered; wait for the midnight Pacific reset rather than re-running immediately.",
+    "Quota is per Google Cloud project, not per actor, so the four YouTube actors all draw from the same 10,000 daily units when they use the same key.",
+    "Do not expect dislike counts, watch time, revenue or subscriber lists: the public API does not return them, and hidden like counts come back as null.",
+    "`isShort` is a heuristic (3 minutes or less and not live); turning off `includeShorts` in channel mode also drops regular videos of that length."
+  ],
+  "faq": [
+    {
+      "q": "Is the YouTube Data API free to use?",
+      "a": "Yes, within the quota. Each Google Cloud project gets 10,000 units per day at no charge and no billing account is needed. The ActorForge actors charge per row delivered on top of that, but never for the API itself."
+    },
+    {
+      "q": "Can I use these actors without creating my own API key?",
+      "a": "No. There is no built-in or shared key; every run uses your own key and quota. ActorForge sells the API client, not access to someone else's key."
+    },
+    {
+      "q": "Is my API key safe in the actor input?",
+      "a": "The `apiKey` field is a secret input, so Apify stores it encrypted. The actor uses it only for that run's calls to googleapis.com and never logs it or writes it to the output. You can revoke or rotate it at any time in the Google Cloud Console."
+    },
+    {
+      "q": "Which method gets the most data from a free key?",
+      "a": "Video lookups and comments are cheap in quota (1 unit per 50 videos or per 100 comments), while search costs 100 units per page. If you already have video IDs, look them up in videos mode instead of re-finding them through search."
+    }
+  ],
+  "related": [
+    "google-trends-trending-searches-by-country",
+    "monitor-competitor-ads-google-ads-transparency"
+  ]
+}

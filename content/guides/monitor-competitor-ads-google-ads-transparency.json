@@ -1,0 +1,103 @@
+{
+  "slug": "monitor-competitor-ads-google-ads-transparency",
+  "category": "seo-marketing",
+  "title": "How to Monitor Competitor Ads in Google Ads Transparency Center",
+  "metaTitle": "Monitor Competitor Ads in Google Ads Transparency",
+  "metaDescription": "Track competitors' new Google ads automatically: search the Ads Transparency Center by domain, schedule daily runs, get only new ads in Slack or a sheet.",
+  "actor": "ads-transparency",
+  "alsoActors": [],
+  "summary": "List your competitors' domains or advertiser names, run the ActorForge Ads Transparency actor daily with only-new mode, and route the new ads into Slack, a sheet or a weekly review.",
+  "intro": [
+    "Google's Ads Transparency Center lets anyone see the ads an advertiser runs across Search, YouTube, Display, Shopping and Maps. It is a great research tool, but it has no alerts and no export, so keeping up with five competitors means clicking through five advertiser pages and trying to remember what you saw last week.",
+    "The [Ads Transparency actor](actor:ads-transparency) reads the same public ad library and returns one row per ad, with format, first and last shown dates, landing domain, media URLs and a link to the ad's page. Its monitoring mode remembers every ad it has delivered and only returns new ones on the next run, without charging for the rest.",
+    "This guide builds a daily competitor ad monitor: choosing how to identify competitors, setting filters, scheduling, sending new ads somewhere useful and analyzing the history."
+  ],
+  "steps": [
+    {
+      "name": "Decide how to identify each competitor",
+      "text": "You have three options. `domains` (for example nike.com) returns every ad Google shows for that domain, including ads placed by agencies and resellers. `advertiserNames` (for example HubSpot) matches the company name as shown in the Transparency Center and keeps all of a brand's legal entities. `advertiserIds` takes the AR… ID from an adstransparency.google.com/advertiser/AR… link and is the most precise. Domains are the easiest starting point; switch to IDs if a domain search pulls in advertisers you do not care about."
+    },
+    {
+      "name": "Narrow by market and format",
+      "text": "Use `regions` with two-letter country codes to keep only ads shown in your markets, and `formats` (text, image, video) if you only care about, say, video creatives. `dateFrom` and `dateTo` limit results to ads shown in a date window, useful for a first backfill. Leave filters empty to see everything."
+    },
+    {
+      "name": "Cap the volume per competitor",
+      "text": "`maxAdsPerAdvertiser` counts ads read newest first for each domain, name or ID, and `maxResults` caps the whole run. For a daily monitor a small per-advertiser cap such as 20 to 50 keeps runs fast and cheap, because new ads appear at the top of the list. Raise it once for an initial backfill if you want the history."
+    },
+    {
+      "name": "Switch on monitoring mode",
+      "text": "Set `onlyNewSinceLastRun` to true and choose a `monitorName` per watch list, for example uk-competitors. Every delivered ad is remembered in the key-value store ads-seen-<monitorName>, and later runs skip it at no charge. Decide whether you need `includeDetails`: it adds countries shown, impression ranges and best-effort headline and description text for $0.001 per ad, which is worth it for creative research but not essential for alerts.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"domains\": [\"competitor-one.com\", \"competitor-two.com\"],\n  \"advertiserNames\": [\"HubSpot\"],\n  \"regions\": [\"GB\"],\n  \"formats\": [],\n  \"maxAdsPerAdvertiser\": 30,\n  \"maxResults\": 500,\n  \"includeDetails\": false,\n  \"onlyNewSinceLastRun\": true,\n  \"monitorName\": \"uk-competitors\"\n}"
+      }
+    },
+    {
+      "name": "Schedule it daily",
+      "text": "Save the input as an Apify task and attach a schedule with a cron expression like `0 8 * * *`. The first run returns the current set of ads up to your caps; from then on, each run returns only ads that appeared since. Add a webhook on run success that calls your own endpoint with the run's dataset ID."
+    },
+    {
+      "name": "Send new ads to Slack",
+      "text": "In the webhook handler, fetch the run's dataset and post a short summary to a Slack incoming webhook. Empty runs post nothing, so the channel only lights up when a competitor launches something.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport requests\n\n# Called from your webhook handler with the finished run's dataset ID\ndef post_new_ads(dataset_id: str, slack_webhook_url: str) -> None:\n    items = requests.get(\n        f\"https://api.apify.com/v2/datasets/{dataset_id}/items\",\n        params={\"clean\": \"true\"},\n        headers={\"Authorization\": f\"Bearer {os.environ['APIFY_TOKEN']}\"},\n        timeout=60,\n    ).json()\n    if not items:\n        return\n    lines = [f\"*{len(items)} new competitor ads*\"]\n    for ad in items[:20]:\n        lines.append(f\"{ad.get('advertiserName')} | {ad.get('format')} | \"\n                     f\"{ad.get('landingDomain')} | {ad.get('previewUrl')}\")\n    requests.post(slack_webhook_url, json={\"text\": \"\\n\".join(lines)}, timeout=30)\n"
+      }
+    },
+    {
+      "name": "Analyze format mix and long-running creatives",
+      "text": "Once you have a backfill, load it into pandas to see each advertiser's format mix and which creatives have stayed live longest. Long-running ads are usually the ones a competitor keeps paying for, so they are a good place to start when studying their messaging.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/ads-transparency\").runs().list(desc=True, limit=1, status=\"SUCCEEDED\").items[0]\nads = pd.DataFrame(client.dataset(run[\"defaultDatasetId\"]).iterate_items())\n\nads[\"firstShown\"] = pd.to_datetime(ads[\"firstShown\"])\nads[\"lastShown\"] = pd.to_datetime(ads[\"lastShown\"])\nads[\"daysLive\"] = (ads[\"lastShown\"] - ads[\"firstShown\"]).dt.days\n\n# Format mix per advertiser\nprint(ads.pivot_table(index=\"advertiserName\", columns=\"format\",\n                      values=\"previewUrl\", aggfunc=\"count\", fill_value=0))\n\n# Long-running creatives are usually the ones that perform\nprint(ads.sort_values(\"daysLive\", ascending=False)\n         [[\"advertiserName\", \"format\", \"daysLive\", \"landingDomain\", \"previewUrl\"]]\n         .head(20))\n"
+      }
+    }
+  ],
+  "sampleInput": {
+    "domains": [
+      "nike.com"
+    ],
+    "advertiserNames": [
+      "HubSpot"
+    ],
+    "regions": [],
+    "maxAdsPerAdvertiser": 20,
+    "maxResults": 200,
+    "includeDetails": false,
+    "onlyNewSinceLastRun": true,
+    "monitorName": "competitors-daily"
+  },
+  "sampleOutputNote": "Rows look like this, one per ad creative, with a link to the ad's own Transparency Center page:",
+  "costExample": "Ads cost $0.0006 each and details $0.001 each, so a first run of 100 ads is $0.06, or $0.16 with details. After that, a daily monitor that finds around 20 new ads costs about $0.012 a day, roughly $0.36 a month.",
+  "tips": [
+    "There is no keyword search over ad text in the Transparency Center, so you cannot ask for all ads mentioning a phrase. Build your list from competitor domains and advertiser names instead.",
+    "Many Google text ads are published only as a rendered image. Even with details on, expect some text ads to have a preview image and no headline text.",
+    "Advertiser country is filled for advertiser-name searches only; domain and ID searches leave it empty.",
+    "If Google shows a CAPTCHA or unusual-traffic page, the run stops early with the ads already delivered and says so in the status message. Blocked requests are free; just let the next scheduled run continue.",
+    "Use separate `monitorName` values for separate watch lists so their seen-ads memories do not overlap."
+  ],
+  "faq": [
+    {
+      "q": "Will I see ads from agencies running campaigns for my competitor?",
+      "a": "Yes, if you search by domain. A domain search returns ads from every advertiser that advertises that domain, including agencies and resellers. An advertiser-name or ID search returns only that advertiser's ads."
+    },
+    {
+      "q": "Can I reset the monitor and start over?",
+      "a": "Use a new `monitorName`. The seen-ads memory is stored per name, so a fresh name starts with an empty history while the old one stays intact."
+    },
+    {
+      "q": "Can I see how many impressions a competitor's ad got?",
+      "a": "With `includeDetails` on, the actor returns the impression ranges Google publishes per country, along with first and last shown dates per country. These are ranges, not exact numbers."
+    },
+    {
+      "q": "How far back can I go?",
+      "a": "The actor reads ads newest first as the Transparency Center lists them, up to `maxAdsPerAdvertiser` per search. Use `dateFrom` and `dateTo` to focus on a window, and raise the cap for a one-off backfill."
+    }
+  ],
+  "related": [
+    "google-trends-trending-searches-by-country",
+    "export-shopify-store-product-data",
+    "audit-every-url-in-sitemap-seo"
+  ]
+}

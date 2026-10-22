@@ -1,0 +1,100 @@
+{
+  "slug": "uk-company-directors-companies-house-export",
+  "category": "business-leads",
+  "title": "How to Export UK Company Directors from Companies House in Bulk",
+  "metaTitle": "Export UK Company Directors from Companies House",
+  "metaDescription": "Export directors and officers for hundreds of UK companies from the official Companies House API, by company number or by SIC code, status and location.",
+  "actor": "uk-companies-house-enrichment",
+  "alsoActors": [],
+  "summary": "Give [Companies House Enrichment](actor:uk-companies-house-enrichment) a list of company numbers or a SIC code, status and location filter, keep includeOfficers on, then flatten the nested officers list into one row per director. Dates of birth and personal addresses are never returned.",
+  "intro": [
+    "Companies House shows each company's officers on its own page, which is fine for one firm and tedious for a list. The free API exposes the same data, but you have to call the profile, officers and filing history endpoints separately, combine them and stay inside the rate limit of 600 requests per 5 minutes.",
+    "If what you need is a spreadsheet of directors for a set of companies, say every active scaffolding firm in Manchester incorporated since 2020, or the officers behind 300 suppliers in your purchase ledger, you want that stitched together already, with one row per person you can filter and sort.",
+    "This guide covers choosing companies by number or by filters, finding SIC codes, running the export, turning nested officers into a flat director list, and keeping the output privacy-safe."
+  ],
+  "steps": [
+    {
+      "name": "Choose how to select companies",
+      "text": "There are three ways in, in this order of priority. companyNumbers enriches exactly the companies you list. If no numbers are given, the advanced filters (sicCodes, companyStatus, incorporatedFrom, incorporatedTo, location) run a targeted search. If there are neither, searchTerms runs a free-text name search such as 'plumbing manchester'."
+    },
+    {
+      "name": "Find the SIC codes for your sector",
+      "text": "SIC codes are the Standard Industrial Classification codes companies declare on the register. 43991 is scaffolding, for example, and you can pass several codes at once. Combine them with companyStatus active and a location such as 'Manchester' to get a targeted list of trading companies with a registered office in that area.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"sicCodes\": [\"43991\", \"43999\"],\n  \"companyStatus\": \"active\",\n  \"incorporatedFrom\": \"2020-01-01\",\n  \"location\": \"Manchester\",\n  \"maxResults\": 500,\n  \"includeOfficers\": true,\n  \"includeFilings\": false\n}"
+      }
+    },
+    {
+      "name": "Or enrich a list of company numbers you already have",
+      "text": "Paste company numbers into companyNumbers to enrich exactly those firms. Keep them as text: UK company numbers often start with zeros or letters, and spreadsheets tend to strip leading zeros. Mistyped numbers are skipped and never charged, so check the run's row count against your list.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"companyNumbers\": [\"09876543\", \"12345678\", \"SC123456\"],\n  \"includeOfficers\": true,\n  \"includeFilings\": true\n}"
+      }
+    },
+    {
+      "name": "Flatten officers into one row per director",
+      "text": "Each company row has an officers list with name, role, appointedOn, resignedOn, nationality and occupation, up to 100 per company. The script below turns that into a flat CSV of current directors only (no resignation date), with the company's number, name, status and SIC codes on every line.",
+      "code": {
+        "lang": "python",
+        "code": "import csv\nimport os\n\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/uk-companies-house-enrichment\").call(run_input={\n    \"sicCodes\": [\"43991\"],\n    \"companyStatus\": \"active\",\n    \"location\": \"Manchester\",\n    \"maxResults\": 500,\n    \"includeOfficers\": True,\n    \"includeFilings\": False,\n})\n\nwith open(\"directors.csv\", \"w\", newline=\"\", encoding=\"utf-8\") as f:\n    writer = csv.writer(f)\n    writer.writerow([\"companyNumber\", \"companyName\", \"status\", \"sicCodes\",\n                     \"officerName\", \"role\", \"appointedOn\", \"occupation\"])\n    for company in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n        for officer in company.get(\"officers\") or []:\n            if officer.get(\"resignedOn\"):\n                continue\n            if \"director\" not in (officer.get(\"role\") or \"\").lower():\n                continue\n            writer.writerow([\n                company[\"companyNumber\"], company[\"name\"], company.get(\"status\"),\n                \" \".join(company.get(\"sicCodes\") or []),\n                officer[\"name\"], officer[\"role\"], officer.get(\"appointedOn\"),\n                officer.get(\"occupation\"),\n            ])"
+      }
+    },
+    {
+      "name": "Use filings to qualify the list",
+      "text": "With includeFilings on, each company carries its 25 most recent filings with date, category, type and description. That is enough to spot companies that have recently filed accounts or changed officers, or to drop ones whose history suggests they are winding down. Leave it off if you only need directors; the price per company is the same."
+    },
+    {
+      "name": "Plan for throughput on big exports",
+      "text": "Companies House allows 600 requests per 5 minutes, and a fully enriched company uses 3 requests, so expect about 180 companies per 5 minutes on the shared key. For large or frequent exports, get a free key from developer.company-information.service.gov.uk and put it in apiKey for dedicated throughput."
+    },
+    {
+      "name": "Handle director data responsibly",
+      "text": "The actor never returns officers' dates of birth or personal addresses, only statutory register fields. Directors' names and roles are still personal data, so make sure you have a lawful basis for any outreach and keep the export to what you need."
+    }
+  ],
+  "sampleInput": {
+    "sicCodes": [
+      "43991"
+    ],
+    "companyStatus": "active",
+    "incorporatedFrom": "2020-01-01",
+    "location": "Manchester",
+    "maxResults": 200,
+    "includeOfficers": true,
+    "includeFilings": true
+  },
+  "sampleOutputNote": "Each company row arrives with officers and filings nested inside it, summarised in the table below:",
+  "costExample": "Exporting directors for 500 companies costs 500 x $0.005 = $2.50, with profile, officers and filings included in that price. Companies that are not found cost nothing.",
+  "tips": [
+    "companyNumbers takes priority over everything else, so clear it if you want the SIC code filters to run.",
+    "searchTerms is ignored whenever company numbers or advanced filters are given.",
+    "Officers include resigned ones by default; filter on resignedOn to keep only current directors.",
+    "Coverage is UK-registered companies only: England, Wales, Scotland and Northern Ireland.",
+    "Set a run budget if you are unsure how many companies a filter will match; the actor stops cleanly at the cap."
+  ],
+  "faq": [
+    {
+      "q": "Can I download all directors of a company from Companies House for free?",
+      "a": "Yes, one company at a time on the Companies House website or through its free API. This actor is for doing it in bulk in one dataset, at $0.005 per company."
+    },
+    {
+      "q": "Does the export include officers other than directors?",
+      "a": "Yes. The officers list holds directors and other officers, up to 100 per company, each with a role, so you can keep directors only, as in the script, or include every role."
+    },
+    {
+      "q": "Why is my director missing a date of birth?",
+      "a": "Dates of birth are deliberately never returned, along with personal addresses. Only statutory business-register fields are included."
+    },
+    {
+      "q": "Can I export dissolved companies too?",
+      "a": "Yes. Set companyStatus to dissolved or liquidation, or to any to disable the status filter."
+    }
+  ],
+  "related": [
+    "uk-planning-applications-leads",
+    "sec-form-d-startup-funding-data",
+    "business-leads-without-google-maps"
+  ]
+}

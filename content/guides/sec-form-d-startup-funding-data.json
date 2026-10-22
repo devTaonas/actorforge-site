@@ -1,0 +1,101 @@
+{
+  "slug": "sec-form-d-startup-funding-data",
+  "category": "business-leads",
+  "title": "How to Get SEC Form D Startup Funding Data as a Daily Feed",
+  "metaTitle": "SEC Form D Startup Funding Data, Daily | ActorForge",
+  "metaDescription": "Turn SEC Form D filings into a daily list of recently funded US startups: amount raised, industry, exemption, state and filing link, filtered for real rounds.",
+  "actor": "startup-funding-rounds",
+  "alsoActors": [],
+  "summary": "Use [Startup Funding Rounds](actor:startup-funding-rounds) to read EDGAR's daily Form D indexes and parse each filing into a row with issuer, amounts, industry and exemption. Filter to technology and health care, switch amendments off for new rounds only, and schedule it each morning.",
+  "intro": [
+    "When a US company raises a private round, it files a Form D with the SEC within 15 days of the first sale. That covers seed rounds, Series A and later, SAFEs and convertible notes, which makes Form D a public, official record of who is raising and how much.",
+    "Getting it out of EDGAR is the awkward part. EDGAR publishes daily form indexes and one XML primary document per filing, so you have to read the index, fetch each filing politely within the SEC's fair-access limits, parse the XML and then filter out the pooled investment funds and real estate deals that file alongside operating startups.",
+    "This guide shows how to get a clean, filtered Form D dataset, how to tell new rounds from amendments, how to rank and deduplicate the results, and how to run it as a daily feed or a one-off historical backfill."
+  ],
+  "steps": [
+    {
+      "name": "Know what a Form D does and does not contain",
+      "text": "Each filing gives the issuer's name, business address and phone, state, industry group, entity type, year of incorporation, the federal exemption claimed (for example Rule 506(b) or 506(c)), total offering amount, amount sold so far, number of investors and date of first sale. It does not name investors or give a valuation, and amounts are as reported by the issuer, in US dollars."
+    },
+    {
+      "name": "Choose the date window",
+      "text": "daysBack (default 7) is the simplest option. For a precise range, set dateFrom and dateTo in YYYY-MM-DD; dateFrom overrides daysBack. Form D XML goes back to 2009, and one run covers at most 366 days, so split longer backfills into yearly runs.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"dateFrom\": \"2025-01-01\",\n  \"dateTo\": \"2025-12-31\",\n  \"industries\": [\"Biotechnology\", \"Pharmaceuticals\"],\n  \"states\": [\"MA\"],\n  \"maxResults\": 5000\n}"
+      }
+    },
+    {
+      "name": "Filter down to operating startups",
+      "text": "The default industries, Technology (Computers, Telecommunications and Other Technology) and Health Care, already leave out pooled investment funds and real estate. Narrow further with states, exemptions (506(c) means general solicitation was allowed, with verified accredited investors only) and minAmountSold, for example 1000000 for rounds where at least $1M has been sold. Name, CIK and amendment filters run before any XML is downloaded, so they make runs faster than state, industry or amount filters."
+    },
+    {
+      "name": "Separate new rounds from amendments",
+      "text": "A Form D/A is an amendment: an annual renewal or a correction of an earlier notice, which also updates the amount sold. Amendments are included by default. For a 'just raised' prospecting list, set includeAmendments to false so each row is a new notice; for tracking how a round fills, keep them and follow the issuer's CIK."
+    },
+    {
+      "name": "Rank and clean the results",
+      "text": "Funds often report an indefinite offering size, which comes back as totalOfferingAmount null with offeringAmountIndefinite true. The pandas snippet below loads a run, drops indefinite offerings, ranks by amount sold and keeps the columns a sales team needs.",
+      "code": {
+        "lang": "python",
+        "code": "import os\n\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/startup-funding-rounds\").call(run_input={\n    \"daysBack\": 7,\n    \"includeAmendments\": False,\n    \"minAmountSold\": 1000000,\n})\n\ndf = pd.DataFrame(list(client.dataset(run[\"defaultDatasetId\"]).iterate_items()))\nif \"offeringAmountIndefinite\" in df.columns:\n    df = df[df[\"offeringAmountIndefinite\"] != True]\n\ncols = [\"filingDate\", \"issuerName\", \"issuerCity\", \"issuerState\", \"industryGroup\",\n        \"totalAmountSold\", \"totalOfferingAmount\", \"dateOfFirstSale\", \"filingUrl\"]\ntop = df.sort_values(\"totalAmountSold\", ascending=False)[cols]\ntop.to_csv(\"funded_this_week.csv\", index=False)\nprint(top.head(20).to_string(index=False))"
+      }
+    },
+    {
+      "name": "Run it as a daily feed without duplicates",
+      "text": "EDGAR publishes each business day's index at about 10 pm US Eastern, so filings appear the next morning, and weekends and federal holidays have no index. Schedule the actor for the morning with a small overlap, such as daysBack 3, and deduplicate on filingUrl so Mondays and holidays are handled without gaps. The script keeps a local file of filing URLs it has already seen.",
+      "code": {
+        "lang": "python",
+        "code": "import json\nimport os\nfrom pathlib import Path\n\nfrom apify_client import ApifyClient\n\nseen_path = Path(\"seen_filings.json\")\nseen = set(json.loads(seen_path.read_text())) if seen_path.exists() else set()\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/startup-funding-rounds\").call(run_input={\n    \"daysBack\": 3,\n    \"includeAmendments\": False,\n})\n\nnew_rows = []\nfor row in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n    if row[\"filingUrl\"] not in seen:\n        seen.add(row[\"filingUrl\"])\n        new_rows.append(row)\n\nseen_path.write_text(json.dumps(sorted(seen)))\nfor r in new_rows:\n    print(r[\"filingDate\"], r[\"issuerName\"], r.get(\"totalAmountSold\"))"
+      }
+    },
+    {
+      "name": "Add people only when you have a lawful basis",
+      "text": "includeRelatedPersons adds the executive officers, directors and promoters listed on each filing, plus the signer, with name, relationship, city and state only. These are public SEC records but they are personal data, so turn the option on only if you have a lawful basis such as GDPR or CCPA legitimate interest, and keep it off for company-level lists."
+    }
+  ],
+  "sampleInput": {
+    "daysBack": 7,
+    "industries": [
+      "Technology",
+      "Health Care"
+    ],
+    "exemptions": [
+      "506b",
+      "506c"
+    ],
+    "includeAmendments": false,
+    "maxResults": 300
+  },
+  "sampleOutputNote": "A week of technology and health care Form D notices looks like this:",
+  "costExample": "A weekly list of 300 new tech and health care rounds costs 300 x $0.01 = $3.00. Even an unfiltered 1,000 filings, which the README puts at about four business days of every Form D filed, costs $10.00.",
+  "tips": [
+    "totalAmountSold is the amount sold so far, not the final close; later D/A amendments update it.",
+    "Requests are paced to 5 per second, so a run takes roughly a minute per 250 filings parsed. Filtering by name or CIK keeps backfills fast.",
+    "Results are sorted newest filing date first, so maxResults trims the oldest filings in your window.",
+    "Use keywords such as 'Therapeutics' or 'AI' to match issuer names, but remember many startups have names that say nothing about what they do.",
+    "If you clear the industries filter, expect many pooled funds with indefinite offering sizes; they always pass minOfferingAmount."
+  ],
+  "faq": [
+    {
+      "q": "How soon after a funding round does the Form D appear?",
+      "a": "The company must file within 15 days of the first sale, and the filing shows up in the actor's results the morning after EDGAR's nightly index for that day."
+    },
+    {
+      "q": "Can I get Form D data from before 2009?",
+      "a": "No. Form D XML filings start in 2009, and dateFrom is clamped to 2009-01-01."
+    },
+    {
+      "q": "Does every startup round have a Form D?",
+      "a": "Not necessarily. The actor can only return Form D filings that were actually made on EDGAR, so a raise that was never filed as a Form D, for example by a company outside the US, will not appear."
+    },
+    {
+      "q": "What is the difference between Rule 506(b) and 506(c)?",
+      "a": "Both are federal exemptions you can filter on. 506(c) allows general solicitation, with investors limited to verified accredited investors; 506(b) does not allow general solicitation."
+    }
+  ],
+  "related": [
+    "find-company-job-board-ats",
+    "uk-company-directors-companies-house-export"
+  ]
+}

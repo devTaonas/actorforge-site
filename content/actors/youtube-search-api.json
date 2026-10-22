@@ -1,0 +1,137 @@
+{
+  "name": "youtube-search-api",
+  "category": "video-social",
+  "h1": "YouTube Search Results by Keyword — Ranked Videos With Full Stats",
+  "metaTitle": "YouTube Search Results Scraper by Keyword | ActorForge",
+  "metaDescription": "Get YouTube search results for any keyword with rank, views, likes and duration, plus date, region and length filters. Official API, from $0.30 per 1,000.",
+  "tagline": "Type a keyword and get YouTube's own ranked results, each enriched with views, likes, comments, duration and tags, through the official API.",
+  "intro": [
+    "Seeing what ranks on YouTube for a keyword usually means searching by hand and copying titles, with no view counts or durations in view. This actor runs **YouTube search by keyword** through the official **YouTube Data API v3** using your own free key, and returns one row per result in YouTube's search order, with `searchRank` recorded for each.",
+    "Search results on their own only carry basic snippet data, so every result is enriched with a `videos.list` lookup: title, description, channel, published date, duration in seconds, views, likes, comment count, tags, category, default language, thumbnails, live status, made-for-kids flag and a Shorts flag. You can apply YouTube's own filters: `order` (relevance, date, view count, rating or title), `publishedAfter` and `publishedBefore`, `regionCode`, `relevanceLanguage` and `videoDuration`. Setting `searchType` to channel returns channel rows instead.",
+    "It is aimed at YouTube keyword research, trend and competitor tracking, influencer discovery and content gap analysis. Results cost $0.30 per 1,000 plus $0.002 per page of 50, roughly $0.34 per 1,000 all in."
+  ],
+  "howItWorks": [
+    "Each query in `searchQueries` is sent to `search.list` with your filters, 50 results per page, up to `maxResultsPerQuery`.",
+    "The video IDs on each page are looked up with `videos.list` so every row carries full stats, duration and tags.",
+    "Rows keep the query and the result's rank, and duplicates across queries are removed.",
+    "The run log shows a quota estimate before any call; each page costs 100 search units plus 1 for the video details.",
+    "Search pages that return no rows are not charged, and a `quotaExceeded` error stops the run cleanly with the rows already delivered."
+  ],
+  "inputExample": {
+    "apiKey": "AIzaSy...your-own-key",
+    "mode": "search",
+    "searchQueries": [
+      "web scraping tutorial",
+      "python requests tutorial"
+    ],
+    "maxResultsPerQuery": 100,
+    "order": "viewCount",
+    "publishedAfter": "2026-01-01",
+    "regionCode": "US",
+    "relevanceLanguage": "en",
+    "videoDuration": "medium"
+  },
+  "outputNote": "Each result row records the query and its rank alongside the video's stats, as in these results for one keyword:",
+  "useCases": [
+    {
+      "title": "YouTube keyword research",
+      "text": "Run a list of candidate keywords and compare what ranks: view counts, durations and publish dates of the top results show how competitive each term is and what format wins."
+    },
+    {
+      "title": "Content gap analysis",
+      "text": "Filter by `publishedAfter` and `order` set to date to see what has been published recently on a topic, or by view count to see what has performed best, and spot angles nobody covers well."
+    },
+    {
+      "title": "Influencer and channel discovery",
+      "text": "Search a niche and look at which channels appear repeatedly in the results, or set `searchType` to channel to get channel rows with subscriber, video and view counts directly."
+    },
+    {
+      "title": "Regional and language checks",
+      "text": "Use `regionCode` and `relevanceLanguage` to see results available in a given country or most relevant to a language, for example before launching content in a new market."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge YouTube Search",
+      "Typical no-key search scrapers",
+      "Searching by hand"
+    ],
+    "rows": [
+      [
+        "Views, likes, duration on every result",
+        "Yes (enriched via `videos.list`)",
+        "Often only what the results page shows",
+        "Views only, by hand"
+      ],
+      [
+        "Rank per query recorded",
+        "Yes (`searchRank`)",
+        "Varies",
+        "Manual"
+      ],
+      [
+        "Date, region, language, length filters",
+        "Yes",
+        "Varies",
+        "Partly, in the YouTube UI"
+      ],
+      [
+        "Matches a logged-in user's results",
+        "Not exactly (no personalisation)",
+        "Varies",
+        "Yes"
+      ],
+      [
+        "Max results per query",
+        "About 500 (YouTube's cap)",
+        "Varies",
+        "As far as you scroll"
+      ],
+      [
+        "Daily volume on free quota",
+        "About 5,000 results per key",
+        "No quota",
+        "No quota"
+      ],
+      [
+        "Price per 1,000 results",
+        "About $0.34 all in",
+        "Varies",
+        "Free, but slow"
+      ]
+    ]
+  },
+  "comparisonNote": "Search is the most quota-hungry API call, so a free key tops out at about 5,000 results a day; if you need far more volume and do not mind page scraping, a no-key scraper has no quota ceiling. Results also differ slightly from what a logged-in user sees, because the API has no personalisation and no ads.",
+  "faq": [
+    {
+      "q": "How many YouTube search results can I get per keyword?",
+      "a": "YouTube caps search depth at about 500 results per query, so `maxResultsPerQuery` goes up to 500. For more coverage, split a topic into narrower queries or separate date ranges with `publishedAfter` and `publishedBefore`."
+    },
+    {
+      "q": "Why does YouTube search use so much API quota?",
+      "a": "YouTube charges 100 quota units for each `search.list` page of up to 50 results, plus 1 unit here for the video details. With 10,000 free units a day, one key gives about 100 pages, or roughly 5,000 results."
+    },
+    {
+      "q": "Will the results match what I see on youtube.com?",
+      "a": "They are YouTube's own search ranking for an API request, with no personalisation and no ads. They can differ slightly from what a logged-in user sees in the browser."
+    },
+    {
+      "q": "How do I search for YouTube Shorts only?",
+      "a": "The API does not flag Shorts. Set `videoDuration` to short to get videos under 4 minutes, and use the `isShort` heuristic in each row (3 minutes or less and not live) to narrow further."
+    },
+    {
+      "q": "What does a search run cost?",
+      "a": "Results cost $0.0003 each and each page of up to 50 results that returned rows costs $0.002. So 50 results cost $0.017, and 1,000 results cost about $0.34."
+    }
+  ],
+  "related": [
+    "youtube-api-scraper",
+    "youtube-channel-api",
+    "keyword-suggestions",
+    "google-trends"
+  ],
+  "guides": [
+    "youtube-data-official-api"
+  ]
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk USPTO Trademark Check for Phrases | ActorForge</title>
+<meta name="description" content="Bulk-check phrases against the US trademark register before you list a T-shirt or mug. Verdict per phrase plus matching marks, owner and classes. $0.03 each.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/uspto-trademark-search/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Bulk USPTO Trademark Check for Phrases | ActorForge">
+<meta property="og:description" content="Bulk-check phrases against the US trademark register before you list a T-shirt or mug. Verdict per phrase plus matching marks, owner and classes. $0.03 each.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/uspto-trademark-search/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"USPTO Trademark Search — Check If a Phrase Is Trademarked","description":"Bulk-check phrases against the US trademark register before you list a T-shirt or mug. Verdict per phrase plus matching marks, owner and classes. $0.03 each.","applicationCategory":"BusinessApplication","applicationSubCategory":"E-commerce & App Stores","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/uspto-trademark-search/","sameAs":"https://apify.com/actor-forge/uspto-trademark-search","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Phrase checked","description":"Charged per phrase checked against the register and delivered (verdict, counts and up to 100 matching marks included)","price":"0.03","priceCurrency":"USD","url":"https://apify.com/actor-forge/uspto-trademark-search"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"E-commerce & App Stores","item":"https://devtaonas.github.io/actorforge-site/categories/ecommerce-apps/"},{"@type":"ListItem","position":3,"name":"USPTO Trademark Search — Check If a Phrase Is Trademarked","item":"https://devtaonas.github.io/actorforge-site/actors/uspto-trademark-search/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I check if a phrase is trademarked in the US?","acceptedAnswer":{"@type":"Answer","text":"Add the phrase to phrases and run. The verdict tells you whether a live registered mark exists (registered-live), a live application is pending, only dead marks exist (dead-only) or nothing matches (clear), based on the USPTO register at the moment of the check."}},{"@type":"Question","name":"Does a 'clear' result mean I can use the phrase?","acceptedAnswer":{"@type":"Answer","text":"No. Clear means no matching mark text was found on the USPTO register. It does not cover unregistered common-law rights, state or foreign registrations, design-only marks or confusingly similar marks such as different spellings. This is not legal advice; consult a trademark attorney before relying on it."}},{"@type":"Question","name":"What is the difference between exact, contains and words matching?","acceptedAnswer":{"@type":"Answer","text":"exact matches marks whose whole text equals the phrase (a trailing . or ! is ignored). contains finds the phrase anywhere inside a mark, so CAT LOVER also finds CRAZY CAT LOVERS. words requires every word to appear in any order. When unsure, use contains, which is the most cautious."}},{"@type":"Question","name":"Which trademark classes should I use for T-shirts and mugs?","acceptedAnswer":{"@type":"Answer","text":"Class 25 covers clothing and class 21 covers mugs and housewares; 16 is paper goods, stickers and posters, 18 bags and 9 phone cases and software. The class filter also changes the verdict, so a phrase registered only in class 9 comes back clear for classes 25 and 21."}},{"@type":"Question","name":"Can a pending application still block me?","acceptedAnswer":{"@type":"Answer","text":"Yes. Pending means a live application is in examination and not yet registered, and it can still block you. The verdict and counts always cover every status, whatever you choose in statusFilter."}},{"@type":"Question","name":"How much does it cost to check 1,000 phrases?","acceptedAnswer":{"@type":"Answer","text":"$30.00, at $0.03 per phrase checked, with the verdict, counts and up to 100 matching marks included. maxResultsPerPhrase does not change the price, and invalid phrases, duplicates and failed checks are free."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a></li><li aria-current="page">USPTO Trademark Search — Check If a Phrase Is Trademarked</li></ol></nav><h1>USPTO Trademark Search: Bulk-Check If a Phrase Is Trademarked</h1><p>Paste up to 10,000 phrases and get a verdict for each (registered-live, pending, dead-only or clear) with the matching marks, owners, classes and TSDR links.</p><a class="btn" href="https://apify.com/actor-forge/uspto-trademark-search" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p>If you sell print-on-demand T-shirts, mugs or stickers, using a slogan someone else has registered is a risk you want to catch before upload. Checking phrases one at a time in USPTO Trademark Search works, but not when you have a few hundred designs in the queue.</p><p>This actor checks each phrase against the <strong>official US trademark register</strong> (the same database behind USPTO Trademark Search) and returns one row per phrase with a clear verdict: <code>registered-live</code>, <code>pending</code>, <code>dead-only</code> or <code>clear</code>, plus live, registered, pending and dead match counts. Each row lists the matching marks with word mark, serial and registration number, status, filing and registration dates, owner name with state and country, attorney, international classes, goods and services, mark type and a direct TSDR link. Choose exact, contains or words matching and narrow by Nice class, for example 25 for clothing or 21 for mugs.</p><p>It is built for Merch by Amazon, Etsy and Redbubble sellers, brand namers and agencies screening many phrases at once. <strong>It is not legal advice.</strong> A <code>clear</code> result only means no matching mark text was on the USPTO register at check time; it does not cover common-law use, state or foreign registrations, design-only marks or similar-but-not-identical marks. Talk to a trademark attorney before relying on a result. The actor is not affiliated with the USPTO.</p><h3>How it works</h3><ol><li>You paste phrases (case and extra spaces do not matter, duplicates are removed) and choose a match mode and optional international classes.</li><li>Each phrase is searched against the public backend of USPTO Trademark Search (tmsearch.uspto.gov) at no more than 2 requests per second, with back-off on rate limits.</li><li>All matching marks are counted by status to produce the verdict; the class filter, if set, applies to the verdict as well.</li><li>Up to maxResultsPerPhrase marks are listed per phrase (live first, then registered, newest first), filtered by statusFilter.</li><li>Invalid phrases, duplicates and failed checks are never charged, and the run stops cleanly at your spend limit.</li></ol><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "phrases": [
+    "Just Do It",
+    "Mama Bear",
+    "Coffee Before Talkie"
+  ],
+  "searchMode": "contains",
+  "statusFilter": "live",
+  "classes": [
+    "25",
+    "21"
+  ],
+  "maxResultsPerPhrase": 20
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>phrases</code></td><td>array</td><td>yes</td><td></td><td class="cut">Phrases, slogans or brand names to check against the US trademark register (case and extra spaces do not matter; duplicates are removed). Up to 10,000 per run.</td></tr><tr><td><code>searchMode</code></td><td>string</td><td>no</td><td><code>"exact"</code></td><td class="cut">exact = the mark text is exactly the phrase (a trailing . or ! is ignored); contains = the phrase appears anywhere inside a mark (CAT LOVER also finds CRAZY CAT LOVERS); words = every word of the phrase appears in the…</td></tr><tr><td><code>statusFilter</code></td><td>string</td><td>no</td><td><code>"live"</code></td><td class="cut">Which matching marks to list in matches. live = registered or pending marks only (the ones that can block you); all = live and dead; dead = abandoned, cancelled or expired only. The verdict and counts always cover…</td></tr><tr><td><code>classes</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Only consider marks in these Nice international classes, e.g. 25 (clothing), 21 (mugs, housewares), 16 (paper goods, stickers, posters), 18 (bags), 9 (phone cases, software). Leave empty to search all classes.</td></tr><tr><td><code>maxResultsPerPhrase</code></td><td>integer</td><td>no</td><td><code>20</code></td><td class="cut">How many matching marks to list per phrase (live first, then registered marks, newest first). 0 = verdict and counts only. Does not change the price.</td></tr></tbody></table></div></details><h2>Output example</h2><p>One row per phrase, with the verdict and match counts up front:</p><div class="tablewrap"><table><thead><tr><th scope="col">phrase</th><th scope="col">verdict</th><th scope="col">liveMatchCount</th><th scope="col">registeredLiveCount</th><th scope="col">pendingCount</th><th scope="col">deadMatchCount</th><th scope="col">matches[0].owner</th><th scope="col">matches[0].internationalClasses</th></tr></thead><tbody><tr><td class="cut">JUST DO IT</td><td class="cut">registered-live</td><td class="cut">12</td><td class="cut">7</td><td class="cut">5</td><td class="cut">9</td><td class="cut">Nike, Inc.</td><td class="cut">009, 010, 021, 025</td></tr><tr><td class="cut">MAMA BEAR</td><td class="cut">registered-live</td><td class="cut">8</td><td class="cut">8</td><td class="cut">0</td><td class="cut">26</td><td class="cut">Build-A-Bear Retail Management, Inc.</td><td class="cut">028</td></tr><tr><td class="cut">WEBVAN</td><td class="cut">dead-only</td><td class="cut">0</td><td class="cut">0</td><td class="cut">0</td><td class="cut">13</td><td class="cut"></td><td class="cut"></td></tr><tr><td class="cut">COFFEE BEFORE TALKIE</td><td class="cut">clear</td><td class="cut">0</td><td class="cut">0</td><td class="cut">0</td><td class="cut">0</td><td class="cut"></td><td class="cut"></td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Phrase checked</td><td class="cut">Charged per phrase checked against the register and delivered (verdict, counts and up to 100 matching marks included)</td><td>$0.03</td><td>$30</td><td class="cut">1,000 phrases = $30.00</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at up to 1 GB = $0.00005 (charged as one event)</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try USPTO Trademark Search on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/uspto-trademark-search" rel="noopener">Run on Apify →</a></div><h2>Use cases</h2><div class="uc"><h3>Screening print-on-demand designs</h3><p>Before uploading a batch of T-shirt or mug designs, run all the slogans with classes 25 and 21 and set aside anything that comes back registered-live or pending. The TSDR link lets you open the official case file for anything borderline.</p></div><div class="uc"><h3>Naming a product or brand</h3><p>Check a shortlist of candidate names in contains mode, which is the most cautious, to see which ones already appear inside live marks and who owns them.</p></div><div class="uc"><h3>Auditing an existing catalog</h3><p>Export the titles or slogans from your shop and check them in bulk to find listings that may clash with a registered mark.</p></div><div class="uc"><h3>Agency or marketplace screening</h3><p>Screen thousands of phrases for clients or sellers at once, about 7,000 phrases per hour, with owners and classes in the output for a quick human review.</p></div><h2>How it compares</h2><div class="tablewrap"><table><thead><tr><th scope="col"></th><th scope="col">ActorForge USPTO Trademark Search</th><th scope="col">USPTO Trademark Search website</th><th scope="col">Trademark attorney clearance search</th></tr></thead><tbody><tr><td>Data</td><td>Official US register</td><td>Official US register</td><td>US register plus wider sources</td></tr><tr><td>Bulk phrases in one go</td><td>Yes, up to 10,000 per run</td><td>No, one search at a time</td><td>Usually per mark</td></tr><tr><td>Verdict per phrase</td><td>Yes</td><td>No, you read the results</td><td>Yes, with a professional opinion</td></tr><tr><td>Common-law, state and foreign marks</td><td>No</td><td>No</td><td>Yes</td></tr><tr><td>Similar-sounding or design marks</td><td>No</td><td>Partial, with manual searching</td><td>Yes</td></tr><tr><td>Legal advice</td><td>No</td><td>No</td><td>Yes</td></tr><tr><td>Cost</td><td>$0.03 per phrase</td><td>Free</td><td>Professional fees</td></tr></tbody></table></div><p class="muted">For a single important brand name, a trademark attorney's clearance search is the right call, and the free USPTO website is fine for occasional checks. This actor is a fast first-pass filter for large lists of phrases, not a substitute for legal advice.</p><h2>Limits and honest notes</h2><ul><li>Not legal advice. A <code>clear</code> verdict means no matching mark text was found on the USPTO register at check time. It does not cover common-law (unregistered) use, state or foreign registrations, design-only marks or confusingly similar marks (e.g. different spelling). Consult a trademark attorney before relying on it.</li><li>Match modes: <code>exact</code> = the whole mark text equals the phrase (case-insensitive, a trailing . or ! is ignored); <code>contains</code> = the phrase appears anywhere inside the mark text, also inside longer words (CAT LOVER finds CRAZY CAT LOVERS); <code>words</code> = every word of the phrase appears in the mark, any order, with very common words such as IT or THE ignored by the USPTO index. When unsure, run <code>contains</code>, which is the most cautious.</li><li>The verdict and the live/registered/pending/dead counts always cover every status; <code>statusFilter</code> only changes which marks are listed in <code>matches</code>. <code>pending</code> = live application not (yet) registered; it can still block you.</li><li>The international class filter applies to the verdict too: with classes 25 and 21 a phrase registered only for software (class 9) comes back <code>clear</code> for your products.</li><li>Privacy: only the owner's name, entity type and state/country are returned (as published on the public register). Owner street addresses, emails and phone numbers are never returned; for attorneys only the name.</li><li>Gentle on USPTO: at most 2 requests per second with back-off on rate limits, so about 7,000 phrases per hour. For lists over ~6,000 phrases raise the run timeout above the default 1 hour.</li><li>Data comes from the public backend of USPTO Trademark Search (tmsearch.uspto.gov) and is as fresh as that service, usually updated daily. US government data is in the public domain.</li><li>Respects your run budget: set a maximum total charge and the run checks only as many phrases as it covers, stopping cleanly with every delivered row charged exactly once.</li></ul><h2>FAQ</h2><details><summary>How do I check if a phrase is trademarked in the US?</summary><p>Add the phrase to phrases and run. The verdict tells you whether a live registered mark exists (registered-live), a live application is pending, only dead marks exist (dead-only) or nothing matches (clear), based on the USPTO register at the moment of the check.</p></details><details><summary>Does a 'clear' result mean I can use the phrase?</summary><p>No. Clear means no matching mark text was found on the USPTO register. It does not cover unregistered common-law rights, state or foreign registrations, design-only marks or confusingly similar marks such as different spellings. This is not legal advice; consult a trademark attorney before relying on it.</p></details><details><summary>What is the difference between exact, contains and words matching?</summary><p>exact matches marks whose whole text equals the phrase (a trailing . or ! is ignored). contains finds the phrase anywhere inside a mark, so CAT LOVER also finds CRAZY CAT LOVERS. words requires every word to appear in any order. When unsure, use contains, which is the most cautious.</p></details><details><summary>Which trademark classes should I use for T-shirts and mugs?</summary><p>Class 25 covers clothing and class 21 covers mugs and housewares; 16 is paper goods, stickers and posters, 18 bags and 9 phone cases and software. The class filter also changes the verdict, so a phrase registered only in class 9 comes back clear for classes 25 and 21.</p></details><details><summary>Can a pending application still block me?</summary><p>Yes. Pending means a live application is in examination and not yet registered, and it can still block you. The verdict and counts always cover every status, whatever you choose in statusFilter.</p></details><details><summary>How much does it cost to check 1,000 phrases?</summary><p>$30.00, at $0.03 per phrase checked, with the verdict, counts and up to 100 matching marks included. maxResultsPerPhrase does not change the price, and invalid phrases, duplicates and failed checks are free.</p></details><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~uspto-trademark-search/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"phrases": ["Just Do It", "Mama Bear", "Coffee Before Talkie"], "searchMode": "contains", "statusFilter": "live", "classes": ["25", "21"], "maxResultsPerPhrase": 20}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "phrases": [
+    "Just Do It",
+    "Mama Bear",
+    "Coffee Before Talkie"
+  ],
+  "searchMode": "contains",
+  "statusFilter": "live",
+  "classes": [
+    "25",
+    "21"
+  ],
+  "maxResultsPerPhrase": 20
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~uspto-trademark-search/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "phrases": [
+        "Just Do It",
+        "Mama Bear",
+        "Coffee Before Talkie"
+    ],
+    "searchMode": "contains",
+    "statusFilter": "live",
+    "classes": [
+        "25",
+        "21"
+    ],
+    "maxResultsPerPhrase": 20
+}
+
+run = client.actor("actor-forge/uspto-trademark-search").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Step-by-step guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/check-if-phrase-is-trademarked-uspto/">How to Check If a Phrase Is Trademarked (USPTO, in Bulk)</a></h3><p>Run your phrases through USPTO Trademark Search in contains mode with the classes for your product (25 for clothing, 21 for mugs). Anything marked…</p></div></div><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/keyword-suggestions/">Keyword Suggestions — Google, YouTube, Bing Autocomplete</a></h3><p>Bulk keyword suggestions from Google, YouTube, Bing and Baidu autocomplete. Expand each seed with a-z, question words or prepositions for long-tail…</p><span class="price">$0.30 per 1,000 · seed expanded</span></div><div class="card"><h3><a href="../../actors/shopify-store-scraper/">Shopify Store Scraper — Products, Prices, Store Info</a></h3><p>Scrape any Shopify store&#x27;s products from its public products.json: title, vendor, type, tags, price range, compare-at price, stock, variants and…</p><span class="price">$0.30 per 1,000 · product result</span></div><div class="card"><h3><a href="../../actors/google-trends/">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></h3><p>Google Trends scraper and API: Trending Now searches for 125 countries from the official feed (traffic, start time, picture, news articles), plus…</p><span class="price">$0.50 per 1,000 · trend result</span></div></div><div class="cta"><p><strong>Try USPTO Trademark Search on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/uspto-trademark-search" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/ecommerce-apps/">More E-commerce &amp; App Stores tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

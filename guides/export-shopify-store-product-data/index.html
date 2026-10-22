@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Export Shopify Store Product Data to CSV or JSON</title>
+<meta name="description" content="Export any Shopify store&#x27;s products, prices, variants and images to CSV or JSON from its public products.json, including stores you do not own.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Export Shopify Store Product Data to CSV or JSON">
+<meta property="og:description" content="Export any Shopify store&#x27;s products, prices, variants and images to CSV or JSON from its public products.json, including stores you do not own.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Export Shopify Store Product Data to CSV or JSON","description":"Export any Shopify store's products, prices, variants and images to CSV or JSON from its public products.json, including stores you do not own.","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"Shopify Store Scraper — Products, Prices, Store Info","url":"https://devtaonas.github.io/actorforge-site/actors/shopify-store-scraper/"},"dateModified":"2026-10-22"},{"@type":"HowTo","name":"How to Export Shopify Store Product Data to CSV or JSON","description":"Export any Shopify store's products, prices, variants and images to CSV or JSON from its public products.json, including stores you do not own.","tool":[{"@type":"HowToTool","name":"Shopify Store Scraper — Products, Prices, Store Info"}],"step":[{"@type":"HowToStep","position":1,"name":"Check that the store serves products.json","text":"Open https://the-store-domain/products.json in a browser. If you see JSON with a products array, the store works. Headless storefronts built on Hydrogen/Oxygen or a custom frontend do not serve it, and a few large brands block automated requests; the actor returns a free row explaining why in those cases, so you can also just try it.","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/#step-1"},{"@type":"HowToStep","position":2,"name":"Add the store and choose the mode","text":"Put the store domain or any URL from the store in storeUrls; the actor takes the host, so a collection or product URL works too, as do myshopify.com domains. Keep mode as products for one row per product. Use both if you also want a single store summary row with product counts, price stats, theme and detected apps.","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/#step-2"},{"@type":"HowToStep","position":3,"name":"Decide on scope and row size","text":"maxProductsPerStore defaults to 1,000 and goes up to 100,000; raise it for large catalogs. Use collections with handles such as mens-shoes to export only certain collections. includeVariants is on by default and adds every variant with SKU, price, compare-at price, availability, options and weight. Turn on includeBodyHtml only if you need product descriptions, because it makes rows much bigger (the price stays the same).","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/#step-3"},{"@type":"HowToStep","position":4,"name":"Download the dataset as CSV or JSON","text":"When the run finishes, its dataset can be downloaded from Apify Console or the API in CSV, JSON and other formats. Use the fields parameter to choose a tidy set of columns for a spreadsheet, and request JSON when you want the nested variants and images kept intact.","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/#step-4"},{"@type":"HowToStep","position":5,"name":"Load it into pandas for a quick summary","text":"For analysis, read the product rows into a DataFrame, write the columns you need to CSV and summarize per store. The dataset can mix product and store rows in both mode, so filter on type.","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/#step-5"},{"@type":"HowToStep","position":6,"name":"Keep the export fresh with updatedSince","text":"For an ongoing price and stock feed, schedule the same input daily and set updatedSince to the previous day's date (YYYY-MM-DD) or an ISO timestamp. Only products whose updated_at is on or after that moment become rows, and skipped products are never charged, so you can merge each day's changes into your master export.","url":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/#step-6"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Export Shopify Store Product Data to CSV or JSON","item":"https://devtaonas.github.io/actorforge-site/guides/export-shopify-store-product-data/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I export products from a Shopify store I don't own?","acceptedAnswer":{"@type":"Answer","text":"Yes, as long as the store serves Shopify's public products.json feed and its robots.txt allows it. The actor reads only that public catalog data and no customer or contact data."}},{"@type":"Question","name":"Does the export include product images?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each product row includes every image URL plus a featured image. The files themselves are not downloaded; you get the URLs."}},{"@type":"Question","name":"Why does my CSV have fewer products than the store's website shows?","acceptedAnswer":{"@type":"Answer","text":"Common reasons are the maxProductsPerStore cap (default 1,000), a collections filter, an updatedSince filter, or products that are not published. Raise the cap and clear the filters for a full export."}},{"@type":"Question","name":"Can I export several stores in one run?","acceptedAnswer":{"@type":"Answer","text":"Yes. Add them all to storeUrls; duplicates are removed and each row carries a store column, so one CSV can hold several catalogs."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Export Shopify Store Product Data to CSV or JSON</li></ol></nav><h1>How to Export Shopify Store Product Data to CSV or JSON</h1><p>Uses <a href="../../actors/shopify-store-scraper/" style="color:#fff">Shopify Store Scraper — Products, Prices, Store Info</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Give the ActorForge Shopify Store Scraper a store URL, let it page through the public products.json feed, then download the dataset as CSV or JSON or load it into pandas.</div><p>If you own a Shopify store, the admin has a product CSV export. If you want the catalog of a competitor, a supplier or a store you are about to migrate, you do not have that option. What most Shopify stores do have is a public products.json feed: the same JSON catalog Shopify serves to every visitor, 250 products per page.</p><p>Paging through it yourself is doable for one store, but handling robots.txt, pacing, collections, headless storefronts that do not serve the feed, and turning nested JSON into a clean table quickly adds up. The <a href="../../actors/shopify-store-scraper/">Shopify Store Scraper</a> does that and returns one row per product with prices, compare-at prices, discount, stock, variants and images.</p><p>This guide walks through checking a store, choosing what to export, running the export and getting the result into CSV, JSON or pandas.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Check that the store serves products.json</h3><p>Open https://the-store-domain/products.json in a browser. If you see JSON with a products array, the store works. Headless storefronts built on Hydrogen/Oxygen or a custom frontend do not serve it, and a few large brands block automated requests; the actor returns a free row explaining why in those cases, so you can also just try it.</p></li><li id="step-2"><h3>Add the store and choose the mode</h3><p>Put the store domain or any URL from the store in <code>storeUrls</code>; the actor takes the host, so a collection or product URL works too, as do myshopify.com domains. Keep <code>mode</code> as products for one row per product. Use both if you also want a single store summary row with product counts, price stats, theme and detected apps.</p></li><li id="step-3"><h3>Decide on scope and row size</h3><p><code>maxProductsPerStore</code> defaults to 1,000 and goes up to 100,000; raise it for large catalogs. Use <code>collections</code> with handles such as mens-shoes to export only certain collections. <code>includeVariants</code> is on by default and adds every variant with SKU, price, compare-at price, availability, options and weight. Turn on <code>includeBodyHtml</code> only if you need product descriptions, because it makes rows much bigger (the price stays the same).</p><pre><code class="language-json">{
+  "storeUrls": ["allbirds.com"],
+  "mode": "products",
+  "collections": ["mens"],
+  "maxProductsPerStore": 5000,
+  "includeVariants": true,
+  "includeBodyHtml": true
+}</code></pre></li><li id="step-4"><h3>Download the dataset as CSV or JSON</h3><p>When the run finishes, its dataset can be downloaded from Apify Console or the API in CSV, JSON and other formats. Use the <code>fields</code> parameter to choose a tidy set of columns for a spreadsheet, and request JSON when you want the nested variants and images kept intact.</p><pre><code class="language-bash"># Export the dataset of a finished run as CSV or JSON
+DATASET_ID="your-dataset-id"
+
+curl -s -H "Authorization: Bearer $APIFY_TOKEN" \
+  "https://api.apify.com/v2/datasets/$DATASET_ID/items?format=csv&amp;clean=true&amp;fields=store,title,vendor,productType,price,priceMax,compareAtPriceMin,discountPct,currency,available,variantCount,updatedAt,url" \
+  -o products.csv
+
+curl -s -H "Authorization: Bearer $APIFY_TOKEN" \
+  "https://api.apify.com/v2/datasets/$DATASET_ID/items?format=json&amp;clean=true" \
+  -o products.json
+</code></pre></li><li id="step-5"><h3>Load it into pandas for a quick summary</h3><p>For analysis, read the product rows into a DataFrame, write the columns you need to CSV and summarize per store. The dataset can mix product and store rows in both mode, so filter on <code>type</code>.</p><pre><code class="language-python">import os
+import pandas as pd
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/shopify-store-scraper").call(run_input={
+    "storeUrls": ["allbirds.com", "tentree.com"],
+    "mode": "products",
+    "maxProductsPerStore": 1000,
+})
+rows = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+products = pd.DataFrame([r for r in rows if r.get("type") == "product"])
+
+cols = ["store", "title", "vendor", "productType", "price", "priceMax",
+        "compareAtPriceMin", "discountPct", "currency", "available",
+        "variantCount", "updatedAt", "url"]
+products[cols].to_csv("shopify_products.csv", index=False)
+
+# Quick per-store summary
+summary = products.groupby("store").agg(
+    products=("title", "count"),
+    medianPrice=("price", "median"),
+    onSaleShare=("onSale", "mean"),
+    inStockShare=("available", "mean"),
+)
+print(summary)
+</code></pre></li><li id="step-6"><h3>Keep the export fresh with updatedSince</h3><p>For an ongoing price and stock feed, schedule the same input daily and set <code>updatedSince</code> to the previous day's date (YYYY-MM-DD) or an ISO timestamp. Only products whose updated_at is on or after that moment become rows, and skipped products are never charged, so you can merge each day's changes into your master export.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "storeUrls": [
+    "allbirds.com"
+  ],
+  "mode": "products",
+  "maxProductsPerStore": 1000,
+  "includeVariants": true,
+  "includeBodyHtml": false
+}</code></pre><h2>Sample output</h2><p>Product rows come out like this, with price, compare-at price, discount and stock in the first columns:</p><div class="tablewrap"><table><thead><tr><th scope="col">store</th><th scope="col">title</th><th scope="col">vendor</th><th scope="col">productType</th><th scope="col">price</th><th scope="col">compareAtPriceMin</th><th scope="col">discountPct</th><th scope="col">available</th><th scope="col">variantCount</th></tr></thead><tbody><tr><td class="cut">www.allbirds.com</td><td class="cut">Women's Allbirds Flip Flop - Dusty Pink</td><td class="cut">Allbirds</td><td class="cut">Shoes</td><td class="cut">25</td><td class="cut">50</td><td class="cut">50</td><td class="cut">true</td><td class="cut">7</td></tr><tr><td class="cut">www.allbirds.com</td><td class="cut">Men's Canvas Runner NZ - Deep Navy Stripes (Blizzard Sole)</td><td class="cut">Allbirds</td><td class="cut">Shoes</td><td class="cut">100</td><td class="cut"></td><td class="cut"></td><td class="cut">true</td><td class="cut">13</td></tr><tr><td class="cut">www.tentree.com</td><td class="cut">Sasquatch Peak Hat</td><td class="cut">tentree</td><td class="cut">Accessories</td><td class="cut">31.5</td><td class="cut">45</td><td class="cut">30</td><td class="cut">true</td><td class="cut">1</td></tr><tr><td class="cut">www.deathwishcoffee.com</td><td class="cut">White Chocolate Pistachio Ground Bundle</td><td class="cut">Death Wish Coffee</td><td class="cut">Bundle</td><td class="cut">48.99</td><td class="cut">53.99</td><td class="cut">9.3</td><td class="cut">true</td><td class="cut">1</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~shopify-store-scraper/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"storeUrls": ["allbirds.com"], "mode": "products", "maxProductsPerStore": 1000, "includeVariants": true, "includeBodyHtml": false}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "storeUrls": [
+    "allbirds.com"
+  ],
+  "mode": "products",
+  "maxProductsPerStore": 1000,
+  "includeVariants": true,
+  "includeBodyHtml": false
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~shopify-store-scraper/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "storeUrls": [
+        "allbirds.com"
+    ],
+    "mode": "products",
+    "maxProductsPerStore": 1000,
+    "includeVariants": True,
+    "includeBodyHtml": False
+}
+
+run = client.actor("actor-forge/shopify-store-scraper").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Product rows cost $0.0003 each, so exporting a 1,000-product store is $0.30 and three such stores are $0.90. In both mode, each store row adds $0.005, so the same three stores with summaries cost $0.915.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Product result</td><td class="cut">Charged per product row delivered (with variants and images)</td><td>$0.0003</td><td>$0.30</td><td class="cut">A 1,000-product store = $0.30; with updatedSince, unchanged products are skipped and cost nothing</td></tr><tr><td>Store analyzed</td><td class="cut">Charged per store row in store/both mode (meta, price stats, top vendors/types, collections, theme, apps)</td><td>$0.005</td><td>$5</td><td class="cut">100 competitor stores = $0.50; blocked, headless, robots-disallowed and non-Shopify sites are free rows</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB = $0.0000125</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> Shopify Store Scraper — Products, Prices, Store Info runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/shopify-store-scraper" rel="noopener">Run on Apify →</a> <a href="../../actors/shopify-store-scraper/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>products.json only lists published products. Drafts, archived items and inventory quantities are not public, and prices are the store's base-currency prices, not market-specific or B2B prices.</li><li>In both mode, check <code>catalogComplete</code> on the store row: it tells you whether the stats cover the whole catalog or were cut off by <code>maxProductsPerStore</code>.</li><li>The actor obeys each store's robots.txt and Crawl-delay and runs about 1.3 requests per second per store, so very large catalogs take a while. Several stores run in parallel, up to 3 at a time.</li><li>A 401, 403, 429 or bot challenge stops that store immediately with no retries. Those rows are free, but the store's products will be missing from the export.</li></ul><h2>FAQ</h2><details><summary>Can I export products from a Shopify store I don't own?</summary><p>Yes, as long as the store serves Shopify's public products.json feed and its robots.txt allows it. The actor reads only that public catalog data and no customer or contact data.</p></details><details><summary>Does the export include product images?</summary><p>Yes. Each product row includes every image URL plus a featured image. The files themselves are not downloaded; you get the URLs.</p></details><details><summary>Why does my CSV have fewer products than the store's website shows?</summary><p>Common reasons are the <code>maxProductsPerStore</code> cap (default 1,000), a <code>collections</code> filter, an <code>updatedSince</code> filter, or products that are not published. Raise the cap and clear the filters for a full export.</p></details><details><summary>Can I export several stores in one run?</summary><p>Yes. Add them all to <code>storeUrls</code>; duplicates are removed and each row carries a <code>store</code> column, so one CSV can hold several catalogs.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/shopify-store-scraper/">Shopify Store Scraper — Products, Prices, Store Info</a></h3><p>Scrape any Shopify store&#x27;s products from its public products.json: title, vendor, type, tags, price range, compare-at price, stock, variants and…</p><span class="price">$0.30 per 1,000 · product result</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/monitor-competitor-ads-google-ads-transparency/">How to Monitor Competitor Ads in Google Ads Transparency Center</a></h3><p>List your competitors&#x27; domains or advertiser names, run the ActorForge Ads Transparency actor daily with only-new mode, and route the new ads into…</p></div><div class="card"><h3><a href="../../guides/audit-every-url-in-sitemap-seo/">How to Audit Every URL in Your Sitemap and Find Orphan Pages</a></h3><p>Run the SEO Audit Crawler with useSitemap on and maxPages above your site&#x27;s size; it audits every page it can reach plus every sitemap URL, and…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

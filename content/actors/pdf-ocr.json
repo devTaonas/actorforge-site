@@ -1,0 +1,136 @@
+{
+  "name": "pdf-ocr",
+  "category": "documents-ai",
+  "h1": "PDF OCR API: Turn Scanned PDFs into Searchable Text",
+  "metaTitle": "PDF OCR API: Scanned PDF to Searchable Text | ActorForge",
+  "metaDescription": "OCR scanned PDFs to text page by page with Tesseract 5 in 29 languages. Text-layer pages read at a tenth of the price. $3 per 1,000 OCR pages.",
+  "tagline": "Send links to scanned or mixed PDFs and get clean text back page by page, with a confidence score for every page that needed OCR.",
+  "intro": [
+    "A scanned PDF is just a stack of pictures. Search boxes, LLMs and full-text indexes see nothing inside it until each page has been run through OCR. The PDF OCR actor does that for you in the cloud: paste links to archive scans, faxes, signed contracts, invoices or photocopied letters, and it returns the text of each page with line and paragraph breaks kept.",
+    "Many real PDFs are mixed: a digital report with a few scanned appendix pages, or a contract where only the signature pages were scanned. In the default `auto` mode the actor reads pages that already have a text layer directly (exact, and charged at $0.30 per 1,000 pages) and only OCRs the pages that are images (charged at $3 per 1,000 pages). You do not pay OCR prices for text that was already there.",
+    "Recognition runs on Tesseract 5 with its LSTM models in 29 languages, up to 4 per run. Every OCR'd page carries a confidence score, so you can spot the pages worth a human look, and optional word-level bounding boxes help with redaction and highlighting. It suits records teams digitising archives, developers adding a PDF OCR step to an app, and anyone feeding paper documents into a RAG pipeline."
+  ],
+  "howItWorks": [
+    "You pass one or more PDF links in `urls` (images such as PNG, JPEG and TIFF are accepted too).",
+    "Each PDF is opened page by page; in `auto` mode, pages with an existing text layer are read directly and the rest are rendered at the chosen `dpi` (300 by default).",
+    "Rendered pages are recognised by Tesseract 5 in the languages you selected, with an optional page segmentation mode for forms or receipts.",
+    "Results are written as one row per page (the default for this actor) or one row per PDF, with text, word count, OCR confidence and page counts by method.",
+    "Failed downloads, unreadable files and blank pages are reported but not charged, and the run stops cleanly at your maximum total charge."
+  ],
+  "inputExample": {
+    "urls": [
+      "https://raw.githubusercontent.com/ocrmypdf/OCRmyPDF/main/tests/resources/linn.pdf",
+      "https://arxiv.org/pdf/1706.03762"
+    ],
+    "languages": [
+      "eng"
+    ],
+    "pdfMode": "auto",
+    "outputMode": "pages",
+    "dpi": 300,
+    "maxPagesPerPdf": 200
+  },
+  "outputNote": "Below, a scanned brochure is OCR'd (one OCR page, 95.5 confidence) while a digital paper is read from its text layer with no OCR at all.",
+  "useCases": [
+    {
+      "title": "Make a scanned archive searchable",
+      "text": "Run a folder of digitised letters, minutes or old reports through the actor and index the returned text in your search engine. The per-page rows map cleanly onto page-level search hits, so users land on the right page of the original scan."
+    },
+    {
+      "title": "Review signed contracts and invoices",
+      "text": "Signed agreements and supplier invoices often come back as scans. OCR them to text so you can search for clauses, amounts and party names, and use the confidence score to route weak pages to manual review."
+    },
+    {
+      "title": "Process mixed digital and scanned PDFs",
+      "text": "When a batch contains both born-digital PDFs and scans, `auto` mode reads the digital pages exactly at the text-layer price and only OCRs the image pages. Use `ocr-all` only when a PDF's hidden text layer is known to be poor."
+    },
+    {
+      "title": "Feed paper documents to an LLM",
+      "text": "Turn scanned reports into plain text that a RAG pipeline or AI agent can chunk and embed. If you need Markdown with headings for digital PDFs as well, see [Any URL to Markdown](actor:any-url-to-markdown)."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge PDF OCR",
+      "Self-hosted Tesseract",
+      "Desktop PDF editor OCR"
+    ],
+    "rows": [
+      [
+        "Setup",
+        "None, paste links or call the API",
+        "Install Tesseract, language packs and a PDF renderer",
+        "Install and open each file"
+      ],
+      [
+        "Skips pages that already have text",
+        "Yes, at the cheaper text-layer price",
+        "Only if you script it",
+        "Partial, depends on the tool"
+      ],
+      [
+        "Per-page confidence score",
+        "Yes",
+        "Yes, if you read it from Tesseract output",
+        "Usually not exposed"
+      ],
+      [
+        "Batch via API / automation",
+        "Yes",
+        "Yes, with your own code",
+        "No or limited"
+      ],
+      [
+        "Software cost",
+        "$3 per 1,000 OCR pages",
+        "Free (you pay for servers and time)",
+        "Licence fee"
+      ],
+      [
+        "Handwriting and complex tables",
+        "Weak: tables come out as lines of text",
+        "Same engine, same limits",
+        "Varies by product"
+      ],
+      [
+        "Files stay on your machine",
+        "No, files are fetched from URLs",
+        "Yes",
+        "Yes"
+      ]
+    ]
+  },
+  "comparisonNote": "If you already run Tesseract on your own servers, or your documents must never leave your network, self-hosting is the better fit. This actor is for teams who want the same engine without maintaining it, with text-layer detection and billing per page built in.",
+  "faq": [
+    {
+      "q": "How do I make a scanned PDF searchable with an API?",
+      "a": "Send the PDF's URL in `urls` and the actor returns the recognised text for each page. Store that text in your search index alongside the original file. The actor returns text, not a new PDF with an embedded text layer."
+    },
+    {
+      "q": "Will I pay OCR prices for pages that already contain text?",
+      "a": "No, not in the default `auto` mode. Pages with a text layer are read directly and charged at $0.0003 per page; only image pages are OCR'd at $0.003 per page. Switch `pdfMode` to `ocr-all` only if a PDF's existing text layer is broken."
+    },
+    {
+      "q": "Can it OCR password-protected PDFs?",
+      "a": "Yes, if you are entitled to open them. Put the password in the `password` field; it is used for every PDF in that run, so group files that share a password into one run."
+    },
+    {
+      "q": "What happens with sideways or upside-down scans?",
+      "a": "Pages rotated by 90 or 180 degrees are not auto-rotated, so rotate them before submitting. Slightly skewed scans are handled fine."
+    },
+    {
+      "q": "How long can a PDF be?",
+      "a": "Files up to 100 MB and up to 2,000 pages per PDF are supported. By default only the first 200 pages of each PDF are processed; raise `maxPagesPerPdf` for longer documents. Longer PDFs are marked as truncated."
+    }
+  ],
+  "related": [
+    "ocr-to-text",
+    "image-to-text-ocr",
+    "any-url-to-markdown"
+  ],
+  "guides": [
+    "ocr-scanned-pdf-to-text-api",
+    "convert-pdf-to-markdown-for-rag"
+  ]
+}

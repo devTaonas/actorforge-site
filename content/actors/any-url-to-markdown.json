@@ -1,0 +1,130 @@
+{
+  "name": "any-url-to-markdown",
+  "category": "documents-ai",
+  "h1": "Any URL to Markdown: Web Pages, PDF, Word and Excel for LLMs",
+  "metaTitle": "Any URL to Markdown API for LLMs and RAG | ActorForge",
+  "metaDescription": "Convert any URL to clean Markdown: web pages, PDFs, Word, Excel, PowerPoint, EPUB, CSV and images with OCR. Token estimate included. From $1 per 1,000.",
+  "tagline": "One link in, LLM-ready Markdown out, whether the link is a web page, a PDF, an Office file or a scanned image.",
+  "intro": [
+    "AI agents and RAG pipelines keep running into links they cannot read directly: a PDF report, a linked spreadsheet, a slide deck, an article page full of navigation. Each format usually means another library. Any URL to Markdown works out what the link actually is and routes it to the right converter, so your code only ever handles Markdown.",
+    "It handles web pages (main content kept with Mozilla Readability, robots.txt respected), PDFs (text layer read with heading and paragraph detection), Word, Excel and PowerPoint, OpenDocument, EPUB, CSV and JSON. Images and PDF pages without a text layer go through Tesseract OCR in 7 languages. Headings, lists, tables and links are kept, and every result includes a title, metadata, the `route` used and a `tokenEstimate`.",
+    "Pricing follows what was converted: $1 per 1,000 web pages, $2 per 1,000 documents (a PDF counts once per started 50 text pages) and $3 per 1,000 OCR pages. Failed downloads, unsupported files, robots-blocked pages and empty results are not charged. It fits MCP clients, LangChain or LlamaIndex pipelines, Clay enrichments and n8n, Make or Zapier flows."
+  ],
+  "howItWorks": [
+    "You pass a single `url`, or a list in `urls` (up to 1,000 per run, duplicates removed).",
+    "The actor checks robots.txt (on by default), downloads the link and detects its real format rather than trusting the file extension.",
+    "It routes the file to a converter: Readability for HTML, a layout-aware PDF text reader, Office and EPUB converters, or Tesseract OCR for images and scanned pages when `ocr` is on.",
+    "The result is one row per URL with `markdown`, `title`, `detectedFormat`, `route`, `tokenEstimate` and metadata such as author, dates and page count.",
+    "Limits such as `maxPdfPages`, `maxOcrPages` and `maxRowsPerSheet` keep large files in check, and truncated results are flagged."
+  ],
+  "inputExample": {
+    "url": "https://arxiv.org/pdf/1706.03762",
+    "urls": [
+      "https://en.wikipedia.org/wiki/Retrieval-augmented_generation",
+      "https://calibre-ebook.com/downloads/demos/demo.docx"
+    ],
+    "onlyMainContent": true,
+    "ocr": true,
+    "ocrLanguages": [
+      "eng"
+    ],
+    "maxPdfPages": 500,
+    "respectRobotsTxt": true
+  },
+  "outputNote": "The sample shows a PDF, a Wikipedia article, a Word file, a spreadsheet and an image, each converted to Markdown with the route and token estimate.",
+  "useCases": [
+    {
+      "title": "Document ingestion for RAG",
+      "text": "Point it at the PDFs, docs and pages you want in a vector store and chunk the returned Markdown by heading. The `tokenEstimate` helps plan chunk sizes and embedding costs. See the [PDF to Markdown for RAG guide](guide:convert-pdf-to-markdown-for-rag)."
+    },
+    {
+      "title": "Reading tool for AI agents",
+      "text": "Give an MCP agent one tool that reads whatever it finds while browsing. One string goes in and one Markdown string comes out, so the agent does not need to know whether a link is a PDF or a spreadsheet."
+    },
+    {
+      "title": "Spreadsheets and decks as LLM context",
+      "text": "Excel sheets become Markdown tables and slide decks become readable text, so a linked financial table or pitch deck can be summarised or queried by an LLM."
+    },
+    {
+      "title": "Enrichment in Clay or n8n",
+      "text": "Add a step that turns a company's linked report or policy page into Markdown inside a no-code flow, then pass it to a summarisation step."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Any URL to Markdown",
+      "Web scraper plus separate file parsers",
+      "Browser-based crawler"
+    ],
+    "rows": [
+      [
+        "PDF, Office, EPUB, CSV and JSON in one call",
+        "Yes",
+        "Only with several libraries",
+        "Usually HTML only"
+      ],
+      [
+        "OCR for images and scanned pages",
+        "Yes, 7 languages",
+        "Separate OCR tool needed",
+        "No"
+      ],
+      [
+        "JavaScript-rendered pages",
+        "No, static HTML only (reported, not charged)",
+        "Depends",
+        "Yes"
+      ],
+      [
+        "Crawls a whole site",
+        "No, converts the URLs you give it",
+        "Yes, if you build it",
+        "Yes"
+      ],
+      [
+        "Token estimate per result",
+        "Yes",
+        "No",
+        "Rarely"
+      ],
+      [
+        "Pages behind a login",
+        "No",
+        "Possible with your own code",
+        "Often possible"
+      ]
+    ]
+  },
+  "comparisonNote": "If your sources are JavaScript-heavy apps or sit behind a login, a browser-based crawler is the better choice. For mixed links to documents and ordinary pages, one converter is simpler than maintaining a scraper, a PDF parser, an Office converter and an OCR engine.",
+  "faq": [
+    {
+      "q": "How do I convert a URL to Markdown for an LLM?",
+      "a": "Pass the link as `url` and read the `markdown` field of the result. The actor detects whether it is a web page, PDF, Office file, EPUB, CSV, JSON or image and picks the converter for you."
+    },
+    {
+      "q": "How accurate is the token estimate?",
+      "a": "`tokenEstimate` is the character count divided by 4. It is a good guide for English text with GPT and Claude tokenizers, but not an exact count."
+    },
+    {
+      "q": "Which files can it not convert?",
+      "a": "Legacy binary Office files (.doc, .xls, .ppt), RTF, OpenDocument presentations, HEIC/AVIF images and SVG are not supported. Password-protected PDFs and pages behind a login cannot be read either. These are reported with a reason and never charged."
+    },
+    {
+      "q": "How much does converting a long PDF cost?",
+      "a": "A PDF is charged $0.002 per started 50 text pages, so a 15-page PDF costs $0.002 and a 120-page PDF costs $0.006. Scanned pages read by OCR cost $0.003 each, up to `maxOcrPages` (20 by default) per PDF."
+    },
+    {
+      "q": "Can I turn off OCR to keep costs predictable?",
+      "a": "Yes. Set `ocr` to false and images or scanned pages are reported as errors instead of being read, at no charge. For 29 OCR languages and word boxes, use [OCR to Text](actor:ocr-to-text)."
+    }
+  ],
+  "related": [
+    "ocr-to-text",
+    "pdf-ocr",
+    "wayback-snapshots"
+  ],
+  "guides": [
+    "convert-pdf-to-markdown-for-rag"
+  ]
+}

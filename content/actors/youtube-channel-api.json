@@ -1,0 +1,133 @@
+{
+  "name": "youtube-channel-api",
+  "category": "video-social",
+  "h1": "Get All Videos From a YouTube Channel, Plus Channel Stats",
+  "metaTitle": "Get All Videos From a YouTube Channel | ActorForge",
+  "metaDescription": "Export every upload from any YouTube channel with views, likes and duration, plus subscriber and view totals, via the official API and your own free key.",
+  "tagline": "Paste an @handle, channel URL or channel ID and get the channel's stats row followed by its uploads, newest first, each with full video stats.",
+  "intro": [
+    "YouTube Studio only exports your own channel, and the youtube.com page for someone else's channel loads videos a screen at a time. This actor lists a channel's uploads through the official **YouTube Data API v3** instead, using a free API key you create yourself, so you get a complete, structured list without scrolling or copying.",
+    "For each channel you get one channel row (title, @handle, description, country, subscriber count, total views, video count, created date, uploads playlist ID, avatar and topic categories), followed by one row per upload with title, description, published date, duration, views, likes, comment count, tags, category, thumbnails, live status and made-for-kids flag. Input can be `youtube.com/@handle`, `/channel/UC…` or `/user/name` URLs, bare @handles or channel IDs.",
+    "It is built for influencer vetting, competitor channel tracking, content audits and YouTube analytics dashboards. Channel rows cost $0.50 per 1,000 and video rows $0.40 per 1,000, and one free key covers about 250,000 channel-mode video rows a day."
+  ],
+  "howItWorks": [
+    "Each channel input is resolved to a channel ID with `channels.list`, which also returns the channel's stats and uploads playlist.",
+    "The uploads playlist is paged with `playlistItems.list`, newest first, until `maxVideosPerChannel` is reached or an upload is older than `publishedAfter`.",
+    "Video IDs are enriched with `videos.list` in batches of 50, so every upload row carries duration, tags and engagement counts.",
+    "With `includeShorts` off, videos of 3 minutes or less that are not live are dropped, because the API itself does not flag Shorts.",
+    "Channels that are not found produce a free error row, and a channel with no public uploads still returns its channel row."
+  ],
+  "inputExample": {
+    "apiKey": "AIzaSy...your-own-key",
+    "mode": "channel",
+    "channels": [
+      "https://www.youtube.com/@googledevelopers",
+      "@YouTube"
+    ],
+    "maxVideosPerChannel": 200,
+    "publishedAfter": "2026-01-01",
+    "includeShorts": false
+  },
+  "outputNote": "A run returns one channel row with the channel totals, then one row per upload, as in this sample from a developer channel:",
+  "useCases": [
+    {
+      "title": "Vet an influencer before a deal",
+      "text": "Pull a creator's last 100 or 200 uploads and look at views, likes and comments per video rather than the headline subscriber number. Upload frequency and recent performance are visible straight from the published dates and stats."
+    },
+    {
+      "title": "Track competitor channels",
+      "text": "Schedule a run over a list of competitor @handles with `publishedAfter` set to last week, so each run only pages through new uploads. Paging stops at older videos, which keeps quota use low."
+    },
+    {
+      "title": "Audit your own back catalogue",
+      "text": "Export every public upload with tags, category, duration and engagement into one table to find old videos worth updating, tag gaps, or formats that consistently underperform."
+    },
+    {
+      "title": "Channel stats only, at scale",
+      "text": "Set `maxVideosPerChannel` to 0 to get just the channel row: subscribers, total views, video count, country and created date. That is a cheap way to size a long list of channels before deciding which to dig into."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Channel Scraper",
+      "YouTube Studio export",
+      "Scrolling the channel page"
+    ],
+    "rows": [
+      [
+        "Works for any public channel",
+        "Yes",
+        "Only channels you own",
+        "Yes"
+      ],
+      [
+        "Watch time, revenue, traffic sources",
+        "No",
+        "Yes",
+        "No"
+      ],
+      [
+        "Per-video views, likes, comments",
+        "Yes",
+        "Yes",
+        "Views only, by hand"
+      ],
+      [
+        "Full upload list in one table",
+        "Yes, newest first",
+        "Yes",
+        "Manual copy"
+      ],
+      [
+        "Only uploads after a date",
+        "Yes (`publishedAfter`)",
+        "Date filters",
+        "No"
+      ],
+      [
+        "Needs a YouTube API key",
+        "Yes (free)",
+        "No",
+        "No"
+      ],
+      [
+        "Cost",
+        "$0.40 per 1,000 videos",
+        "Free",
+        "Free, but slow"
+      ]
+    ]
+  },
+  "comparisonNote": "For your own channel, YouTube Studio is the better source: it has watch time, revenue and traffic data that the public API never returns. This actor is for public channels you do not own, or for pulling many channels into one consistent table.",
+  "faq": [
+    {
+      "q": "How do I download a list of all videos from a YouTube channel?",
+      "a": "Paste the channel's @handle, URL or ID into `channels`, set `maxVideosPerChannel` high enough to cover the catalogue, and run. You get a channel row and then one row per public upload, newest first, which you can download as CSV, JSON or Excel from the dataset."
+    },
+    {
+      "q": "Can I get only recent uploads from a channel?",
+      "a": "Yes. Set `publishedAfter` to a date such as 2026-01-01. The actor stops paging once it reaches older uploads, which also saves quota."
+    },
+    {
+      "q": "Does it include unlisted or private videos?",
+      "a": "No. The uploads list contains public videos only. A channel with no public uploads gives the channel row and no video rows."
+    },
+    {
+      "q": "Why is the subscriber count rounded or empty?",
+      "a": "YouTube rounds subscriber counts to 3 significant figures in the API, and channels that hide their subscriber count return `subscriberCount: null`. These are YouTube's own figures."
+    },
+    {
+      "q": "Do custom /c/ channel URLs work?",
+      "a": "Custom `/c/name` URLs are resolved as the @handle with the same name. If that does not find the right channel, paste the @handle or the UC… channel ID instead."
+    }
+  ],
+  "related": [
+    "youtube-api-scraper",
+    "youtube-search-api",
+    "youtube-comments-api"
+  ],
+  "guides": [
+    "youtube-data-official-api"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "name": "image-to-text-ocr",
+  "category": "documents-ai",
+  "h1": "Image to Text OCR: Extract Text from Photos and Screenshots",
+  "metaTitle": "Image to Text OCR API: Photos & Screenshots | ActorForge",
+  "metaDescription": "Extract text from screenshots, photos and receipts with Tesseract 5 OCR in 29 languages. Per-image confidence, optional word boxes. $3 per 1,000 images.",
+  "tagline": "Paste image links and get the text inside them back with line breaks, a confidence score and, if you want, the pixel box of every word.",
+  "intro": [
+    "Text trapped in pictures is everywhere: screenshots pasted into tickets, photos of whiteboards and letters, receipts, product labels, memes. Copying it out by hand does not scale. The Image to Text OCR actor reads those images in bulk and returns the text with its line and paragraph breaks.",
+    "It takes PNG, JPEG, TIFF, WebP, GIF, BMP and JPEG 2000 links. Each image becomes one row with the recognised text, a word count and an OCR confidence score, so you can tell a crisp screenshot from a blurry phone photo at a glance. Turn on `includeWords` and every word also comes with its own confidence and pixel box, which is what you need for redaction or highlighting.",
+    "Recognition uses Tesseract 5 in 29 languages, up to 4 per run. Pricing is $3 per 1,000 images with no compute bill on top, and failed downloads or blank images are not charged. It is built for developers adding an image-to-text step to an app, analysts working through screenshot collections, and automations in tools like Make, n8n and Zapier."
+  ],
+  "howItWorks": [
+    "You list image links in `urls`; scanned PDFs are accepted too and are read page by page.",
+    "Each image is downloaded and passed to Tesseract 5 with your chosen `languages` and `pageSegmentation` mode.",
+    "For screenshots and forms with scattered text, the `sparse` segmentation mode looks for text anywhere on the image; `single-block` suits receipts and snippets.",
+    "Each image returns one row with text, word count and confidence, plus word boxes when `includeWords` is on and `minWordConfidence` filtering if set.",
+    "Blank or unreadable images and failed downloads are reported free of charge."
+  ],
+  "inputExample": {
+    "urls": [
+      "https://github.com/tesseract-ocr/tessdoc/raw/main/images/eurotext.png",
+      "https://raw.githubusercontent.com/tesseract-ocr/test/main/testing/phototest.tif"
+    ],
+    "languages": [
+      "eng"
+    ],
+    "pageSegmentation": "sparse",
+    "includeWords": true,
+    "minWordConfidence": 50
+  },
+  "outputNote": "Each image comes back as one row; the sample shows a PNG with mixed punctuation and a TIFF test page, each with its own confidence score.",
+  "useCases": [
+    {
+      "title": "Text from support screenshots",
+      "text": "Customers often paste screenshots of error dialogs instead of copying the message. Extract the text so tickets become searchable and the exact error string can be matched against known issues."
+    },
+    {
+      "title": "Receipt and label photos",
+      "text": "Pull the printed text off photographed receipts or product labels for expense tools or catalogue checks. Use the `single-block` segmentation mode for small, dense blocks of text."
+    },
+    {
+      "title": "Redacting text in images",
+      "text": "With `includeWords` on, every word comes with its pixel box (left, top, width, height) and confidence. That is enough to locate an account number or name in a screenshot and black it out before sharing."
+    },
+    {
+      "title": "Researching image-based posts",
+      "text": "Collections of memes, infographics or social posts carry their message in the picture. OCR them in bulk to search, count or classify the text without opening each image."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Image to Text OCR",
+      "Copy text from phone or OS photo app",
+      "Cloud vision APIs"
+    ],
+    "rows": [
+      [
+        "Bulk processing via API",
+        "Yes",
+        "No, one image at a time",
+        "Yes"
+      ],
+      [
+        "Per-word pixel boxes",
+        "Yes, optional",
+        "No",
+        "Usually yes"
+      ],
+      [
+        "Per-image confidence score",
+        "Yes",
+        "No",
+        "Usually yes"
+      ],
+      [
+        "Handwriting",
+        "Poor",
+        "Varies",
+        "Often better"
+      ],
+      [
+        "HEIC/AVIF photos",
+        "No, convert to JPEG first",
+        "Yes",
+        "Varies"
+      ],
+      [
+        "Pricing",
+        "$3 per 1,000 images, no compute bill",
+        "Free",
+        "Varies by provider"
+      ]
+    ]
+  },
+  "comparisonNote": "For a handful of images, your phone's built-in text selection is quicker and free. Cloud vision services can handle handwriting and difficult photos better; this actor is aimed at printed and on-screen text in bulk at a predictable price.",
+  "faq": [
+    {
+      "q": "How do I extract text from a screenshot automatically?",
+      "a": "Send the screenshot's URL in `urls`. For UI screenshots where text is scattered across the image, set `pageSegmentation` to `sparse`. The text comes back with line breaks plus a confidence score."
+    },
+    {
+      "q": "Can it read text from iPhone photos?",
+      "a": "Only if they are JPEG, PNG or another supported format. HEIC and AVIF photos are not supported, so export or convert them to JPEG first."
+    },
+    {
+      "q": "Does it read handwriting?",
+      "a": "Not well. Tesseract is strong on printed and typed text but handwriting, low-resolution photos and decorative fonts come out poorly. Check the confidence score to see which images to review."
+    },
+    {
+      "q": "How do I get the position of each word in the image?",
+      "a": "Set `includeWords` to true. Each recognised word is returned with its confidence and pixel box (left, top, width, height). Combine it with `minWordConfidence` to drop uncertain words."
+    },
+    {
+      "q": "What does image OCR cost per image?",
+      "a": "$0.003 per image read by OCR, so 1,000 images cost $3, with no separate compute charge. Images that fail to download or are blank are not charged."
+    }
+  ],
+  "related": [
+    "ocr-to-text",
+    "pdf-ocr",
+    "any-url-to-markdown"
+  ],
+  "guides": [
+    "extract-text-from-images-screenshots"
+  ]
+}

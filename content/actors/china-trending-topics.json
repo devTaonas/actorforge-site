@@ -1,0 +1,132 @@
+{
+  "name": "china-trending-topics",
+  "category": "china-trends",
+  "h1": "China Trending Topics — Weibo, Douyin, Baidu, Toutiao and Bilibili in One Run",
+  "metaTitle": "China Trending Topics: Weibo, Douyin, Baidu | ActorForge",
+  "metaDescription": "Real-time trending topics from Weibo, Douyin, Baidu, Toutiao and Bilibili in one dataset: rank, title, heat score, label and link. $2 per 1,000 topics.",
+  "tagline": "Five Chinese hot lists, one unified schema: rank, title, heat score, label, category and link for every trending topic, with no login or cookies.",
+  "intro": [
+    "What is trending in China rarely looks the same on every platform. A story can top Weibo's hot search while Douyin is focused on a sports result and Baidu on a consumer scandal. Watching all of them means juggling five Chinese-language sites with different layouts and badges.",
+    "This actor captures the live hot lists of **Weibo hot search (微博热搜)**, **Douyin hot list (抖音热榜)**, **Baidu hot search (百度热搜)**, **Toutiao hot board (头条热榜)** and **Bilibili hot words (B站热搜)** in one run, using the platforms' own public hot-list data. Every topic comes back in the same shape regardless of platform: rank, title, heat score, label, category and link. Ads and pinned or government slots are excluded, so `rank` is the organic position.",
+    "It is built for China brand monitoring, market research, news and trend detection, social listening and cross-border e-commerce product discovery, and as a real-time context source for AI agents. Topics cost $2 per 1,000, so all five boards at 50 topics each is $0.50 a run."
+  ],
+  "howItWorks": [
+    "You choose which boards to capture in `platforms`; the default is all five.",
+    "Each board's live public hot list is fetched and normalised into the same row format.",
+    "Ads are removed and pinned or government slots on Weibo, Douyin, Baidu and Toutiao are excluded, so ranks are organic.",
+    "The optional `keywords` filter keeps only topics whose title or description contains one of your words, and filtered-out topics are not charged.",
+    "If one platform is temporarily unavailable, it is skipped and not charged while the other boards are still delivered."
+  ],
+  "inputExample": {
+    "platforms": [
+      "weibo",
+      "douyin",
+      "baidu",
+      "toutiao",
+      "bilibili"
+    ],
+    "maxTopicsPerPlatform": 30,
+    "keywords": []
+  },
+  "outputNote": "Rows from all five boards share the same columns, so you can sort or pivot by platform and rank directly:",
+  "useCases": [
+    {
+      "title": "Cross-platform trend detection",
+      "text": "Run all five boards hourly and look for topics that appear on several lists at once, a stronger signal than a spike on any single platform. Compare by rank rather than raw heat, since each platform scores heat differently."
+    },
+    {
+      "title": "Brand and competitor alerts",
+      "text": "Put brand or product names in `keywords`, in Chinese or English, and schedule frequent runs. You only pay for matching topics, so quiet periods cost almost nothing."
+    },
+    {
+      "title": "Cross-border e-commerce research",
+      "text": "Track which products, events and consumer stories trend in China across news-led boards like Baidu and Toutiao and entertainment-led ones like Douyin and Bilibili."
+    },
+    {
+      "title": "Live China context for AI agents",
+      "text": "Give an agent a current snapshot of what China is talking about, in one call with a consistent schema, before it writes or answers anything China-related."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge China Trending Topics",
+      "Single-platform hot list actors",
+      "Checking each site by hand"
+    ],
+    "rows": [
+      [
+        "Boards per run",
+        "Up to 5",
+        "1",
+        "As many tabs as you open"
+      ],
+      [
+        "Same schema across platforms",
+        "Yes",
+        "Yes, within the ActorForge set",
+        "No"
+      ],
+      [
+        "Ads and pinned slots removed",
+        "Yes",
+        "Yes",
+        "No"
+      ],
+      [
+        "Keyword filter, unmatched not charged",
+        "Yes",
+        "Yes",
+        "No"
+      ],
+      [
+        "Topic ID and cover image for Douyin",
+        "Not listed for this actor",
+        "Listed for the Douyin actor",
+        "Visible"
+      ],
+      [
+        "Translated titles",
+        "No",
+        "No",
+        "Browser translation"
+      ],
+      [
+        "Price per 1,000 topics",
+        "$2",
+        "$2",
+        "Free, by hand"
+      ]
+    ]
+  },
+  "comparisonNote": "If you only care about one board, the dedicated [Weibo](actor:weibo-hot-search) or [Douyin](actor:douyin-hot-search) actor costs the same per topic and has one less setting. Choose this one when you want several boards side by side.",
+  "faq": [
+    {
+      "q": "Which Chinese platforms' trending lists are included?",
+      "a": "Weibo hot search, Douyin hot list, Baidu hot search, Toutiao hot board and Bilibili hot words. You can select any subset with `platforms`."
+    },
+    {
+      "q": "Can I compare heat scores across Weibo, Douyin and Baidu?",
+      "a": "Not directly. `heatScore` is each platform's own popularity metric, so values are not on the same scale. Compare ranks across platforms and use heat only within one board."
+    },
+    {
+      "q": "How many trending topics does each board return?",
+      "a": "Each board holds roughly 50 topics at a time. `maxTopicsPerPlatform` defaults to 50 and accepts up to 100, but a value above the board's size simply returns what the board has."
+    },
+    {
+      "q": "Are the trending topics translated into English?",
+      "a": "No. Titles come back in their original language, mostly Simplified Chinese. Pass them to your own translator or LLM if you need English."
+    },
+    {
+      "q": "How much does hourly monitoring of China trends cost?",
+      "a": "Topics are $0.002 each. Weibo's top 10 every hour for a month is about 7,200 topics, or $14.40; all five boards at 50 topics in a single run is $0.50."
+    }
+  ],
+  "related": [
+    "weibo-hot-search",
+    "douyin-hot-search",
+    "bilibili-scraper",
+    "google-trends"
+  ],
+  "guides": []
+}

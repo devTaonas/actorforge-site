@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Ads Transparency Scraper | ActorForge</title>
+<meta name="description" content="Scrape competitor ads from Google Ads Transparency Center by domain or advertiser: format, dates, regions, ad copy, media. Only-new mode. $0.60 per 1,000 ads.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/ads-transparency/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Google Ads Transparency Scraper | ActorForge">
+<meta property="og:description" content="Scrape competitor ads from Google Ads Transparency Center by domain or advertiser: format, dates, regions, ad copy, media. Only-new mode. $0.60 per 1,000 ads.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/ads-transparency/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Google Ads Transparency Scraper — Competitor Ads | $0.60/1K","description":"Scrape competitor ads from Google Ads Transparency Center by domain or advertiser: format, dates, regions, ad copy, media. Only-new mode. $0.60 per 1,000 ads.","applicationCategory":"BusinessApplication","applicationSubCategory":"SEO & Marketing Intelligence","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/ads-transparency/","sameAs":"https://apify.com/actor-forge/ads-transparency","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Ad result","description":"Charged per ad delivered","price":"0.0006","priceCurrency":"USD","url":"https://apify.com/actor-forge/ads-transparency"},{"@type":"Offer","name":"Ad detail","description":"Charged per ad, only when 'Include ad details' is on (one extra lookup: regions, impressions, ad copy)","price":"0.001","priceCurrency":"USD","url":"https://apify.com/actor-forge/ads-transparency"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"SEO & Marketing Intelligence","item":"https://devtaonas.github.io/actorforge-site/categories/seo-marketing/"},{"@type":"ListItem","position":3,"name":"Google Ads Transparency Scraper — Competitor Ads | $0.60/1K","item":"https://devtaonas.github.io/actorforge-site/actors/ads-transparency/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I search Google Ads Transparency Center by keyword?","acceptedAnswer":{"@type":"Answer","text":"No. The Transparency Center has no ad-text keyword search, so this actor searches by domain, advertiser name or advertiser ID. A domain search returns ads from every advertiser that advertises that domain, including agencies and resellers."}},{"@type":"Question","name":"Does it return the headline and description of text ads?","acceptedAnswer":{"@type":"Answer","text":"Only with includeDetails on, and only on a best-effort basis. Many Google text ads are published only as a rendered snapshot image, which the actor returns as previewImageUrl, and image ads have no text at all."}},{"@type":"Question","name":"How do I get only new competitor ads each day?","acceptedAnswer":{"@type":"Answer","text":"Set onlyNewSinceLastRun to true, give the watch list a monitorName such as uk-competitors, and schedule the actor daily. Ads already delivered under that name are skipped and not charged."}},{"@type":"Question","name":"Do I need a proxy to scrape Google Ads Transparency?","acceptedAnswer":{"@type":"Answer","text":"No. The Transparency Center is public and the default is no proxy. The actor never rotates proxies or solves CAPTCHAs; if Google blocks the run it stops, keeps the ads already delivered and reports it in the status message and RUN_SUMMARY."}},{"@type":"Question","name":"How much does monitoring a competitor cost?","acceptedAnswer":{"@type":"Answer","text":"Ads cost $0.0006 each, so 1,000 ads are $0.60. Details add $0.001 per ad. A daily monitor returning around 20 new ads costs about $0.012 a day."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a></li><li aria-current="page">Google Ads Transparency Scraper — Competitor Ads | $0.60/1K</li></ol></nav><h1>Google Ads Transparency Center Scraper — Competitor Ad Monitoring</h1><p>See every ad a competitor runs on Google Search, YouTube, Display, Shopping and Maps, and get only the new ones on each scheduled run.</p><a class="btn" href="https://apify.com/actor-forge/ads-transparency" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p>Google's Ads Transparency Center shows the ads any advertiser runs, but browsing it one creative at a time does not scale past a couple of competitors. This actor reads the public ad library at adstransparency.google.com and returns one clean row per ad: advertiser name and ID, creative ID, format (text, image or video), first and last shown, days running, landing domain, image and video URLs, and a link to the ad's transparency page.</p><p>You can search by <strong>competitor domain</strong> (for example nike.com, which also returns agencies and resellers advertising that domain), by <strong>advertiser name</strong> such as HubSpot, or by advertiser ID, and filter by country, date range and format. Turn on <code>includeDetails</code> for one extra lookup per ad that adds countries shown, impression ranges and best-effort headline and description text.</p><p>The main job is monitoring. With <code>onlyNewSinceLastRun</code> on and a daily schedule, each run returns only ads that were not delivered before, and already-seen ads are never charged. It runs on plain HTTP at 256 MB with no browser, and costs $0.60 per 1,000 ads, plus $1 per 1,000 ads when details are switched on.</p><h3>How it works</h3><ol><li>It resolves each domain, advertiser name or advertiser ID using the same keyless JSON calls the public Transparency Center page makes.</li><li>It reads ads newest first, up to <code>maxAdsPerAdvertiser</code> per search and <code>maxResults</code> overall, applying your region, date and format filters.</li><li>With <code>includeDetails</code>, it makes one extra lookup per ad for countries, impression ranges, per-country dates and best-effort ad copy.</li><li>With <code>onlyNewSinceLastRun</code>, every delivered ad is remembered in the key-value store ads-seen-&lt;monitorName&gt; and skipped on later runs at no charge.</li><li>Requests are paced (at most 2 at a time, 0.8-2 s apart). On a CAPTCHA or repeated 429/403 the run stops at once, keeps delivered ads and charges nothing for blocked requests.</li></ol><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "domains": [
+    "nike.com"
+  ],
+  "advertiserNames": [
+    "HubSpot"
+  ],
+  "regions": [
+    "US",
+    "GB"
+  ],
+  "formats": [],
+  "maxAdsPerAdvertiser": 20,
+  "maxResults": 200,
+  "includeDetails": false,
+  "onlyNewSinceLastRun": true,
+  "monitorName": "competitors-daily"
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>domains</code></td><td>array</td><td>no</td><td></td><td class="cut">Competitor websites, e.g. nike.com. Returns every ad Google shows for that domain, from the brand itself and from agencies or resellers advertising it.</td></tr><tr><td><code>advertiserNames</code></td><td>array</td><td>no</td><td></td><td class="cut">Company names as shown in the Ads Transparency Center, e.g. HubSpot, Argos Limited. Exact name matches are used (a brand's several legal entities are all kept); otherwise the closest advertiser with the most ads.</td></tr><tr><td><code>advertiserIds</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Google advertiser IDs (AR… from an adstransparency.google.com/advertiser/AR… link).</td></tr><tr><td><code>regions</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Only ads shown in these countries, as two-letter codes (US, GB, DE, FR…). Empty = anywhere.</td></tr><tr><td><code>dateFrom</code></td><td>string</td><td>no</td><td></td><td class="cut">Only ads shown on or after this date (YYYY-MM-DD).</td></tr><tr><td><code>dateTo</code></td><td>string</td><td>no</td><td></td><td class="cut">Only ads shown on or before this date (YYYY-MM-DD).</td></tr><tr><td><code>formats</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Only these formats. Empty = all.</td></tr><tr><td><code>maxAdsPerAdvertiser</code></td><td>integer</td><td>no</td><td><code>100</code></td><td class="cut">How many ads to read for each domain, advertiser name or advertiser ID, newest first as the Transparency Center lists them.</td></tr><tr><td><code>maxResults</code></td><td>integer</td><td>no</td><td><code>1000</code></td><td class="cut">Stop after this many ads across all searches. You pay per ad delivered ($0.60 per 1,000).</td></tr><tr><td><code>includeDetails</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">One extra lookup per ad: countries shown, impression ranges and first/last shown per country, plus best-effort headline/description text. Charged as ad-detail ($1 per 1,000).</td></tr><tr><td><code>onlyNewSinceLastRun</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Remember every ad delivered in a named key-value store (ads-seen-&lt;monitor name&gt;) and return only ads not seen before. Schedule the actor daily to get a feed of competitors' new ads; already-seen ads are skipped and…</td></tr><tr><td><code>monitorName</code></td><td>string</td><td>no</td><td><code>"default"</code></td><td class="cut">Name of the seen-ads memory used by 'Only new ads'. Use one name per schedule (e.g. uk-competitors) so separate watch lists don't share state.</td></tr><tr><td><code>proxyConfiguration</code></td><td>object</td><td>no</td><td><code>{"useApifyProxy": false}</code></td><td class="cut">Not needed: the Transparency Center is public. Leave off unless you have your own reason to route requests through a proxy. The actor never rotates proxies to get around a block.</td></tr></tbody></table></div></details><h2>Output example</h2><p>Each row is a single ad creative, with the advertiser behind it, where it ran and a link back to its page in the Transparency Center:</p><div class="tablewrap"><table><thead><tr><th scope="col">advertiserName</th><th scope="col">format</th><th scope="col">firstShown</th><th scope="col">lastShown</th><th scope="col">regions</th><th scope="col">landingDomain</th><th scope="col">previewUrl</th></tr></thead><tbody><tr><td class="cut">Nike, Inc.</td><td class="cut">text</td><td class="cut">2022-11-30</td><td class="cut">2026-10-19</td><td class="cut">US</td><td class="cut">nike.com</td><td class="cut">https://adstransparency.google.com/advertiser/AR16735076323512287233/creative/CR00144196208338927617</td></tr><tr><td class="cut">INITIATIVE MEDIA B.V.</td><td class="cut">video</td><td class="cut">2023-10-17</td><td class="cut">2026-10-19</td><td class="cut">FR, BE, DE, IT, ES, …</td><td class="cut">nike.com</td><td class="cut">https://adstransparency.google.com/advertiser/AR11154049584043393025/creative/CR03397377851928870913</td></tr><tr><td class="cut">Hubspot, Inc.</td><td class="cut">text</td><td class="cut">2025-11-03</td><td class="cut">2026-10-19</td><td class="cut">US, DE, FR, IN, BR, …</td><td class="cut">hubspot.com</td><td class="cut">https://adstransparency.google.com/advertiser/AR10072600183532683265/creative/…</td></tr><tr><td class="cut">Argos Limited</td><td class="cut">text</td><td class="cut">2025-…</td><td class="cut">2026-10-19</td><td class="cut">GB</td><td class="cut">argos.co.uk</td><td class="cut">https://adstransparency.google.com/advertiser/AR08556219150266007553/creative/CR07375270183734083585</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Ad result</td><td class="cut">Charged per ad delivered</td><td>$0.0006</td><td>$0.60</td><td class="cut">100 ads = $0.06; 1,000 ads = $0.60; a daily monitor returning ~20 new ads = $0.012 a day</td></tr><tr><td>Ad detail</td><td class="cut">Charged per ad, only when 'Include ad details' is on (one extra lookup: regions, impressions, ad copy)</td><td>$0.001</td><td>$1</td><td class="cut">100 ads with details = $0.06 + $0.10 = $0.16</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB = $0.0000125</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try Google Ads Transparency Scraper on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/ads-transparency" rel="noopener">Run on Apify →</a></div><h2>Use cases</h2><div class="uc"><h3>Daily feed of competitors' new ads</h3><p>Schedule a daily run with only-new mode for your main competitors' domains. Each run delivers just the creatives that appeared since the last one, which is an easy feed for a Slack channel or a weekly marketing review.</p></div><div class="uc"><h3>Creative and messaging research</h3><p>Pull a competitor's recent image and video ads with their media URLs, and switch on details for headline and description text where Google publishes it. Use it to see which offers and formats a brand is putting money behind.</p></div><div class="uc"><h3>Market entry checks</h3><p>Filter by region to see which advertisers are active in a country before launching there. Domain searches also reveal agencies and resellers advertising a brand, which helps map who else competes for the same clicks.</p></div><div class="uc"><h3>Agency pitch preparation</h3><p>Export a prospect's ad history by advertiser name, with first and last shown dates and days running, to show how long campaigns stay live. It is quick to build a factual slide from the rows.</p></div><h2>How it compares</h2><div class="tablewrap"><table><thead><tr><th scope="col"></th><th scope="col">ActorForge Ads Transparency</th><th scope="col">Browsing the Transparency Center manually</th><th scope="col">Building your own scraper</th></tr></thead><tbody><tr><td>Search by domain, advertiser name or ID</td><td>Yes</td><td>Yes</td><td>You build it</td></tr><tr><td>Search by keyword in ad text</td><td>No, the Transparency Center has none</td><td>No</td><td>No</td></tr><tr><td>Structured export (JSON, CSV)</td><td>Yes</td><td>No</td><td>Yes, once built</td></tr><tr><td>Only new ads since last run</td><td>Built in, seen ads free</td><td>No</td><td>You build it</td></tr><tr><td>Ad copy for every text ad</td><td>Partial, many text ads are images only</td><td>Visible as a rendered image</td><td>Partial, same limitation</td></tr><tr><td>CAPTCHA handling</td><td>Stops cleanly, blocked requests free</td><td>You solve it yourself</td><td>Up to you</td></tr><tr><td>Cost</td><td>$0.60 per 1,000 ads, $1 per 1,000 with details</td><td>Free, your time</td><td>Free code, your time and servers</td></tr></tbody></table></div><p class="muted">For a one-off look at a single competitor, the Transparency Center website is free and shows the rendered ads directly. The actor earns its keep when you track several advertisers repeatedly and want the results as data.</p><h2>Limits and honest notes</h2><ul><li>No CAPTCHA solving, no protection bypass. If Google answers with a CAPTCHA or its "unusual traffic" page (or keeps answering 429/403), the actor stops the run at once, keeps the ads already delivered, and says so in the run's status message and RUN_SUMMARY. Blocked requests are never charged. Google can do this to automated traffic from busy IP ranges, so some runs may return partial results; re-run later.</li><li>No proxy rotation and no browser imitation: requests use an honest user agent naming this actor. You can set your own proxy for your own reasons; the default is none.</li><li>Data comes from the same keyless JSON calls the public Transparency Center page makes (its robots.txt has no rules). Requests are paced (at most 2 at a time, 0.8-2 s apart, backoff on errors).</li><li>Ad copy (headline/description) needs 'Include ad details' and is best-effort: many Google text ads are published only as a rendered snapshot image (returned as previewImageUrl), and image ads have no text.</li><li>There is no ad-text keyword search in the Transparency Center: search by domain, advertiser name or advertiser ID. A domain search returns ads from every advertiser that advertises that domain (agencies and resellers included).</li><li>Advertiser country is filled for advertiser-name searches (from Google's advertiser search); domain and ID searches leave it empty.</li><li>Advertisers are businesses. Where Google lists a verified individual as the advertiser, only the name Google itself publishes is returned. No other personal data is collected.</li><li>'Max ads per domain / advertiser' counts ads read, newest first, so a daily monitor stays fast and cheap. Already-seen ads (monitoring), filtered-out formats and errors are never charged.</li><li>Respects your run budget: set a maximum total charge and the actor stops cleanly at the cap.</li></ul><h2>FAQ</h2><details><summary>Can I search Google Ads Transparency Center by keyword?</summary><p>No. The Transparency Center has no ad-text keyword search, so this actor searches by domain, advertiser name or advertiser ID. A domain search returns ads from every advertiser that advertises that domain, including agencies and resellers.</p></details><details><summary>Does it return the headline and description of text ads?</summary><p>Only with <code>includeDetails</code> on, and only on a best-effort basis. Many Google text ads are published only as a rendered snapshot image, which the actor returns as previewImageUrl, and image ads have no text at all.</p></details><details><summary>How do I get only new competitor ads each day?</summary><p>Set <code>onlyNewSinceLastRun</code> to true, give the watch list a <code>monitorName</code> such as uk-competitors, and schedule the actor daily. Ads already delivered under that name are skipped and not charged.</p></details><details><summary>Do I need a proxy to scrape Google Ads Transparency?</summary><p>No. The Transparency Center is public and the default is no proxy. The actor never rotates proxies or solves CAPTCHAs; if Google blocks the run it stops, keeps the ads already delivered and reports it in the status message and RUN_SUMMARY.</p></details><details><summary>How much does monitoring a competitor cost?</summary><p>Ads cost $0.0006 each, so 1,000 ads are $0.60. Details add $0.001 per ad. A daily monitor returning around 20 new ads costs about $0.012 a day.</p></details><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~ads-transparency/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"domains": ["nike.com"], "advertiserNames": ["HubSpot"], "regions": ["US", "GB"], "formats": [], "maxAdsPerAdvertiser": 20, "maxResults": 200, "includeDetails": false, "onlyNewSinceLastRun": true, "monitorName": "competitors-daily"}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "domains": [
+    "nike.com"
+  ],
+  "advertiserNames": [
+    "HubSpot"
+  ],
+  "regions": [
+    "US",
+    "GB"
+  ],
+  "formats": [],
+  "maxAdsPerAdvertiser": 20,
+  "maxResults": 200,
+  "includeDetails": false,
+  "onlyNewSinceLastRun": true,
+  "monitorName": "competitors-daily"
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~ads-transparency/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "domains": [
+        "nike.com"
+    ],
+    "advertiserNames": [
+        "HubSpot"
+    ],
+    "regions": [
+        "US",
+        "GB"
+    ],
+    "formats": [],
+    "maxAdsPerAdvertiser": 20,
+    "maxResults": 200,
+    "includeDetails": False,
+    "onlyNewSinceLastRun": True,
+    "monitorName": "competitors-daily"
+}
+
+run = client.actor("actor-forge/ads-transparency").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Step-by-step guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/monitor-competitor-ads-google-ads-transparency/">How to Monitor Competitor Ads in Google Ads Transparency Center</a></h3><p>List your competitors&#x27; domains or advertiser names, run the ActorForge Ads Transparency actor daily with only-new mode, and route the new ads into…</p></div></div><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/google-trends/">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></h3><p>Google Trends scraper and API: Trending Now searches for 125 countries from the official feed (traffic, start time, picture, news articles), plus…</p><span class="price">$0.50 per 1,000 · trend result</span></div><div class="card"><h3><a href="../../actors/keyword-suggestions/">Keyword Suggestions — Google, YouTube, Bing Autocomplete</a></h3><p>Bulk keyword suggestions from Google, YouTube, Bing and Baidu autocomplete. Expand each seed with a-z, question words or prepositions for long-tail…</p><span class="price">$0.30 per 1,000 · seed expanded</span></div><div class="card"><h3><a href="../../actors/seo-audit/">SEO Audit Crawler — On-Page SEO Checker for Whole Sites</a></h3><p>Crawl a whole website and audit every page for technical and on-page SEO: titles, meta descriptions, H1s, canonicals, noindex, duplicates, broken…</p><span class="price">$6 per 1,000 · page audited</span></div><div class="card"><h3><a href="../../actors/shopify-store-scraper/">Shopify Store Scraper — Products, Prices, Store Info</a></h3><p>Scrape any Shopify store&#x27;s products from its public products.json: title, vendor, type, tags, price range, compare-at price, stock, variants and…</p><span class="price">$0.30 per 1,000 · product result</span></div></div><div class="cta"><p><strong>Try Google Ads Transparency Scraper on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/ads-transparency" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/seo-marketing/">More SEO &amp; Marketing Intelligence tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

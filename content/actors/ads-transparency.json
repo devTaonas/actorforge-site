@@ -1,0 +1,141 @@
+{
+  "name": "ads-transparency",
+  "category": "seo-marketing",
+  "h1": "Google Ads Transparency Center Scraper — Competitor Ad Monitoring",
+  "metaTitle": "Google Ads Transparency Scraper | ActorForge",
+  "metaDescription": "Scrape competitor ads from Google Ads Transparency Center by domain or advertiser: format, dates, regions, ad copy, media. Only-new mode. $0.60 per 1,000 ads.",
+  "tagline": "See every ad a competitor runs on Google Search, YouTube, Display, Shopping and Maps, and get only the new ones on each scheduled run.",
+  "intro": [
+    "Google's Ads Transparency Center shows the ads any advertiser runs, but browsing it one creative at a time does not scale past a couple of competitors. This actor reads the public ad library at adstransparency.google.com and returns one clean row per ad: advertiser name and ID, creative ID, format (text, image or video), first and last shown, days running, landing domain, image and video URLs, and a link to the ad's transparency page.",
+    "You can search by **competitor domain** (for example nike.com, which also returns agencies and resellers advertising that domain), by **advertiser name** such as HubSpot, or by advertiser ID, and filter by country, date range and format. Turn on `includeDetails` for one extra lookup per ad that adds countries shown, impression ranges and best-effort headline and description text.",
+    "The main job is monitoring. With `onlyNewSinceLastRun` on and a daily schedule, each run returns only ads that were not delivered before, and already-seen ads are never charged. It runs on plain HTTP at 256 MB with no browser, and costs $0.60 per 1,000 ads, plus $1 per 1,000 ads when details are switched on."
+  ],
+  "howItWorks": [
+    "It resolves each domain, advertiser name or advertiser ID using the same keyless JSON calls the public Transparency Center page makes.",
+    "It reads ads newest first, up to `maxAdsPerAdvertiser` per search and `maxResults` overall, applying your region, date and format filters.",
+    "With `includeDetails`, it makes one extra lookup per ad for countries, impression ranges, per-country dates and best-effort ad copy.",
+    "With `onlyNewSinceLastRun`, every delivered ad is remembered in the key-value store ads-seen-<monitorName> and skipped on later runs at no charge.",
+    "Requests are paced (at most 2 at a time, 0.8-2 s apart). On a CAPTCHA or repeated 429/403 the run stops at once, keeps delivered ads and charges nothing for blocked requests."
+  ],
+  "inputExample": {
+    "domains": [
+      "nike.com"
+    ],
+    "advertiserNames": [
+      "HubSpot"
+    ],
+    "regions": [
+      "US",
+      "GB"
+    ],
+    "formats": [],
+    "maxAdsPerAdvertiser": 20,
+    "maxResults": 200,
+    "includeDetails": false,
+    "onlyNewSinceLastRun": true,
+    "monitorName": "competitors-daily"
+  },
+  "outputNote": "Each row is a single ad creative, with the advertiser behind it, where it ran and a link back to its page in the Transparency Center:",
+  "useCases": [
+    {
+      "title": "Daily feed of competitors' new ads",
+      "text": "Schedule a daily run with only-new mode for your main competitors' domains. Each run delivers just the creatives that appeared since the last one, which is an easy feed for a Slack channel or a weekly marketing review."
+    },
+    {
+      "title": "Creative and messaging research",
+      "text": "Pull a competitor's recent image and video ads with their media URLs, and switch on details for headline and description text where Google publishes it. Use it to see which offers and formats a brand is putting money behind."
+    },
+    {
+      "title": "Market entry checks",
+      "text": "Filter by region to see which advertisers are active in a country before launching there. Domain searches also reveal agencies and resellers advertising a brand, which helps map who else competes for the same clicks."
+    },
+    {
+      "title": "Agency pitch preparation",
+      "text": "Export a prospect's ad history by advertiser name, with first and last shown dates and days running, to show how long campaigns stay live. It is quick to build a factual slide from the rows."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge Ads Transparency",
+      "Browsing the Transparency Center manually",
+      "Building your own scraper"
+    ],
+    "rows": [
+      [
+        "Search by domain, advertiser name or ID",
+        "Yes",
+        "Yes",
+        "You build it"
+      ],
+      [
+        "Search by keyword in ad text",
+        "No, the Transparency Center has none",
+        "No",
+        "No"
+      ],
+      [
+        "Structured export (JSON, CSV)",
+        "Yes",
+        "No",
+        "Yes, once built"
+      ],
+      [
+        "Only new ads since last run",
+        "Built in, seen ads free",
+        "No",
+        "You build it"
+      ],
+      [
+        "Ad copy for every text ad",
+        "Partial, many text ads are images only",
+        "Visible as a rendered image",
+        "Partial, same limitation"
+      ],
+      [
+        "CAPTCHA handling",
+        "Stops cleanly, blocked requests free",
+        "You solve it yourself",
+        "Up to you"
+      ],
+      [
+        "Cost",
+        "$0.60 per 1,000 ads, $1 per 1,000 with details",
+        "Free, your time",
+        "Free code, your time and servers"
+      ]
+    ]
+  },
+  "comparisonNote": "For a one-off look at a single competitor, the Transparency Center website is free and shows the rendered ads directly. The actor earns its keep when you track several advertisers repeatedly and want the results as data.",
+  "faq": [
+    {
+      "q": "Can I search Google Ads Transparency Center by keyword?",
+      "a": "No. The Transparency Center has no ad-text keyword search, so this actor searches by domain, advertiser name or advertiser ID. A domain search returns ads from every advertiser that advertises that domain, including agencies and resellers."
+    },
+    {
+      "q": "Does it return the headline and description of text ads?",
+      "a": "Only with `includeDetails` on, and only on a best-effort basis. Many Google text ads are published only as a rendered snapshot image, which the actor returns as previewImageUrl, and image ads have no text at all."
+    },
+    {
+      "q": "How do I get only new competitor ads each day?",
+      "a": "Set `onlyNewSinceLastRun` to true, give the watch list a `monitorName` such as uk-competitors, and schedule the actor daily. Ads already delivered under that name are skipped and not charged."
+    },
+    {
+      "q": "Do I need a proxy to scrape Google Ads Transparency?",
+      "a": "No. The Transparency Center is public and the default is no proxy. The actor never rotates proxies or solves CAPTCHAs; if Google blocks the run it stops, keeps the ads already delivered and reports it in the status message and RUN_SUMMARY."
+    },
+    {
+      "q": "How much does monitoring a competitor cost?",
+      "a": "Ads cost $0.0006 each, so 1,000 ads are $0.60. Details add $0.001 per ad. A daily monitor returning around 20 new ads costs about $0.012 a day."
+    }
+  ],
+  "related": [
+    "google-trends",
+    "keyword-suggestions",
+    "seo-audit",
+    "shopify-store-scraper"
+  ],
+  "guides": [
+    "monitor-competitor-ads-google-ads-transparency"
+  ]
+}

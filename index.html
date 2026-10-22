@@ -3,102 +3,78 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ActorForge — Reliable UK Data APIs, Pay Per Result</title>
-<meta name="description" content="Pay-per-use UK data tools built on official sources: Companies House company data with officers & filings, MOT history, planning applications. No subscriptions — pay per result.">
-<style>
-:root { --navy:#14213d; --navy2:#0a1628; --orange:#f26430; --ink:#1b2430; --muted:#5b6572; --line:#e5e8ee; }
-* { box-sizing:border-box; margin:0; }
-body { font:16px/1.6 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); }
-.wrap { max-width:880px; margin:0 auto; padding:0 24px; }
-header { background:linear-gradient(180deg,var(--navy),var(--navy2)); color:#fff; padding:64px 0 56px; }
-header h1 { font-size:2.2rem; letter-spacing:-.02em; }
-header h1 span { color:var(--orange); }
-header p.tag { color:#c8d2e0; max-width:38em; margin-top:12px; font-size:1.1rem; }
-.badges { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
-.badge { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:4px 14px; font-size:.85rem; color:#dde5f0; }
-main { padding:48px 0 24px; }
-h2 { font-size:1.4rem; margin:32px 0 8px; letter-spacing:-.01em; }
-p.sub { color:var(--muted); margin-bottom:20px; }
-.card { border:1px solid var(--line); border-radius:12px; padding:24px; margin:20px 0; }
-.card.live { border-color:var(--orange); }
-.card h3 { font-size:1.15rem; }
-.card .status { font-size:.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
-.card.live .status { color:var(--orange); }
-.card .status.soon { color:var(--muted); }
-.card p { color:var(--muted); margin:8px 0 14px; }
-.price { font-weight:600; color:var(--ink); }
-a.btn { display:inline-block; background:var(--orange); color:#fff; text-decoration:none; font-weight:600; border-radius:8px; padding:10px 18px; margin-top:6px; }
-a.btn:hover { filter:brightness(1.07); }
-.tablewrap { overflow-x:auto; margin:12px 0; }
-table { border-collapse:collapse; font-size:.85rem; min-width:640px; }
-th,td { text-align:left; padding:8px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
-th { color:var(--muted); font-weight:600; }
-ul.points { padding-left:0; list-style:none; }
-ul.points li { padding-left:26px; position:relative; margin:8px 0; color:var(--muted); }
-ul.points li::before { content:"✓"; position:absolute; left:0; color:var(--orange); font-weight:700; }
-footer { border-top:1px solid var(--line); margin-top:48px; padding:24px 0 40px; color:var(--muted); font-size:.85rem; }
-footer a { color:var(--navy); }
-</style>
+<title>ActorForge — Pay-Per-Result Data Tools on Apify</title>
+<meta name="description" content="Data APIs for leads, OCR, PDF to Markdown, SEO audits, Google Trends, YouTube and more. Official and open sources, pay only per result, no subscription.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="ActorForge — Pay-Per-Result Data Tools on Apify">
+<meta property="og:description" content="Data APIs for leads, OCR, PDF to Markdown, SEO audits, Google Trends, YouTube and more. Official and open sources, pay only per result, no subscription.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/","sameAs":["https://apify.com/actor-forge"]},{"@type":"WebSite","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ItemList","name":"ActorForge actors","itemListElement":[{"@type":"ListItem","position":1,"url":"https://devtaonas.github.io/actorforge-site/actors/ads-transparency/","name":"Google Ads Transparency Scraper — Competitor Ads | $0.60/1K"},{"@type":"ListItem","position":2,"url":"https://devtaonas.github.io/actorforge-site/actors/any-url-to-markdown/","name":"Any URL to Markdown — Web Pages, PDF, Word, Excel & OCR"},{"@type":"ListItem","position":3,"url":"https://devtaonas.github.io/actorforge-site/actors/app-store-scraper/","name":"App Store & Google Play Scraper — Apps, Charts, Reviews"},{"@type":"ListItem","position":4,"url":"https://devtaonas.github.io/actorforge-site/actors/bilibili-scraper/","name":"Bilibili Video & Comment Scraper — 哔哩哔哩 Search, No Login"},{"@type":"ListItem","position":5,"url":"https://devtaonas.github.io/actorforge-site/actors/business-places-data/","name":"Business Places Data — Google Maps Alternative, 80M+ POIs"},{"@type":"ListItem","position":6,"url":"https://devtaonas.github.io/actorforge-site/actors/career-site-jobs/","name":"Career Site Jobs — Workday, Greenhouse, Lever & Ashby Scraper"},{"@type":"ListItem","position":7,"url":"https://devtaonas.github.io/actorforge-site/actors/china-trending-topics/","name":"China Trending Topics — Weibo, Douyin, Baidu Hot Search"},{"@type":"ListItem","position":8,"url":"https://devtaonas.github.io/actorforge-site/actors/douyin-hot-search/","name":"Douyin Trending & Hot Search — 抖音热榜 Real-Time List"},{"@type":"ListItem","position":9,"url":"https://devtaonas.github.io/actorforge-site/actors/facebook-pages-data/","name":"Facebook Pages by City — Open Data, Not Affiliated with Meta"},{"@type":"ListItem","position":10,"url":"https://devtaonas.github.io/actorforge-site/actors/google-trends/","name":"Google Trends Scraper — Trending Now & Interest Over Time"},{"@type":"ListItem","position":11,"url":"https://devtaonas.github.io/actorforge-site/actors/image-to-text-ocr/","name":"Image to Text OCR — Extract Text from Photos & Screenshots"},{"@type":"ListItem","position":12,"url":"https://devtaonas.github.io/actorforge-site/actors/keyword-suggestions/","name":"Keyword Suggestions — Google, YouTube, Bing Autocomplete"},{"@type":"ListItem","position":13,"url":"https://devtaonas.github.io/actorforge-site/actors/ocr-to-text/","name":"OCR — Scanned PDF & Image to Text (Tesseract, 29 Languages)"},{"@type":"ListItem","position":14,"url":"https://devtaonas.github.io/actorforge-site/actors/pdf-ocr/","name":"PDF OCR — Scanned PDF to Searchable Text (29 Languages)"},{"@type":"ListItem","position":15,"url":"https://devtaonas.github.io/actorforge-site/actors/seo-audit/","name":"SEO Audit Crawler — On-Page SEO Checker for Whole Sites"},{"@type":"ListItem","position":16,"url":"https://devtaonas.github.io/actorforge-site/actors/shopify-store-scraper/","name":"Shopify Store Scraper — Products, Prices, Store Info"},{"@type":"ListItem","position":17,"url":"https://devtaonas.github.io/actorforge-site/actors/startup-funding-rounds/","name":"Startup Funding Rounds Tracker — Recently Funded (SEC Form D)"},{"@type":"ListItem","position":18,"url":"https://devtaonas.github.io/actorforge-site/actors/uk-companies-house-enrichment/","name":"Companies House Enrichment — UK Company Directors & Filings"},{"@type":"ListItem","position":19,"url":"https://devtaonas.github.io/actorforge-site/actors/uk-planning-applications/","name":"UK Planning Applications Scraper — 15 Councils, Weekly Leads"},{"@type":"ListItem","position":20,"url":"https://devtaonas.github.io/actorforge-site/actors/uspto-trademark-search/","name":"USPTO Trademark Search — Check If a Phrase Is Trademarked"},{"@type":"ListItem","position":21,"url":"https://devtaonas.github.io/actorforge-site/actors/wayback-snapshots/","name":"Wayback Machine Scraper — Archive.org Snapshots & URL History"},{"@type":"ListItem","position":22,"url":"https://devtaonas.github.io/actorforge-site/actors/weibo-hot-search/","name":"Weibo Hot Search — 微博热搜 Real-Time Trending List"},{"@type":"ListItem","position":23,"url":"https://devtaonas.github.io/actorforge-site/actors/youtube-api-scraper/","name":"YouTube Scraper (Official API) — Videos, Search & Stats"},{"@type":"ListItem","position":24,"url":"https://devtaonas.github.io/actorforge-site/actors/youtube-channel-api/","name":"YouTube Channel Scraper (Official API) — All Videos & Stats"},{"@type":"ListItem","position":25,"url":"https://devtaonas.github.io/actorforge-site/actors/youtube-comments-api/","name":"YouTube Comments Scraper (Official API) — No Usernames"},{"@type":"ListItem","position":26,"url":"https://devtaonas.github.io/actorforge-site/actors/youtube-search-api/","name":"YouTube Search Scraper (Official API) — Videos by Keyword"}]}]}</script>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>Actor<span>Forge</span></h1>
-    <p class="tag">Reliable UK data, straight from the source. Pay-per-result data tools built on official registers — no subscriptions, no scraping fragility.</p>
-    <div class="badges">
-      <span class="badge">🏛️ Official sources first</span>
-      <span class="badge">🌙 Monitored nightly</span>
-      <span class="badge">💷 Budget caps respected</span>
-      <span class="badge">🤖 AI-agent ready</span>
-    </div>
-  </div>
-</header>
-<main>
-  <div class="wrap">
-    <h2>The tools</h2>
-    <p class="sub">Run them on Apify — pay only for the rows you receive.</p>
-
-    <div class="card live">
-      <div class="status">● Live</div>
-      <h3>UK Companies House Enrichment — Officers &amp; Filings</h3>
-      <p>Fully-enriched UK company records from the official Companies House API: profile, current and resigned officers, and filing history in one row. Build lead lists by SIC code, incorporation date, status, or location — or enrich company numbers in bulk.</p>
-      <div class="tablewrap">
-        <table>
-          <tr><th>companyNumber</th><th>name</th><th>status</th><th>incorporatedOn</th><th>sicCodes</th><th>officers</th><th>filings</th></tr>
-          <tr><td>00445790</td><td>TESCO PLC</td><td>active</td><td>1947-11-27</td><td>47110</td><td>74 mapped</td><td>25 most recent</td></tr>
-          <tr><td>15055247</td><td>CROWN SCAFFOLDING (NW) LTD</td><td>active</td><td>2023-08-07</td><td>43991</td><td>1 mapped</td><td>8 filings</td></tr>
-        </table>
-      </div>
-      <p><span class="price">$5 per 1,000 companies</span> — officers and filing history included, not extra.</p>
-      <a class="btn" href="https://apify.com/actor-forge/uk-companies-house-enrichment">Run it on Apify →</a>
-    </div>
-
-    <div class="card">
-      <div class="status soon">○ Coming soon</div>
-      <h3>UK Planning Applications — 15 Councils, One Actor</h3>
-      <p>New and decided planning applications from council portals, unified: reference, proposal, site address, status, dates, deep link. A proven lead source for trades and developers.</p>
-    </div>
-
-    <div class="card">
-      <div class="status soon">○ Coming soon</div>
-      <h3>UK MOT History Bulk Checker</h3>
-      <p>Full MOT history for any UK vehicle from the official DVSA API — results, expiry, mileage, defects — by registration or VIN, in bulk.</p>
-    </div>
-
-    <h2>Why ActorForge</h2>
-    <ul class="points">
-      <li><strong>Official APIs, not scraped pages</strong> — results don't break when a website changes its layout.</li>
-      <li><strong>Nightly automated self-tests</strong> — breakages are caught and fixed before you notice them.</li>
-      <li><strong>Honest pay-per-event pricing</strong> — worked examples in every README; rows we can't deliver are never charged.</li>
-      <li><strong>Budget caps are a contract</strong> — set a max charge on any run and the actor stops cleanly at the cap.</li>
-      <li><strong>Privacy by design</strong> — statutory public registers only; personal details like dates of birth are deliberately excluded.</li>
-    </ul>
-  </div>
-</main>
-<footer>
-  <div class="wrap">
-    ActorForge · <a href="https://apify.com/actor-forge">All actors on Apify</a> · Questions or a niche you'd like covered? Open an issue on any actor.
-  </div>
-</footer>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="./">Actor<span>Forge</span></a><nav aria-label="Main"><a href="./">Home</a><a href="actors/">All actors</a><a href="guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><h1>Data tools that pay their way: 26 actors, pay per result</h1><p>ActorForge builds data extraction and conversion tools for the Apify platform. Each one is built on an official API or an open dataset wherever one exists, prices every result up front, and respects the spending cap you set on a run.</p><a class="btn" href="actors/">Browse all actors</a><a class="btn ghost" href="guides/">Read the guides</a></div></div>
+<main id="main"><div class="wrap"><h2>What is ActorForge?</h2><p>An Apify actor is a cloud program you run from the Apify console, on a schedule, or through an API call. You give it an input (URLs, keywords, a city, a company number) and it returns a dataset you can download as JSON, CSV or Excel, or pipe into Make, n8n, Zapier or your own code.</p><p>ActorForge actors are priced per event: you pay for each row or page delivered, at the price printed on the listing, with no monthly subscription. Failed lookups are not charged, and every actor stops cleanly when it reaches the maximum charge you set for a run. Every actor is checked by an automated nightly self-test.</p><h2>Browse by category</h2><div class="grid"><div class="card"><h3><a href="categories/business-leads/">Business Leads &amp; Company Data</a></h3><p>B2B lead lists, company registers, funding rounds, hiring signals and planning permissions, from official and open sources.</p><span class="price">6 actors</span></div><div class="card"><h3><a href="categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a></h3><p>Turn PDFs, scans, images and web pages into clean text and Markdown for search, RAG pipelines and AI agents.</p><span class="price">4 actors</span></div><div class="card"><h3><a href="categories/seo-marketing/">SEO &amp; Marketing Intelligence</a></h3><p>Technical SEO audits, keyword ideas, Google Trends, competitor ads, archived page history and trademark checks.</p><span class="price">5 actors</span></div><div class="card"><h3><a href="categories/ecommerce-apps/">E-commerce &amp; App Stores</a></h3><p>Product catalogues from Shopify stores and app data, charts and reviews from the App Store and Google Play.</p><span class="price">3 actors</span></div><div class="card"><h3><a href="categories/video-social/">YouTube &amp; Video Data</a></h3><p>Videos, channels, comments and search results from the official YouTube Data API, using your own free API key.</p><span class="price">4 actors</span></div><div class="card"><h3><a href="categories/china-trends/">China Social Trends</a></h3><p>Real-time hot-search lists from Weibo, Douyin and Baidu, plus Bilibili videos and comments, for trend monitoring and market research on China.</p><span class="price">4 actors</span></div></div><h2>Popular guides</h2><div class="grid"><div class="card"><h3><a href="guides/audit-every-url-in-sitemap-seo/">How to Audit Every URL in Your Sitemap and Find Orphan Pages</a></h3><p>Run the SEO Audit Crawler with useSitemap on and maxPages above your site&#x27;s size; it audits every page it can reach plus every sitemap URL, and…</p></div><div class="card"><h3><a href="guides/business-leads-without-google-maps/">How to Get Local Business Leads Without Scraping Google Maps</a></h3><p>Query the open Overture Maps places dataset by city and category with Business Places Data to get names, addresses, phones, websites and emails for…</p></div><div class="card"><h3><a href="guides/check-if-phrase-is-trademarked-uspto/">How to Check If a Phrase Is Trademarked (USPTO, in Bulk)</a></h3><p>Run your phrases through USPTO Trademark Search in contains mode with the classes for your product (25 for clothing, 21 for mugs). Anything marked…</p></div><div class="card"><h3><a href="guides/convert-pdf-to-markdown-for-rag/">How to Convert PDF to Markdown for RAG Pipelines</a></h3><p>Send your PDF links to the Any URL to Markdown actor, read the markdown field of each result, then split it by heading into token-sized chunks…</p></div><div class="card"><h3><a href="guides/export-shopify-store-product-data/">How to Export Shopify Store Product Data to CSV or JSON</a></h3><p>Give the ActorForge Shopify Store Scraper a store URL, let it page through the public products.json feed, then download the dataset as CSV or JSON…</p></div><div class="card"><h3><a href="guides/extract-text-from-images-screenshots/">How to Extract Text from Images and Screenshots in Bulk</a></h3><p>Send image URLs to the Image to Text OCR actor, use the sparse segmentation mode for screenshots, and read the text and confidence per image. It…</p></div><div class="card"><h3><a href="guides/find-company-job-board-ats/">How to Find a Company's Job Board and ATS (Workday, Greenhouse, Lever, Ashby)</a></h3><p>Open any job on the company&#x27;s careers page and look at the host: myworkdayjobs.com, greenhouse.io, lever.co, ashbyhq.com and similar tell you the…</p></div><div class="card"><h3><a href="guides/google-trends-trending-searches-by-country/">How to Track Google Trends Trending Searches by Country</a></h3><p>Run the ActorForge Google Trends actor with a list of country codes, schedule it daily with only-new mode, and keep a small pandas history to see…</p></div><div class="card"><h3><a href="guides/monitor-competitor-ads-google-ads-transparency/">How to Monitor Competitor Ads in Google Ads Transparency Center</a></h3><p>List your competitors&#x27; domains or advertiser names, run the ActorForge Ads Transparency actor daily with only-new mode, and route the new ads into…</p></div><div class="card"><h3><a href="guides/ocr-scanned-pdf-to-text-api/">How to OCR Scanned PDFs to Text with an API</a></h3><p>Send scanned PDF links to the PDF OCR actor, get text back one row per page with a confidence score, and use that score to flag pages for review.…</p></div><div class="card"><h3><a href="guides/sec-form-d-startup-funding-data/">How to Get SEC Form D Startup Funding Data as a Daily Feed</a></h3><p>Use Startup Funding Rounds to read EDGAR&#x27;s daily Form D indexes and parse each filing into a row with issuer, amounts, industry and exemption.…</p></div><div class="card"><h3><a href="guides/uk-company-directors-companies-house-export/">How to Export UK Company Directors from Companies House in Bulk</a></h3><p>Give Companies House Enrichment a list of company numbers or a SIC code, status and location filter, keep includeOfficers on, then flatten the…</p></div><div class="card"><h3><a href="guides/uk-planning-applications-leads/">How to Use UK Planning Applications as Sales Leads</a></h3><p>Pull each council&#x27;s weekly list of newly validated applications with UK Planning Applications, filter the proposal text for the work you do, and…</p></div><div class="card"><h3><a href="guides/wayback-machine-snapshots-api/">How to Use a Wayback Machine Snapshots API and See When a Page Changed</a></h3><p>Query archive.org&#x27;s captures through the Wayback Snapshots actor with collapse set to digest to keep only versions where the content changed, then…</p></div><div class="card"><h3><a href="guides/youtube-data-official-api/">How to Get YouTube Data With the Official API (Free Key, No Code)</a></h3><p>Create a free YouTube Data API v3 key in Google Cloud (no billing account), paste it into an ActorForge YouTube actor, and get video, channel…</p></div></div><h2>All actors</h2><h3>Business Leads &amp; Company Data</h3><div class="grid"><div class="card"><h3><a href="actors/business-places-data/">Business Places Data — Google Maps Alternative, 80M+ POIs</a></h3><p>Business leads by city from open Overture Maps data: name, category, address, lat/lon, phone, website, email, socials and brand for 80M+ places…</p><span class="price">$3 per 1,000 · area query</span></div><div class="card"><h3><a href="actors/career-site-jobs/">Career Site Jobs — Workday, Greenhouse, Lever &amp; Ashby Scraper</a></h3><p>Scrape jobs straight from company career sites on Workday, Greenhouse, Lever, Ashby, Workable, Recruitee, Teamtailor, Personio and BambooHR. Search…</p><span class="price">$3 per 1,000 · job result</span></div><div class="card"><h3><a href="actors/facebook-pages-data/">Facebook Pages by City — Open Data, Not Affiliated with Meta</a></h3><p>Facebook Page leads by city: page URL and ID, name, category, address, lat/lon, phone, website, email and other socials, from Overture Maps open…</p><span class="price">$3 per 1,000 · area query</span></div><div class="card"><h3><a href="actors/startup-funding-rounds/">Startup Funding Rounds Tracker — Recently Funded (SEC Form D)</a></h3><p>Track recently funded US startups from official SEC Form D filings: company, amount raised and offered, round date, industry, exemption, business…</p><span class="price">$10 per 1,000 · filing result</span></div><div class="card"><h3><a href="actors/uk-companies-house-enrichment/">Companies House Enrichment — UK Company Directors &amp; Filings</a></h3><p>Enrich UK companies from the official Companies House API: profile, SIC codes, current and resigned directors and officers, and the latest filing…</p><span class="price">$5 per 1,000 · enriched company</span></div><div class="card"><h3><a href="actors/uk-planning-applications/">UK Planning Applications Scraper — 15 Councils, Weekly Leads</a></h3><p>New and decided UK planning applications (applications for planning permission) from 15 council portals in one clean dataset: reference, proposal…</p><span class="price">$3 per 1,000 · planning application</span></div></div><h3>Documents, OCR &amp; AI-Ready Text</h3><div class="grid"><div class="card"><h3><a href="actors/any-url-to-markdown/">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></h3><p>Turn any URL into clean, LLM-ready Markdown: web pages, PDFs, Word, Excel, PowerPoint, EPUB, CSV and JSON, plus OCR for images and scanned PDFs. One…</p><span class="price">$1 per 1,000 · page result</span></div><div class="card"><h3><a href="actors/image-to-text-ocr/">Image to Text OCR — Extract Text from Photos &amp; Screenshots</a></h3><p>Extract text from images (PNG, JPEG, TIFF, WebP, GIF, BMP) with Tesseract 5 OCR in 29 languages: screenshots, photos of documents, receipts, scans…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="actors/ocr-to-text/">OCR — Scanned PDF &amp; Image to Text (Tesseract, 29 Languages)</a></h3><p>Extract text from scanned PDFs and images (PNG, JPEG, TIFF, WebP, GIF, BMP) with Tesseract 5 OCR in 29 languages. PDF pages that already have text…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="actors/pdf-ocr/">PDF OCR — Scanned PDF to Searchable Text (29 Languages)</a></h3><p>OCR scanned PDFs to text page by page with Tesseract 5 in 29 languages. Pages that already have a text layer are read directly at a tenth of the…</p><span class="price">$3 per 1,000 · page ocr</span></div></div><h3>SEO &amp; Marketing Intelligence</h3><div class="grid"><div class="card"><h3><a href="actors/ads-transparency/">Google Ads Transparency Scraper — Competitor Ads | $0.60/1K</a></h3><p>Scrape competitor ads from the Google Ads Transparency Center by domain, advertiser name or ID: format, first/last shown, regions, impressions, ad…</p><span class="price">$0.60 per 1,000 · ad result</span></div><div class="card"><h3><a href="actors/google-trends/">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></h3><p>Google Trends scraper and API: Trending Now searches for 125 countries from the official feed (traffic, start time, picture, news articles), plus…</p><span class="price">$0.50 per 1,000 · trend result</span></div><div class="card"><h3><a href="actors/keyword-suggestions/">Keyword Suggestions — Google, YouTube, Bing Autocomplete</a></h3><p>Bulk keyword suggestions from Google, YouTube, Bing and Baidu autocomplete. Expand each seed with a-z, question words or prepositions for long-tail…</p><span class="price">$0.30 per 1,000 · seed expanded</span></div><div class="card"><h3><a href="actors/seo-audit/">SEO Audit Crawler — On-Page SEO Checker for Whole Sites</a></h3><p>Crawl a whole website and audit every page for technical and on-page SEO: titles, meta descriptions, H1s, canonicals, noindex, duplicates, broken…</p><span class="price">$6 per 1,000 · page audited</span></div><div class="card"><h3><a href="actors/wayback-snapshots/">Wayback Machine Scraper — Archive.org Snapshots &amp; URL History</a></h3><p>Every Wayback Machine (archive.org) capture of a URL, folder, host or domain: timestamp, status, MIME type, digest and archive links. Unique…</p><span class="price">$2 per 1,000 · snapshot</span></div></div><h3>E-commerce &amp; App Stores</h3><div class="grid"><div class="card"><h3><a href="actors/app-store-scraper/">App Store &amp; Google Play Scraper — Apps, Charts, Reviews</a></h3><p>Scrape Google Play and App Store app details (rating, histogram, installs, price, version, developer, screenshots, similar apps), Apple top charts…</p><span class="price">$0.80 per 1,000 · app result</span></div><div class="card"><h3><a href="actors/shopify-store-scraper/">Shopify Store Scraper — Products, Prices, Store Info</a></h3><p>Scrape any Shopify store&#x27;s products from its public products.json: title, vendor, type, tags, price range, compare-at price, stock, variants and…</p><span class="price">$0.30 per 1,000 · product result</span></div><div class="card"><h3><a href="actors/uspto-trademark-search/">USPTO Trademark Search — Check If a Phrase Is Trademarked</a></h3><p>Bulk-check phrases against the official US trademark register before you list a T-shirt, mug or Amazon product. Verdict per phrase (registered…</p><span class="price">$30 per 1,000 · phrase checked</span></div></div><h3>YouTube &amp; Video Data</h3><div class="grid"><div class="card"><h3><a href="actors/youtube-api-scraper/">YouTube Scraper (Official API) — Videos, Search &amp; Stats</a></h3><p>Bring your own free YouTube API key. Get video details and stats (views, likes, comments, duration, tags), YouTube search results, channel uploads…</p><span class="price">$0.40 per 1,000 · video result</span></div><div class="card"><h3><a href="actors/youtube-channel-api/">YouTube Channel Scraper (Official API) — All Videos &amp; Stats</a></h3><p>Bring your own free YouTube API key. Get any channel&#x27;s stats (subscribers, total views, video count, country) and every upload with views, likes…</p><span class="price">$0.40 per 1,000 · video result</span></div><div class="card"><h3><a href="actors/youtube-comments-api/">YouTube Comments Scraper (Official API) — No Usernames</a></h3><p>Bring your own free YouTube API key. Export YouTube comments and replies (text, likes, reply count, dates) for any video via the official YouTube…</p><span class="price">$0.50 per 1,000 · comment result</span></div><div class="card"><h3><a href="actors/youtube-search-api/">YouTube Search Scraper (Official API) — Videos by Keyword</a></h3><p>Bring your own free YouTube API key. YouTube search by keyword with sort, date, region, language and length filters — every result enriched with…</p><span class="price">$0.30 per 1,000 · video result</span></div></div><h3>China Social Trends</h3><div class="grid"><div class="card"><h3><a href="actors/bilibili-scraper/">Bilibili Video &amp; Comment Scraper — 哔哩哔哩 Search, No Login</a></h3><p>Scrape Bilibili (哔哩哔哩) videos without login: keyword search, video URLs/BV ids, and the popular feed. Each video comes with full stats (views…</p><span class="price">$4 per 1,000 · video result</span></div><div class="card"><h3><a href="actors/china-trending-topics/">China Trending Topics — Weibo, Douyin, Baidu Hot Search</a></h3><p>Real-time trending topics from China&#x27;s top five platforms in one dataset: Weibo hot search (微博热搜), Douyin hot list (抖音热榜), Baidu hot search (百度热搜)…</p><span class="price">$2 per 1,000 · topic result</span></div><div class="card"><h3><a href="actors/douyin-hot-search/">Douyin Trending &amp; Hot Search — 抖音热榜 Real-Time List</a></h3><p>Real-time Douyin hot list (抖音热榜): rank, topic, heat value, label, topic ID, cover image and search link for every trending topic on Chinese TikTok.…</p><span class="price">$2 per 1,000 · topic result</span></div><div class="card"><h3><a href="actors/weibo-hot-search/">Weibo Hot Search — 微博热搜 Real-Time Trending List</a></h3><p>Real-time Weibo hot search list (微博热搜榜): rank, topic, heat count, badge (新/热/沸/爆) and search link for every trending topic. Ads removed. No login or…</p><span class="price">$2 per 1,000 · topic result</span></div></div><div class="cta"><p><strong>Every actor lives on the Apify Store.</strong> Open one, paste an input and run it, or call it from your code.</p><a class="btn" href="https://apify.com/actor-forge" rel="noopener">ActorForge on Apify →</a></div></div></main>
+<footer><div class="wrap"><p><a href="categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="categories/video-social/">YouTube &amp; Video Data</a> · <a href="categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="sitemap.xml">Sitemap</a></p></div></footer>
 </body>
 </html>

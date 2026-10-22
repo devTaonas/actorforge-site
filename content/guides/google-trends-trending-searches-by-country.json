@@ -1,0 +1,101 @@
+{
+  "slug": "google-trends-trending-searches-by-country",
+  "category": "seo-marketing",
+  "title": "How to Track Google Trends Trending Searches by Country",
+  "metaTitle": "Track Google Trends Trending Searches by Country",
+  "metaDescription": "Collect Google Trends trending searches for any of 125 countries on a daily schedule, then dedupe and compare days with pandas. Costs cents per day.",
+  "actor": "google-trends",
+  "alsoActors": [],
+  "summary": "Run the ActorForge Google Trends actor with a list of country codes, schedule it daily with only-new mode, and keep a small pandas history to see what is new each day and what trends in several countries at once.",
+  "intro": [
+    "Google's Trending Now page answers \"what is everyone searching for right now?\", but only for one country at a time and only while you are looking. If you run content, news or campaigns across several markets, you want that list captured every day, per country, in a format you can sort and compare.",
+    "Doing that by hand means visiting the page for each country and copying rows. Unofficial libraries break when Google changes things and leave you to handle storage and deduplication. The [Google Trends actor](actor:google-trends) reads Google's official Trending Now RSS feed for any of 125 countries and returns one structured row per trend, with traffic parsed to a number and the news articles attached.",
+    "This guide sets up a country list, schedules a daily run, and uses pandas to keep a history, drop repeats and compare today with yesterday."
+  ],
+  "steps": [
+    {
+      "name": "Pick your countries",
+      "text": "Decide which markets you want to watch and list their two-letter codes in `geos`, for example US, GB, DE, FR and BR. The input offers all 125 countries the official feed accepts; Google answers unknown codes with an error, so pick from that list. Each country is one request, so a long list only adds a second or so per country."
+    },
+    {
+      "name": "Set how many trends to keep per country",
+      "text": "The feed currently lists up to about 10 of the newest trends per country, fewer for small countries. Leave `maxItemsPerGeo` at 10 to keep everything, or lower it if you only care about the top few. Leave `keywords` empty for this workflow: the keyword explore part is separate, rate-limited by Google and not needed to track trending searches."
+    },
+    {
+      "name": "Turn on only-new mode with a monitor name",
+      "text": "Set `onlyNewSinceLastRun` to true and give the schedule its own `monitorName`. The actor then remembers what it already returned (per country, keyword and start day) in the key-value store trends-seen-<name> and skips those trends on later runs without charging for them. Use a different monitor name for each schedule so they do not share memory.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"geos\": [\"US\", \"GB\", \"DE\", \"FR\", \"BR\"],\n  \"maxItemsPerGeo\": 10,\n  \"onlyNewSinceLastRun\": true,\n  \"monitorName\": \"daily-5-markets\",\n  \"keywords\": []\n}"
+      }
+    },
+    {
+      "name": "Schedule a daily run",
+      "text": "In Apify Console, save the input above as a task (or use the actor directly) and create a schedule with a cron expression such as `0 7 * * *` for 07:00 every day in your chosen timezone. If you need fresher alerts, an hourly expression like `0 * * * *` works the same way, and only-new mode keeps the cost tied to trends that are genuinely new. Optionally add a webhook on run success to trigger the next step automatically."
+    },
+    {
+      "name": "Collect each run into a history file",
+      "text": "After each scheduled run, pull its dataset and append the trend rows to a CSV, stamped with the snapshot date. The dataset can also contain other row types if you ever add keywords, so filter on `type == \"trend\"`.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nfrom datetime import date\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\n\n# Read the dataset of the most recent finished scheduled run\nruns = client.actor(\"actor-forge/google-trends\").runs().list(desc=True, limit=1, status=\"SUCCEEDED\").items\nrun = runs[0]\nrows = list(client.dataset(run[\"defaultDatasetId\"]).iterate_items())\n\ndf = pd.DataFrame([r for r in rows if r.get(\"type\") == \"trend\"])\ndf[\"snapshotDate\"] = date.today().isoformat()\n\n# Append to a local history file\npath = \"trends_history.csv\"\ndf.to_csv(path, mode=\"a\", index=False, header=not os.path.exists(path))\nprint(len(df), \"trend rows added\")\n"
+      }
+    },
+    {
+      "name": "Dedupe and compare days with pandas",
+      "text": "Normalize keywords, drop duplicates on country, keyword and start day, then compare the latest snapshot with the one before it. The first output lists trends that are new today per country, the second shows topics trending in more than one country, often the most useful signal for a global team. You need at least two snapshot days in the file before the comparison runs.",
+      "code": {
+        "lang": "python",
+        "code": "import pandas as pd\n\nhist = pd.read_csv(\"trends_history.csv\", parse_dates=[\"startedAt\"])\nhist[\"keywordNorm\"] = hist[\"keyword\"].str.strip().str.lower()\nhist[\"startDay\"] = hist[\"startedAt\"].dt.date\n\n# One row per country + keyword + start day (the same key the actor uses),\n# keeping the snapshot in which each trend was first seen\nhist = hist.sort_values(\"snapshotDate\")\ndedup = hist.drop_duplicates(subset=[\"geo\", \"keywordNorm\", \"startDay\"], keep=\"first\")\n\ndays = sorted(dedup[\"snapshotDate\"].unique())\ntoday, yesterday = days[-1], days[-2]\nt = dedup[dedup[\"snapshotDate\"] == today]\ny = dedup[dedup[\"snapshotDate\"] == yesterday]\n\n# Trends first seen today whose keyword did not trend yesterday in that country\nmerged = t.merge(y[[\"geo\", \"keywordNorm\"]], on=[\"geo\", \"keywordNorm\"],\n                 how=\"left\", indicator=True)\nnew_today = merged[merged[\"_merge\"] == \"left_only\"]\nprint(new_today[[\"geo\", \"rank\", \"keyword\", \"approxTraffic\", \"topNewsTitle\"]])\n\n# Topics trending in several countries at once\nmulti = (t.groupby(\"keywordNorm\")[\"geo\"].nunique()\n           .sort_values(ascending=False))\nprint(multi[multi > 1])\n"
+      }
+    },
+    {
+      "name": "Act on the rows",
+      "text": "Each row carries `topNewsTitle`, `topNewsUrl` and the full `newsArticles` list, so an editor or marketer can see why a term is trending without opening Google. Sort by `approxTraffic` to rank within a country, but remember it is Google's bucketed estimate (200+, 2K+, 1M+), not an exact count. `trendsUrl` is a link you can open to explore the term further on trends.google.com."
+    }
+  ],
+  "sampleInput": {
+    "geos": [
+      "US",
+      "GB",
+      "DE",
+      "FR",
+      "BR"
+    ],
+    "maxItemsPerGeo": 10,
+    "onlyNewSinceLastRun": true,
+    "monitorName": "daily-5-markets",
+    "keywords": []
+  },
+  "sampleOutputNote": "Each run returns rows like these, one per trend and country, with traffic as a number and the top news headline:",
+  "costExample": "Trending Now rows cost $0.0005 each, so 5 countries × 10 trends is at most 50 rows or $0.025 per daily run, about $0.75 over 30 days before only-new mode skips repeats. The platform start fee at 256 MB adds $0.0000125 per run.",
+  "tips": [
+    "The feed shows the newest trends only, about 10 per country. It is not the full Trending Now page with its 24 and 48-hour filters, so schedule frequently if you do not want to miss short-lived spikes.",
+    "Traffic values are buckets, not counts. Two trends both at 2000 may differ a lot in reality; use the value to rank, not to forecast volume.",
+    "Keep one `monitorName` per schedule. Reusing a name across an hourly and a daily schedule makes one of them skip trends the other already delivered.",
+    "If you later add `keywords` for interest-over-time data, expect Google to rate-limit that part. Keywords it could not finish are free, and the Trending Now rows are unaffected.",
+    "Set a maximum total charge on the run if you are cost-sensitive; the actor stops cleanly at the cap."
+  ],
+  "faq": [
+    {
+      "q": "How often does the Trending Now feed change?",
+      "a": "The feed lists the newest trends per country, so its contents shift through the day as new searches spike. A daily run gives a snapshot; an hourly schedule with only-new mode catches more short-lived trends at the same per-row price."
+    },
+    {
+      "q": "Can I track trending searches for a US state or a city?",
+      "a": "Trending Now in this actor is per country, using the two-letter codes in `geos`. Region-level data (states, cities) is only available in the keyword explore part, via `exploreGeo` and interest by region."
+    },
+    {
+      "q": "Why does a small country return fewer than 10 trends?",
+      "a": "The official feed lists fewer trends for small countries. The actor returns whatever the feed contains up to `maxItemsPerGeo`, and you only pay for rows delivered."
+    },
+    {
+      "q": "Will a trend that lasts two days show up twice?",
+      "a": "With only-new mode on, a trend is identified by country, keyword and start day, so the same trend with the same start day is skipped on later runs. The pandas step uses the same key to dedupe your history file."
+    }
+  ],
+  "related": [
+    "monitor-competitor-ads-google-ads-transparency",
+    "check-if-phrase-is-trademarked-uspto"
+  ]
+}

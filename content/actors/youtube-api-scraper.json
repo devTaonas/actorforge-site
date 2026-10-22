@@ -1,0 +1,136 @@
+{
+  "name": "youtube-api-scraper",
+  "category": "video-social",
+  "h1": "YouTube Scraper via the Official API — Video Details, Search and Stats",
+  "metaTitle": "YouTube Scraper (Official API) | ActorForge",
+  "metaDescription": "YouTube scraper built on the official YouTube Data API v3: video stats, search, channels and comments with your own free key. $0.40 per 1,000 videos.",
+  "tagline": "Paste video links or IDs and get views, likes, comment counts, duration and tags from the official YouTube Data API v3, under your own free key.",
+  "intro": [
+    "Most YouTube scrapers load youtube.com pages through proxies and break whenever the page layout or bot checks change. This actor takes a different route: it calls the official **YouTube Data API v3** with an API key you create yourself in a free Google Cloud project. Nothing is scraped from youtube.com, and there are no proxies, cookies or logins involved.",
+    "The default `videos` mode accepts watch URLs, youtu.be links, Shorts, embed and live links or bare 11-character IDs, and returns one row per video: title, description, channel, published date, duration in seconds, view, like and comment counts, tags, category, default language, thumbnails, live status, made-for-kids flag and topic categories. IDs are batched 50 per API call, so one quota unit covers 50 videos. The same actor also switches to `search`, `channel` or `comments` mode through the `mode` field.",
+    "It suits analysts building YouTube dashboards, marketers doing competitor and trend research, and developers who want a stable feed into Sheets, Make, n8n or Zapier. Pricing is $0.40 per 1,000 video rows, and the free quota on one key covers about 500,000 video lookups a day. ActorForge is not affiliated with or endorsed by YouTube or Google."
+  ],
+  "howItWorks": [
+    "You paste your own YouTube Data API v3 key into the secret `apiKey` field; Apify stores it encrypted and the actor never logs it or writes it to the output.",
+    "Video URLs and IDs are normalised, duplicates are removed, and the IDs are sent to `videos.list` in batches of 50.",
+    "Each video comes back as a schema-validated row with stats, duration in seconds and an `isShort` heuristic (3 minutes or less and not live).",
+    "Invalid, private, deleted or missing videos become free error rows instead of failing the run.",
+    "If your key hits a `403 quotaExceeded` error, the run stops cleanly, keeps the rows already delivered and does not charge for the failed call."
+  ],
+  "inputExample": {
+    "apiKey": "AIzaSy...your-own-key",
+    "mode": "videos",
+    "videoUrls": [
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "https://youtu.be/jNQXAC9IVRw",
+      "9bZkp7q19f0"
+    ]
+  },
+  "outputNote": "Each video URL or ID becomes one row with its title, channel, publish date, duration and engagement counts, as in these real examples:",
+  "useCases": [
+    {
+      "title": "Refresh stats for a video list",
+      "text": "Keep a sheet of video IDs, from your own campaigns or a competitor's, and re-run on a schedule to pull current view, like and comment counts. At 50 IDs per quota unit, even large lists use very little of the daily free quota."
+    },
+    {
+      "title": "Enrich links collected elsewhere",
+      "text": "If another tool or a CRM gives you a pile of YouTube links, pass them in as-is. Watch, youtu.be, Shorts, embed and live formats are all accepted, and each comes back with duration, tags, category and topic categories."
+    },
+    {
+      "title": "One client for every YouTube job",
+      "text": "Switch `mode` to `search`, `channel` or `comments` when the task changes, using the same key and the same output conventions. Video rows are always $0.40 per 1,000 whichever mode produced them."
+    },
+    {
+      "title": "Analytics feeds without page scraping",
+      "text": "Because the data comes from the official API, the run does not depend on youtube.com's HTML. That makes it a steadier source for dashboards and automations in Make, n8n or Zapier."
+    }
+  ],
+  "comparison": {
+    "columns": [
+      "",
+      "ActorForge YouTube Scraper",
+      "Typical no-key YouTube scrapers",
+      "Calling the YouTube API yourself"
+    ],
+    "rows": [
+      [
+        "Data source",
+        "Official YouTube Data API v3",
+        "youtube.com pages via proxies",
+        "Official YouTube Data API v3"
+      ],
+      [
+        "Needs your own API key",
+        "Yes (free, no billing account)",
+        "No",
+        "Yes"
+      ],
+      [
+        "Blocks and layout breakage",
+        "No page scraping",
+        "Possible",
+        "No page scraping"
+      ],
+      [
+        "Batching, paging, quota-stop handling",
+        "Built in",
+        "Not applicable",
+        "You write it"
+      ],
+      [
+        "Price per 1,000 video rows",
+        "$0.40",
+        "Varies",
+        "Free (your quota only)"
+      ],
+      [
+        "Dislikes, watch time, revenue",
+        "No",
+        "Varies",
+        "No (not in the public API)"
+      ],
+      [
+        "Setup time",
+        "Paste key and links",
+        "Paste links",
+        "Write and maintain code"
+      ]
+    ]
+  },
+  "comparisonNote": "If you already maintain your own API client, calling the YouTube Data API directly costs nothing beyond your quota and is the better choice. If you cannot or will not create a Google Cloud API key, a no-key scraper is the only option, at the cost of depending on youtube.com's pages.",
+  "faq": [
+    {
+      "q": "Do I need my own YouTube API key to use this scraper?",
+      "a": "Yes. There is no built-in or shared key. You create a free YouTube Data API v3 key in the Google Cloud Console in about a minute, with no billing account, and paste it into the `apiKey` field. Without a key the run stops immediately with instructions and nothing is charged."
+    },
+    {
+      "q": "How many YouTube videos can I look up per day on the free quota?",
+      "a": "Each Google Cloud project gets 10,000 free quota units per day, reset at midnight Pacific Time. Video lookups cost 1 unit per 50 videos, which works out to about 500,000 video rows a day on one key."
+    },
+    {
+      "q": "Can it get YouTube dislike counts or watch time?",
+      "a": "No. The public API does not return dislike counts (YouTube removed them), watch time, revenue or subscriber lists. Like counts that a creator hides come back as null."
+    },
+    {
+      "q": "How does it know if a video is a YouTube Short?",
+      "a": "The API does not flag Shorts, so `isShort` is a heuristic: 3 minutes or less and not live. Treat it as a good guess rather than YouTube's own label."
+    },
+    {
+      "q": "What happens when my YouTube API quota runs out mid-run?",
+      "a": "The actor stops cleanly on a `403 quotaExceeded` error, keeps every row already delivered and does not charge for the failed call. It never retries against an exhausted quota, so you can simply run again after the daily reset."
+    },
+    {
+      "q": "Do I have to delete the YouTube data after some time?",
+      "a": "YouTube's Developer Policies require stored API data to be refreshed or deleted at least every 30 days. ActorForge keeps no copy after the run, so set a retention period on your datasets or re-run to refresh them."
+    }
+  ],
+  "related": [
+    "youtube-channel-api",
+    "youtube-search-api",
+    "youtube-comments-api",
+    "google-trends"
+  ],
+  "guides": [
+    "youtube-data-official-api"
+  ]
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UK Planning Applications as Sales Leads | ActorForge</title>
+<meta name="description" content="Turn newly validated UK planning applications into weekly sales leads for builders, scaffolders and architects, across 15 council portals in one dataset.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="UK Planning Applications as Sales Leads | ActorForge">
+<meta property="og:description" content="Turn newly validated UK planning applications into weekly sales leads for builders, scaffolders and architects, across 15 council portals in one dataset.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Use UK Planning Applications as Sales Leads","description":"Turn newly validated UK planning applications into weekly sales leads for builders, scaffolders and architects, across 15 council portals in one dataset.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"UK Planning Applications Scraper — 15 Councils, Weekly Leads","url":"https://devtaonas.github.io/actorforge-site/actors/uk-planning-applications/"},"dateModified":"2026-10-22"},{"@type":"HowTo","name":"How to Use UK Planning Applications as Sales Leads","description":"Turn newly validated UK planning applications into weekly sales leads for builders, scaffolders and architects, across 15 council portals in one dataset.","tool":[{"@type":"HowToTool","name":"UK Planning Applications Scraper — 15 Councils, Weekly Leads"}],"step":[{"@type":"HowToStep","position":1,"name":"Check that your area is covered","text":"The actor reads 15 council portals: Isle of Wight, Durham, Barnet (London), Leeds, York, Cornwall, Trafford, Gateshead, Bradford, Aberdeen, Aberdeenshire, Sunderland, Southampton, Greater Cambridge and Oxford. Use the lowercase ids in councils, for example leeds or greater-cambridge, or leave the field empty for all 15.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-1"},{"@type":"HowToStep","position":2,"name":"Pick validated or decided applications","text":"For lead generation, use dateType validated: these are newly accepted applications, so the project is live and decisions are still ahead. Use decided if you sell to people who have just been granted permission, or to track approvals in an area.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-2"},{"@type":"HowToStep","position":3,"name":"Fetch at least one full week","text":"Weekly lists roll over on Mondays, so the newest list can be nearly empty early in the week. Set weeksBack to 2 so each run always includes a complete week. Each weekly list is read up to 20 result pages, about 200 applications, which covers a normal week for most councils.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-3"},{"@type":"HowToStep","position":4,"name":"Filter proposals for the work you do","text":"The proposal field holds the council's description of the work, such as 'Erection of single storey rear extension and conversion of garage to habitable room'. A simple keyword filter separates likely jobs from tree works and signage. Adjust the pattern list to your trade.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-4"},{"@type":"HowToStep","position":5,"name":"Pull out postcodes for routing and mapping","text":"Site addresses usually end with a UK postcode, as in 'Land Adjacent To 6 Withyfields Shalfleet Newport Isle Of Wight PO30 4QA'. Extracting the postcode lets you sort leads by district, assign them to a rep or plot them on a map.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-5"},{"@type":"HowToStep","position":6,"name":"Schedule weekly runs without repeats","text":"Schedule the actor every Monday morning with weeksBack 2. Because consecutive runs overlap by a week, deduplicate on the council plus reference pair before sending leads on, so the same application is not followed up twice. Every row links to the council's own application page, where your team can read the documents.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-6"},{"@type":"HowToStep","position":7,"name":"Follow up through the right channels","text":"Applicant and agent personal details are deliberately not collected, so the dataset gives you the site, the proposal and the link, not a contact list. Use the address and the council record to plan how you reach the project, and keep your outreach within data protection and marketing rules.","url":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/#step-7"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Use UK Planning Applications as Sales Leads","item":"https://devtaonas.github.io/actorforge-site/guides/uk-planning-applications-leads/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are UK planning applications public information?","acceptedAnswer":{"@type":"Answer","text":"Councils publish weekly lists of applications on their planning portals. The actor reads those published lists and returns the reference, proposal, site address, status, dates and a link."}},{"@type":"Question","name":"Can I get leads for councils outside the 15 covered?","acceptedAnswer":{"@type":"Answer","text":"Not with this actor. It covers 15 verified Idox council portals; other councils would need to be checked on their own portals."}},{"@type":"Question","name":"How do I find the company behind a development?","acceptedAnswer":{"@type":"Answer","text":"The dataset does not include applicant details. If the applicant is a company you identify another way, Companies House Enrichment can return its directors and filings."}},{"@type":"Question","name":"What does the status field mean?","acceptedAnswer":{"@type":"Answer","text":"It is the status text as published by the council, such as 'Registered'. Wording varies between portals, so check the council's page for the latest position."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Use UK Planning Applications as Sales Leads</li></ol></nav><h1>How to Use UK Planning Applications as Sales Leads</h1><p>Uses <a href="../../actors/uk-planning-applications/" style="color:#fff">UK Planning Applications Scraper — 15 Councils, Weekly Leads</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Pull each council's weekly list of newly validated applications with <a href="../../actors/uk-planning-applications/">UK Planning Applications</a>, filter the proposal text for the work you do, and send the list to your team every Monday. 15 councils are covered.</div><p>A validated planning application means a council has accepted a proposal as complete and building work may be coming. For builders, scaffolders, architects, roofers and other trades, that is an early, public signal of a project.</p><p>The friction is the portals. Each council publishes its own weekly lists on its own site, with search forms that differ in small ways, so watching even a handful of areas every week takes real time, and copying results into a spreadsheet takes more.</p><p>This guide shows how to turn those weekly lists into a lead feed: checking coverage, choosing validated or decided applications, filtering proposals for your trade, pulling out postcodes and running it on a schedule without repeats.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Check that your area is covered</h3><p>The actor reads 15 council portals: Isle of Wight, Durham, Barnet (London), Leeds, York, Cornwall, Trafford, Gateshead, Bradford, Aberdeen, Aberdeenshire, Sunderland, Southampton, Greater Cambridge and Oxford. Use the lowercase ids in councils, for example leeds or greater-cambridge, or leave the field empty for all 15.</p></li><li id="step-2"><h3>Pick validated or decided applications</h3><p>For lead generation, use dateType validated: these are newly accepted applications, so the project is live and decisions are still ahead. Use decided if you sell to people who have just been granted permission, or to track approvals in an area.</p><pre><code class="language-json">{
+  "councils": ["trafford", "barnet"],
+  "dateType": "decided",
+  "weeksBack": 1,
+  "maxResults": 300
+}</code></pre></li><li id="step-3"><h3>Fetch at least one full week</h3><p>Weekly lists roll over on Mondays, so the newest list can be nearly empty early in the week. Set weeksBack to 2 so each run always includes a complete week. Each weekly list is read up to 20 result pages, about 200 applications, which covers a normal week for most councils.</p></li><li id="step-4"><h3>Filter proposals for the work you do</h3><p>The proposal field holds the council's description of the work, such as 'Erection of single storey rear extension and conversion of garage to habitable room'. A simple keyword filter separates likely jobs from tree works and signage. Adjust the pattern list to your trade.</p><pre><code class="language-python">import os
+import re
+
+from apify_client import ApifyClient
+
+PATTERNS = re.compile(r"extension|loft|dormer|conversion|new dwelling|erection of", re.I)
+EXCLUDE = re.compile(r"\btree\b|advertisement|signage", re.I)
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/uk-planning-applications").call(run_input={
+    "councils": ["leeds", "bradford", "york"],
+    "dateType": "validated",
+    "weeksBack": 2,
+    "maxResults": 1000,
+})
+
+leads = []
+for app in client.dataset(run["defaultDatasetId"]).iterate_items():
+    text = app.get("proposal") or ""
+    if PATTERNS.search(text) and not EXCLUDE.search(text):
+        leads.append(app)
+
+for app in leads:
+    print(app["council"], app["reference"], "|", app["address"], "|", app["url"])
+print(len(leads), "matching applications")</code></pre></li><li id="step-5"><h3>Pull out postcodes for routing and mapping</h3><p>Site addresses usually end with a UK postcode, as in 'Land Adjacent To 6 Withyfields Shalfleet Newport Isle Of Wight PO30 4QA'. Extracting the postcode lets you sort leads by district, assign them to a rep or plot them on a map.</p><pre><code class="language-python">import re
+
+POSTCODE = re.compile(r"\b([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})\b", re.I)
+
+
+def postcode(address):
+    m = POSTCODE.search(address or "")
+    return f"{m.group(1).upper()} {m.group(2).upper()}" if m else None
+
+
+def district(address):
+    pc = postcode(address)
+    return pc.split()[0] if pc else None
+
+
+print(postcode("12 Example Road Oxford OX4 1AB"), district("12 Example Road Oxford OX4 1AB"))</code></pre></li><li id="step-6"><h3>Schedule weekly runs without repeats</h3><p>Schedule the actor every Monday morning with weeksBack 2. Because consecutive runs overlap by a week, deduplicate on the council plus reference pair before sending leads on, so the same application is not followed up twice. Every row links to the council's own application page, where your team can read the documents.</p></li><li id="step-7"><h3>Follow up through the right channels</h3><p>Applicant and agent personal details are deliberately not collected, so the dataset gives you the site, the proposal and the link, not a contact list. Use the address and the council record to plan how you reach the project, and keep your outreach within data protection and marketing rules.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "councils": [
+    "leeds"
+  ],
+  "weeksBack": 2,
+  "dateType": "validated",
+  "maxResults": 200
+}</code></pre><h2>Sample output</h2><p>Applications from every council share one layout with a deep link to the official record:</p><div class="tablewrap"><table><thead><tr><th scope="col">council</th><th scope="col">reference</th><th scope="col">proposal</th><th scope="col">address</th><th scope="col">status</th><th scope="col">validatedDate</th><th scope="col">url</th></tr></thead><tbody><tr><td class="cut">isle-of-wight</td><td class="cut">26/00909/TW</td><td class="cut">T1; Ash - Dismantle to near ground level and replant with tree in keeping with the area…</td><td class="cut">Land Adjacent To 6 Withyfields Shalfleet Newport Isle Of Wight PO30 4QA</td><td class="cut">Registered</td><td class="cut">Fri 03 Jul 2026</td><td class="cut">https://publicaccess.iow.gov.uk/online-applications/applicationDetails.do?keyVal=…</td></tr><tr><td class="cut">oxford</td><td class="cut">26/01423/FUL</td><td class="cut">Erection of single storey rear extension and conversion of garage to habitable room</td><td class="cut">12 Example Road Oxford OX4 1AB</td><td class="cut">Registered</td><td class="cut">Tue 30 Jun 2026</td><td class="cut">https://public.oxford.gov.uk/online-applications/applicationDetails.do?keyVal=…</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~uk-planning-applications/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"councils": ["leeds"], "weeksBack": 2, "dateType": "validated", "maxResults": 200}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "councils": [
+    "leeds"
+  ],
+  "weeksBack": 2,
+  "dateType": "validated",
+  "maxResults": 200
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~uk-planning-applications/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "councils": [
+        "leeds"
+    ],
+    "weeksBack": 2,
+    "dateType": "validated",
+    "maxResults": 200
+}
+
+run = client.actor("actor-forge/uk-planning-applications").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>At $0.003 per application, a typical single-council week of about 25 applications costs around $0.08. If three councils produce 400 validated applications across two weeks, that run costs 400 x $0.003 = $1.20.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Planning application</td><td class="cut">One planning application (reference, address, proposal, status, dates, council) from a UK council portal.</td><td>$0.003</td><td>$3</td><td class="cut">1,000 applications = $3.00; a typical single-council week (≈25 applications) = $0.08</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at up to 1 GB = $0.00005 (charged as one event)</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> UK Planning Applications Scraper — 15 Councils, Weekly Leads runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/uk-planning-applications" rel="noopener">Run on Apify →</a> <a href="../../actors/uk-planning-applications/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>A council portal outage only affects that council; it is flagged in the run log and exit message and the rest of the run continues.</li><li>Busy weeks at a large council can be cut off after about 200 applications, so check the count if a big council looks light.</li><li>Decided lists are useful a second time: an approved extension that you quoted for is a reason to follow up.</li><li>The actor makes no more than one request per second per council portal, so all-council runs take a little longer than single-council ones.</li></ul><h2>FAQ</h2><details><summary>Are UK planning applications public information?</summary><p>Councils publish weekly lists of applications on their planning portals. The actor reads those published lists and returns the reference, proposal, site address, status, dates and a link.</p></details><details><summary>Can I get leads for councils outside the 15 covered?</summary><p>Not with this actor. It covers 15 verified Idox council portals; other councils would need to be checked on their own portals.</p></details><details><summary>How do I find the company behind a development?</summary><p>The dataset does not include applicant details. If the applicant is a company you identify another way, <a href="../../actors/uk-companies-house-enrichment/">Companies House Enrichment</a> can return its directors and filings.</p></details><details><summary>What does the status field mean?</summary><p>It is the status text as published by the council, such as 'Registered'. Wording varies between portals, so check the council's page for the latest position.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/uk-planning-applications/">UK Planning Applications Scraper — 15 Councils, Weekly Leads</a></h3><p>New and decided UK planning applications (applications for planning permission) from 15 council portals in one clean dataset: reference, proposal…</p><span class="price">$3 per 1,000 · planning application</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/uk-company-directors-companies-house-export/">How to Export UK Company Directors from Companies House in Bulk</a></h3><p>Give Companies House Enrichment a list of company numbers or a SIC code, status and location filter, keep includeOfficers on, then flatten the…</p></div><div class="card"><h3><a href="../../guides/business-leads-without-google-maps/">How to Get Local Business Leads Without Scraping Google Maps</a></h3><p>Query the open Overture Maps places dataset by city and category with Business Places Data to get names, addresses, phones, websites and emails for…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>
