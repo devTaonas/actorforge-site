@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long-Tail Keyword Research From Autocomplete in Bulk</title>
+<meta name="description" content="Expand seed keywords with a-z, question and preposition modifiers across Google, YouTube and Bing autocomplete, any country, and export the long tail to CSV.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Long-Tail Keyword Research From Autocomplete in Bulk">
+<meta property="og:description" content="Expand seed keywords with a-z, question and preposition modifiers across Google, YouTube and Bing autocomplete, any country, and export the long tail to CSV.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Do Long-Tail Keyword Research With Google, YouTube and Bing Autocomplete","description":"Expand seed keywords with a-z, question and preposition modifiers across Google, YouTube and Bing autocomplete, any country, and export the long tail to CSV.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"Keyword Suggestions — Google, YouTube, Bing Autocomplete","url":"https://devtaonas.github.io/actorforge-site/actors/keyword-suggestions/"}},{"@type":"HowTo","name":"How to Do Long-Tail Keyword Research With Google, YouTube and Bing Autocomplete","description":"Expand seed keywords with a-z, question and preposition modifiers across Google, YouTube and Bing autocomplete, any country, and export the long tail to CSV.","tool":[{"@type":"HowToTool","name":"Keyword Suggestions — Google, YouTube, Bing Autocomplete"}],"step":[{"@type":"HowToStep","position":1,"name":"Choose seeds that are short and specific","text":"Good seeds are two or three words that describe a topic, product type or problem: \"coffee maker\", \"running shoes\", \"invoice template\". Very long seeds get few or no suggestions; one-word seeds return generic results. Put them in seeds; duplicates are removed case-insensitively.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/#step-1"},{"@type":"HowToStep","position":2,"name":"Pick the expansion for your goal","text":"a-z (the default) sends \"seed\", \"seed a\" … \"seed z\" and gives the broadest long tail. questions prefixes who, what, why, how, can, is, should and similar words, which is ideal for blog topics and FAQ sections. prepositions appends for, with, without, vs, near, like and others, which surfaces comparisons and buying intent. none sends just the seed for about 10 suggestions at the lower price, handy for a quick check across hundreds of seeds.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/#step-2"},{"@type":"HowToStep","position":3,"name":"Pick engines and market","text":"engines defaults to Google, YouTube and Bing. YouTube suggestions are the ones to use for video titles and tags; they lean towards tutorials, reviews and brand names. Add baidu for Chinese-language research (Baidu ignores country and language). Set country and language for the market (gl/hl for Google and YouTube, the language-COUNTRY market for Bing). To compare markets, run the same seeds once per country.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/#step-3"},{"@type":"HowToStep","position":4,"name":"Choose grouped or flat output","text":"grouped (default) gives one row per seed and engine with count, a keywords list and a suggestions array where each item has the text, its position, the exact query that produced it and the modifier. flat gives one row per suggestion with seed, engine, suggestion, position, query and modifier, which is what you want in a spreadsheet. The price is the same in both modes, because billing is per seed and engine, never per keyword.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/#step-4"},{"@type":"HowToStep","position":5,"name":"Merge engines and cluster the results","text":"A keyword suggested by Google, YouTube and Bing alike is a safer bet than one that appears on a single engine. Count the engines per suggestion, then group by modifier or by the first word after the seed to form topic clusters. Each cluster is a candidate page or video.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/#step-5"},{"@type":"HowToStep","position":6,"name":"Add a demand signal","text":"Autocomplete does not include search volume. To prioritise, check your shortlist in Google Trends: the Google Trends Scraper returns interest over time on a best-effort basis (up to five terms compared at once), which shows whether a phrase is rising, seasonal or flat. If you have access to a keyword tool with volumes, paste the shortlist there instead.","url":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/#step-6"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Do Long-Tail Keyword Research With Google, YouTube and Bing Autocomplete","item":"https://devtaonas.github.io/actorforge-site/guides/google-youtube-autocomplete-keyword-research/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is autocomplete data the same as search volume?","acceptedAnswer":{"@type":"Answer","text":"No. A suggestion means enough people type that phrase for the engine to suggest it, but you do not get a number. Use Google Trends or a volume tool to rank the shortlist."}},{"@type":"Question","name":"Can I research YouTube keywords specifically?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select only the youtube engine. The suggestions come from YouTube's own search box and suit video titles, descriptions and tags."}},{"@type":"Question","name":"Does flat output cost more?","acceptedAnswer":{"@type":"Answer","text":"No. Billing is per seed and engine row with suggestions, whatever the output mode or the number of keywords."}},{"@type":"Question","name":"Which countries and languages work?","acceptedAnswer":{"@type":"Answer","text":"Any two-letter country and language code that Google and Bing accept, for example de/de, fr/fr, in/en or br/pt. Baidu is Chinese only and ignores both."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Do Long-Tail Keyword Research With Google, YouTube and Bing Autocomplete</li></ol></nav><h1>How to Do Long-Tail Keyword Research With Google, YouTube and Bing Autocomplete</h1><p>Uses <a href="../../actors/keyword-suggestions/" style="color:#fff">Keyword Suggestions — Google, YouTube, Bing Autocomplete</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Give Keyword Suggestions a list of seed keywords, pick engines (Google, YouTube, Bing, Baidu), an expansion (a-z, questions or prepositions) and a country and language. Each seed and engine comes back as one row with every deduplicated suggestion; flat mode gives one keyword per row for a spreadsheet.</div><p>Autocomplete is one of the few free, first-hand signals of what people actually type into a search box. Type "coffee maker w" and the suggestions (with grinder, walmart, water filter) are queries real users run often enough for the engine to suggest them. Repeating that for every letter, every question word and every preposition is how long-tail keyword lists are built. By hand it is slow; for fifty seeds in three markets it is impractical.</p><p><a href="../../actors/keyword-suggestions/">Keyword Suggestions</a> automates the loop. It sends each seed, plus its expansions, to Google's and YouTube's public suggest endpoint, Bing's OpenSearch suggestion feed and, if you want, Baidu, then merges and deduplicates the results per seed and engine. An a-z expansion is 27 requests and typically returns 250 to 450 unique suggestions per seed and engine.</p><p>This guide covers choosing seeds, picking the expansion that matches your goal, running markets side by side, and turning the output into content clusters. Autocomplete tells you what is searched, not how often, so it ends with how to add a volume or trend signal.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Choose seeds that are short and specific</h3><p>Good seeds are two or three words that describe a topic, product type or problem: "coffee maker", "running shoes", "invoice template". Very long seeds get few or no suggestions; one-word seeds return generic results. Put them in <code>seeds</code>; duplicates are removed case-insensitively.</p></li><li id="step-2"><h3>Pick the expansion for your goal</h3><p><code>a-z</code> (the default) sends "seed", "seed a" … "seed z" and gives the broadest long tail. <code>questions</code> prefixes who, what, why, how, can, is, should and similar words, which is ideal for blog topics and FAQ sections. <code>prepositions</code> appends for, with, without, vs, near, like and others, which surfaces comparisons and buying intent. <code>none</code> sends just the seed for about 10 suggestions at the lower price, handy for a quick check across hundreds of seeds.</p></li><li id="step-3"><h3>Pick engines and market</h3><p><code>engines</code> defaults to Google, YouTube and Bing. YouTube suggestions are the ones to use for video titles and tags; they lean towards tutorials, reviews and brand names. Add <code>baidu</code> for Chinese-language research (Baidu ignores country and language). Set <code>country</code> and <code>language</code> for the market (gl/hl for Google and YouTube, the language-COUNTRY market for Bing). To compare markets, run the same seeds once per country.</p><pre><code class="language-json">{
+  "seeds": ["coffee maker", "espresso machine", "cold brew"],
+  "engines": ["google", "youtube", "bing"],
+  "expansion": "questions",
+  "country": "gb",
+  "language": "en",
+  "outputMode": "flat"
+}</code></pre></li><li id="step-4"><h3>Choose grouped or flat output</h3><p><code>grouped</code> (default) gives one row per seed and engine with <code>count</code>, a <code>keywords</code> list and a <code>suggestions</code> array where each item has the text, its position, the exact query that produced it and the modifier. <code>flat</code> gives one row per suggestion with <code>seed</code>, <code>engine</code>, <code>suggestion</code>, <code>position</code>, <code>query</code> and <code>modifier</code>, which is what you want in a spreadsheet. The price is the same in both modes, because billing is per seed and engine, never per keyword.</p></li><li id="step-5"><h3>Merge engines and cluster the results</h3><p>A keyword suggested by Google, YouTube and Bing alike is a safer bet than one that appears on a single engine. Count the engines per suggestion, then group by modifier or by the first word after the seed to form topic clusters. Each cluster is a candidate page or video.</p><pre><code class="language-python">import os
+import pandas as pd
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/keyword-suggestions").call(run_input={
+    "seeds": ["coffee maker", "espresso machine"],
+    "engines": ["google", "youtube", "bing"],
+    "expansion": "a-z",
+    "country": "us",
+    "language": "en",
+    "outputMode": "flat",
+})
+df = pd.DataFrame(client.dataset(run["defaultDatasetId"]).list_items().items)
+df = df[df["suggestion"].notna()]
+df["kw"] = df["suggestion"].str.lower().str.strip()
+
+by_kw = (df.groupby(["seed", "kw"])
+           .agg(engines=("engine", "nunique"), bestPosition=("position", "min"))
+           .reset_index()
+           .sort_values(["engines", "bestPosition"], ascending=[False, True]))
+by_kw.to_csv("long_tail_keywords.csv", index=False)
+print(by_kw.head(20))
+</code></pre></li><li id="step-6"><h3>Add a demand signal</h3><p>Autocomplete does not include search volume. To prioritise, check your shortlist in Google Trends: the <a href="../../actors/google-trends/">Google Trends Scraper</a> returns interest over time on a best-effort basis (up to five terms compared at once), which shows whether a phrase is rising, seasonal or flat. If you have access to a keyword tool with volumes, paste the shortlist there instead.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "seeds": [
+    "coffee maker",
+    "running shoes"
+  ],
+  "engines": [
+    "google",
+    "youtube",
+    "bing"
+  ],
+  "expansion": "a-z",
+  "country": "us",
+  "language": "en",
+  "outputMode": "grouped"
+}</code></pre><h2>Output fields that matter</h2><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">What it holds</th></tr></thead><tbody><tr><td><code>seed</code>, <code>engine</code>, <code>country</code>, <code>expansion</code></td><td class="cut">Which seed, engine, market and expansion the row is for.</td></tr><tr><td><code>status</code></td><td class="cut">ok, or why the row is empty or partial (rate-limited, no suggestions, error). Only ok rows are charged.</td></tr><tr><td><code>count</code>, <code>keywords</code></td><td class="cut">Grouped mode: number of unique suggestions and the list of them.</td></tr><tr><td><code>suggestions</code></td><td class="cut">Grouped mode: each suggestion with its <code>position</code>, the <code>query</code> that produced it and the <code>modifier</code> (the letter or word added).</td></tr><tr><td><code>suggestion</code>, <code>position</code>, <code>query</code>, <code>modifier</code></td><td class="cut">Flat mode: the same, one suggestion per row.</td></tr></tbody></table></div><h2>Sample output</h2><p>Grouped rows from the actor's README (keyword lists shortened):</p><div class="tablewrap"><table><thead><tr><th scope="col">seed</th><th scope="col">engine</th><th scope="col">country</th><th scope="col">expansion</th><th scope="col">count</th><th scope="col">keywords</th></tr></thead><tbody><tr><td class="cut">coffee maker</td><td class="cut">google</td><td class="cut">us</td><td class="cut">a-z</td><td class="cut">263</td><td class="cut">coffee maker, coffee maker with grinder, coffee maker walmart, … coffee maker zojirushi review</td></tr><tr><td class="cut">coffee maker</td><td class="cut">youtube</td><td class="cut">us</td><td class="cut">a-z</td><td class="cut">254</td><td class="cut">coffee maker, coffee maker machine, coffee maker review, … zojirushi coffee maker cleaning</td></tr><tr><td class="cut">coffee maker</td><td class="cut">bing</td><td class="cut">us</td><td class="cut">a-z</td><td class="cut">349</td><td class="cut">coffee maker, coffee makers on sale, coffee maker with grinder, … coffee maker zojirushi</td></tr><tr><td class="cut">running shoes</td><td class="cut">google</td><td class="cut">us</td><td class="cut">a-z</td><td class="cut">250</td><td class="cut">running shoes, running shoes for women, running shoes for men, … running shoes zurich</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~keyword-suggestions/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"seeds": ["coffee maker", "running shoes"], "engines": ["google", "youtube", "bing"], "expansion": "a-z", "country": "us", "language": "en", "outputMode": "grouped"}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "seeds": [
+    "coffee maker",
+    "running shoes"
+  ],
+  "engines": [
+    "google",
+    "youtube",
+    "bing"
+  ],
+  "expansion": "a-z",
+  "country": "us",
+  "language": "en",
+  "outputMode": "grouped"
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~keyword-suggestions/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "seeds": [
+        "coffee maker",
+        "running shoes"
+    ],
+    "engines": [
+        "google",
+        "youtube",
+        "bing"
+    ],
+    "expansion": "a-z",
+    "country": "us",
+    "language": "en",
+    "outputMode": "grouped"
+}
+
+run = client.actor("actor-forge/keyword-suggestions").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>A seed and engine with expansion <code>none</code> costs $0.0003; with a-z, questions or prepositions it is $0.001. So 100 seeds with a-z on Google, YouTube and Bing is 300 rows, $0.30, and usually returns tens of thousands of keywords. 1,000 seeds on Google alone without expansion is $0.30. Empty, partial and rate-limited rows are free, and there is no per-run start fee beyond the tiny platform start event.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Seed expanded</td><td class="cut">Charged per seed x engine row with suggestions, expansion none (1 request)</td><td>$0.0003</td><td>$0.30</td><td class="cut">1,000 seeds on Google = $0.30; on Google + YouTube + Bing = $0.90</td></tr><tr><td>Seed expanded full</td><td class="cut">Charged per seed x engine row with suggestions, expansion a-z (27 requests), questions (14) or prepositions (13)</td><td>$0.001</td><td>$1</td><td class="cut">100 seeds with a-z on Google + YouTube + Bing = $0.30 for ~75,000 keywords</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 128 MB = $0.00000625</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> Keyword Suggestions — Google, YouTube, Bing Autocomplete runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/keyword-suggestions" rel="noopener">Run on Apify →</a> <a href="../../actors/keyword-suggestions/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>Run <code>questions</code> and <code>prepositions</code> as separate runs from <code>a-z</code> if you want to label intent; the <code>modifier</code> column then tells you which question word or preposition produced each keyword.</li><li>Google partly localises suggestions by the requester's IP, not only by <code>country</code>, so a few results can reflect the data-centre location. Cross-check important markets on Bing.</li><li>Google can rate-limit shared cloud IPs. When that happens the remaining rows come back as rate-limited and free; re-run those seeds later.</li><li>Strip brand names you cannot target (competitor trademarks) before handing the list to writers or advertisers.</li></ul><h2>Limitations</h2><ul><li>Suggestions are not search volumes, and there is no keyword difficulty or CPC data.</li><li>Each request returns about 10 suggestions (Bing up to about 20), so depth comes from expansion, not from one call.</li><li>Amazon, DuckDuckGo, Naver, eBay, Yahoo and Yandex are deliberately not included, because their robots.txt or terms do not allow automated suggestion requests.</li><li>The actor is polite by design: at most 2 requests in flight and at least 350 ms between requests per host, so an a-z seed takes about 10 seconds per engine.</li></ul><h2>Responsible use</h2><p>The actor only calls public suggestion endpoints that robots.txt does not disallow, with an honest user agent and no proxies, and it stops an engine after repeated 429s or any 401/403. Please do not work around those limits by splitting a job into many parallel runs.</p><p>Autocomplete can surface sensitive or offensive phrases about real people and brands. Review a list before publishing it or building pages on it.</p><h2>FAQ</h2><details><summary>Is autocomplete data the same as search volume?</summary><p>No. A suggestion means enough people type that phrase for the engine to suggest it, but you do not get a number. Use Google Trends or a volume tool to rank the shortlist.</p></details><details><summary>Can I research YouTube keywords specifically?</summary><p>Yes. Select only the youtube engine. The suggestions come from YouTube's own search box and suit video titles, descriptions and tags.</p></details><details><summary>Does flat output cost more?</summary><p>No. Billing is per seed and engine row with suggestions, whatever the output mode or the number of keywords.</p></details><details><summary>Which countries and languages work?</summary><p>Any two-letter country and language code that Google and Bing accept, for example de/de, fr/fr, in/en or br/pt. Baidu is Chinese only and ignores both.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/keyword-suggestions/">Keyword Suggestions — Google, YouTube, Bing Autocomplete</a></h3><p>Bulk keyword suggestions from Google, YouTube, Bing and Baidu autocomplete. Expand each seed with a-z, question words or prepositions for long-tail…</p><span class="price">$0.30 per 1,000 · seed expanded</span></div><div class="card"><h3><a href="../../actors/google-trends/">Google Trends Scraper — Trending Now &amp; Interest Over Time</a></h3><p>Google Trends scraper and API: Trending Now searches for 125 countries from the official feed (traffic, start time, picture, news articles), plus…</p><span class="price">$0.50 per 1,000 · trend result</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/google-trends-trending-searches-by-country/">How to Track Google Trends Trending Searches by Country</a></h3><p>Run the ActorForge Google Trends actor with a list of country codes, schedule it daily with only-new mode, and keep a small pandas history to see…</p></div><div class="card"><h3><a href="../../guides/audit-every-url-in-sitemap-seo/">How to Audit Every URL in Your Sitemap and Find Orphan Pages</a></h3><p>Run the SEO Audit Crawler with useSitemap on and maxPages above your site&#x27;s size; it audits every page it can reach plus every sitemap URL, and…</p></div><div class="card"><h3><a href="../../guides/export-youtube-comments-to-csv/">How to Export YouTube Comments to CSV (Official API, With Replies)</a></h3><p>Create a free YouTube Data API v3 key, paste it and your video URLs into YouTube Comments Scraper, choose newest or top comments and whether to…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

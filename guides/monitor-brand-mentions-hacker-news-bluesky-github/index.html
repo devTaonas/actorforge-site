@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor Brand Mentions on Hacker News, Bluesky and GitHub</title>
+<meta name="description" content="Track public mentions of your product or library on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one table, with only new mentions per run.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Monitor Brand Mentions on Hacker News, Bluesky and GitHub">
+<meta property="og:description" content="Track public mentions of your product or library on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one table, with only new mentions per run.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Monitor Brand Mentions on Hacker News, Bluesky, GitHub and Mastodon","description":"Track public mentions of your product or library on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one table, with only new mentions per run.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"Brand Mentions Monitor: Hacker News, Bluesky, GitHub, Lemmy","url":"https://devtaonas.github.io/actorforge-site/actors/dev-community-mentions/"}},{"@type":"HowTo","name":"How to Monitor Brand Mentions on Hacker News, Bluesky, GitHub and Mastodon","description":"Track public mentions of your product or library on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one table, with only new mentions per run.","tool":[{"@type":"HowToTool","name":"Brand Mentions Monitor: Hacker News, Bluesky, GitHub, Lemmy"}],"step":[{"@type":"HowToStep","position":1,"name":"Choose keywords and exclusions","text":"Put brand names, product names and package names in keywords, for example \"supabase\" or \"Next.js\". Hacker News, Bluesky, Lemmy and GitHub search the full text. Mastodon and DEV have no keyless full-text search, so there the keyword is used as a hashtag or tag (\"Next.js\" becomes #nextjs). If your name is a common word, add excludeKeywords for the unrelated meanings, and words such as \"hiring\" if job posts are noise for you.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/#step-1"},{"@type":"HowToStep","position":2,"name":"Pick sources and a time window","text":"sources defaults to all six: hackernews, bluesky, lemmy, mastodon, github and devto. Drop the ones that are irrelevant to you; GitHub is the most useful for libraries, Hacker News and Bluesky for launches and opinions. sinceHours sets how far back to look (168, one week, by default; up to 8,760). maxResultsPerSource caps rows per source, shared fairly between keywords, newest first.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/#step-2"},{"@type":"HowToStep","position":3,"name":"Tune per-source options","text":"includeComments (on by default) adds Hacker News and Lemmy comments and Bluesky and Mastodon replies; turn it off for top-level posts only. blueskySort can be latest or top, blueskyLanguage limits posts to one language and blueskyAuthor tracks a single account (for example your own). Add a free GitHub personal access token with no scopes in githubToken to go from 10 to 30 search requests per minute.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/#step-3"},{"@type":"HowToStep","position":4,"name":"Schedule it and receive only new mentions","text":"Save the input as a task with newSinceLastRun on and schedule it, for example every six hours. Each run skips mentions already delivered for the same keywords and sources, so you see and pay for each mention once. Only hashed ids are stored, in a key-value store named dev-community-mentions-state in your account. A run with nothing new returns one free status row.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/#step-4"},{"@type":"HowToStep","position":5,"name":"Route mentions to Slack and triage them","text":"Connect the task to Slack through Make, n8n, Zapier or an Apify webhook, and post source, title or the start of text, likeCount and url. Sort by engagement so a Hacker News story with a high score or a Bluesky post with many reposts reaches someone quickly. For a weekly report, aggregate mentions per source and day.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/#step-5"},{"@type":"HowToStep","position":6,"name":"Add news coverage alongside","text":"Community mentions and press coverage are different audiences. Run News Search with the same keywords to see articles from news sites worldwide over the last 72 hours, and keep both feeds in one channel or sheet.","url":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/#step-6"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Monitor Brand Mentions on Hacker News, Bluesky, GitHub and Mastodon","item":"https://devtaonas.github.io/actorforge-site/guides/monitor-brand-mentions-hacker-news-bluesky-github/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need API keys for these platforms?","acceptedAnswer":{"@type":"Answer","text":"No. All sources are queried through public, documented APIs without keys. A free GitHub token is optional and only raises GitHub's rate limit."}},{"@type":"Question","name":"Why is Reddit not included?","acceptedAnswer":{"@type":"Answer","text":"Reddit's API now requires a commercial agreement for this kind of use, and scraping it would break its terms. The same applies to X/Twitter."}},{"@type":"Question","name":"How do I avoid paying for the same mention twice?","acceptedAnswer":{"@type":"Answer","text":"Turn on newSinceLastRun for scheduled runs. The actor remembers hashed ids of delivered mentions for the same keywords and sources and skips them next time."}},{"@type":"Question","name":"Can I track my own company account's posts?","acceptedAnswer":{"@type":"Answer","text":"On Bluesky, yes: set blueskyAuthor to your handle. For the other platforms, search for your brand name and filter on authorHandle in the results."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Monitor Brand Mentions on Hacker News, Bluesky, GitHub and Mastodon</li></ol></nav><h1>How to Monitor Brand Mentions on Hacker News, Bluesky, GitHub and Mastodon</h1><p>Uses <a href="../../actors/dev-community-mentions/" style="color:#fff">Brand Mentions Monitor: Hacker News, Bluesky, GitHub, Lemmy</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Enter your brand, product or library names in Brand Mentions Monitor, pick sources and a time window, and get one normalised row per public mention across Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and pull requests, and DEV. Schedule it with newSinceLastRun on to receive only mentions you have not seen.</div><p>For a developer tool, an open-source project or a tech startup, the conversations that matter rarely happen where general social-listening tools look. A Hacker News thread, a GitHub issue in someone else's repository, a Bluesky post from a well-known engineer or a Lemmy discussion can move sign-ups or reveal a bug days before a support ticket arrives.</p><p>Each of those platforms has a public API, and each has its own query syntax, pagination, rate limits and data shape. <a href="../../actors/dev-community-mentions/">Brand Mentions Monitor</a> queries all six with your keywords, keyless (an optional free GitHub token raises GitHub's limit), and returns the results in one schema: source, link, title and text snippet, public author handle, time, likes, replies, reposts and score.</p><p>This guide covers choosing keywords that avoid noise, picking sources, setting up a scheduled feed with only new mentions, and routing them to Slack. Reddit and X are not included, because their APIs now need paid or commercial agreements.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Choose keywords and exclusions</h3><p>Put brand names, product names and package names in <code>keywords</code>, for example "supabase" or "Next.js". Hacker News, Bluesky, Lemmy and GitHub search the full text. Mastodon and DEV have no keyless full-text search, so there the keyword is used as a hashtag or tag ("Next.js" becomes #nextjs). If your name is a common word, add <code>excludeKeywords</code> for the unrelated meanings, and words such as "hiring" if job posts are noise for you.</p></li><li id="step-2"><h3>Pick sources and a time window</h3><p><code>sources</code> defaults to all six: hackernews, bluesky, lemmy, mastodon, github and devto. Drop the ones that are irrelevant to you; GitHub is the most useful for libraries, Hacker News and Bluesky for launches and opinions. <code>sinceHours</code> sets how far back to look (168, one week, by default; up to 8,760). <code>maxResultsPerSource</code> caps rows per source, shared fairly between keywords, newest first.</p></li><li id="step-3"><h3>Tune per-source options</h3><p><code>includeComments</code> (on by default) adds Hacker News and Lemmy comments and Bluesky and Mastodon replies; turn it off for top-level posts only. <code>blueskySort</code> can be <code>latest</code> or <code>top</code>, <code>blueskyLanguage</code> limits posts to one language and <code>blueskyAuthor</code> tracks a single account (for example your own). Add a free GitHub personal access token with no scopes in <code>githubToken</code> to go from 10 to 30 search requests per minute.</p><pre><code class="language-json">{
+  "keywords": ["supabase", "supabase-js"],
+  "excludeKeywords": ["hiring"],
+  "sources": ["hackernews", "bluesky", "github", "lemmy"],
+  "sinceHours": 24,
+  "maxResultsPerSource": 100,
+  "includeComments": true,
+  "newSinceLastRun": true
+}</code></pre></li><li id="step-4"><h3>Schedule it and receive only new mentions</h3><p>Save the input as a task with <code>newSinceLastRun</code> on and schedule it, for example every six hours. Each run skips mentions already delivered for the same keywords and sources, so you see and pay for each mention once. Only hashed ids are stored, in a key-value store named dev-community-mentions-state in your account. A run with nothing new returns one free status row.</p></li><li id="step-5"><h3>Route mentions to Slack and triage them</h3><p>Connect the task to Slack through Make, n8n, Zapier or an Apify webhook, and post <code>source</code>, <code>title</code> or the start of <code>text</code>, <code>likeCount</code> and <code>url</code>. Sort by engagement so a Hacker News story with a high <code>score</code> or a Bluesky post with many reposts reaches someone quickly. For a weekly report, aggregate mentions per source and day.</p><pre><code class="language-python">import os
+import pandas as pd
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run = client.actor("actor-forge/dev-community-mentions").call(run_input={
+    "keywords": ["supabase"],
+    "sinceHours": 168,
+    "maxResultsPerSource": 100,
+})
+df = pd.DataFrame(client.dataset(run["defaultDatasetId"]).list_items().items)
+df = df[df["type"] == "mention"]
+
+df["engagement"] = df[["likeCount", "replyCount", "repostCount", "score"]].fillna(0).sum(axis=1)
+print(df.sort_values("engagement", ascending=False)[["source", "engagement", "url"]].head(10))
+print(df.groupby(["source", pd.to_datetime(df["createdAt"]).dt.date]).size().unstack(0).fillna(0))
+</code></pre></li><li id="step-6"><h3>Add news coverage alongside</h3><p>Community mentions and press coverage are different audiences. Run <a href="../../actors/news-search/">News Search</a> with the same keywords to see articles from news sites worldwide over the last 72 hours, and keep both feeds in one channel or sheet.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "keywords": [
+    "openai"
+  ],
+  "sources": [
+    "hackernews",
+    "bluesky",
+    "lemmy",
+    "mastodon",
+    "github",
+    "devto"
+  ],
+  "sinceHours": 168,
+  "maxResultsPerSource": 50
+}</code></pre><h2>Output fields that matter</h2><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">What it holds</th></tr></thead><tbody><tr><td><code>source</code>, <code>contentType</code></td><td class="cut">Platform (hackernews, bluesky, lemmy, mastodon, github, devto) and what the row is: story, comment, post, issue, pull request, article.</td></tr><tr><td><code>url</code>, <code>title</code>, <code>text</code></td><td class="cut">Link to the mention, its title where there is one, and a text snippet of up to 1,000 characters (<code>textTruncated</code> tells you if it was cut).</td></tr><tr><td><code>authorHandle</code></td><td class="cut">The public handle of the poster. No profile details, followers or emails.</td></tr><tr><td><code>createdAt</code></td><td class="cut">When the post or comment was created.</td></tr><tr><td><code>likeCount</code>, <code>replyCount</code>, <code>repostCount</code>, <code>score</code></td><td class="cut">Engagement as each platform reports it; fields a platform does not have are null.</td></tr><tr><td><code>channel</code></td><td class="cut">Where it was posted: HN thread, Lemmy community, GitHub repository or Mastodon hashtag.</td></tr><tr><td><code>matchedKeyword</code></td><td class="cut">Which of your keywords produced the row.</td></tr></tbody></table></div><h2>Sample output</h2><p>Mention rows from the actor's README:</p><div class="tablewrap"><table><thead><tr><th scope="col">createdAt</th><th scope="col">source</th><th scope="col">contentType</th><th scope="col">authorHandle</th><th scope="col">channel</th><th scope="col">text</th><th scope="col">matchedKeyword</th><th scope="col">likeCount</th></tr></thead><tbody><tr><td class="cut">2026-10-23T10:35:42.000Z</td><td class="cut">hackernews</td><td class="cut">comment</td><td class="cut">tgv</td><td class="cut">France needs to read my paper</td><td class="cut">&gt; Wouldn't a better solution be to more heavily tax…</td><td class="cut">rust</td><td class="cut"></td></tr><tr><td class="cut">2026-10-23T09:39:24.023Z</td><td class="cut">bluesky</td><td class="cut">post</td><td class="cut">silentstars.dev</td><td class="cut"></td><td class="cut">🙌 Community pick iota — Open-source five-language dashboard…</td><td class="cut">typescript</td><td class="cut">3</td></tr><tr><td class="cut">2026-10-23T10:42:16.000Z</td><td class="cut">github</td><td class="cut">pull-request</td><td class="cut">iomete-renovate-bot[bot]</td><td class="cut">iomete/jupyter-renderer-react</td><td class="cut">chore(deps): update storybook monorepo to ^10.6.3</td><td class="cut">typescript</td><td class="cut"></td></tr><tr><td class="cut">2026-10-23T07:29:05.614Z</td><td class="cut">mastodon</td><td class="cut">post</td><td class="cut">@Telemetry_tracker@mastodon.social</td><td class="cut">#typescript</td><td class="cut">Custom error classes in JavaScript keep name = "Error" unless…</td><td class="cut">typescript</td><td class="cut"></td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~dev-community-mentions/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"keywords": ["openai"], "sources": ["hackernews", "bluesky", "lemmy", "mastodon", "github", "devto"], "sinceHours": 168, "maxResultsPerSource": 50}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "keywords": [
+    "openai"
+  ],
+  "sources": [
+    "hackernews",
+    "bluesky",
+    "lemmy",
+    "mastodon",
+    "github",
+    "devto"
+  ],
+  "sinceHours": 168,
+  "maxResultsPerSource": 50
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~dev-community-mentions/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "keywords": [
+        "openai"
+    ],
+    "sources": [
+        "hackernews",
+        "bluesky",
+        "lemmy",
+        "mastodon",
+        "github",
+        "devto"
+    ],
+    "sinceHours": 168,
+    "maxResultsPerSource": 50
+}
+
+run = client.actor("actor-forge/dev-community-mentions").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Each mention row is $0.0004, so 500 mentions cost $0.20. A monitor that finds about 40 new mentions a day costs roughly $0.50 a month. There is no start fee beyond the tiny platform start event, and runs with no matches return a free status row.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Mention</td><td class="cut">Charged per mention row (post, comment, story, issue/PR or article)</td><td>$0.0004</td><td>$0.40</td><td class="cut">500 mentions of your brand = $0.20</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB = $0.00005</td></tr></tbody></table></div><div class="cta"><p><strong>Ready to try it?</strong> Brand Mentions Monitor: Hacker News, Bluesky, GitHub, Lemmy runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/dev-community-mentions" rel="noopener">Run on Apify →</a> <a href="../../actors/dev-community-mentions/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>Lemmy's largest server, lemmy.world, asks for one request per minute in its robots.txt, and the actor respects it, so every extra keyword adds about a minute. Fewer, better keywords keep runs fast.</li><li>GitHub is searched keyless at 10 requests per minute per IP, which is shared on Apify. If GitHub is skipped with a note, add a free token.</li><li>Package names make precise keywords (for example "supabase-js"), because they rarely appear outside technical discussion.</li><li>Run once with a long <code>sinceHours</code> to build a baseline, then switch to a short window with <code>newSinceLastRun</code> for the ongoing feed.</li></ul><h2>Limitations</h2><ul><li>Reddit and X/Twitter are not covered, because their APIs require paid or commercial agreements.</li><li>Mastodon and DEV are matched by hashtag or tag, not full text, so posts that mention your name without the tag are missed there.</li><li>Results are newest first per source, up to <code>maxResultsPerSource</code>; very busy keywords can exceed that in the window.</li><li>If one source is down or refuses a request, the run continues with the others and notes the problem in the summary.</li></ul><h2>Responsible use</h2><p>Only public posts and public handles are returned. Bluesky accounts that opted out of logged-out visibility and Mastodon accounts marked noindex are skipped. Use the feed to follow conversations about your product, not to build profiles of individual people.</p><p>Text is a snippet, not an archive copy. If you store mentions, respect deletions and each platform's terms, and do not use GitHub data for spam or resale, which GitHub's terms forbid.</p><h2>FAQ</h2><details><summary>Do I need API keys for these platforms?</summary><p>No. All sources are queried through public, documented APIs without keys. A free GitHub token is optional and only raises GitHub's rate limit.</p></details><details><summary>Why is Reddit not included?</summary><p>Reddit's API now requires a commercial agreement for this kind of use, and scraping it would break its terms. The same applies to X/Twitter.</p></details><details><summary>How do I avoid paying for the same mention twice?</summary><p>Turn on newSinceLastRun for scheduled runs. The actor remembers hashed ids of delivered mentions for the same keywords and sources and skips them next time.</p></details><details><summary>Can I track my own company account's posts?</summary><p>On Bluesky, yes: set blueskyAuthor to your handle. For the other platforms, search for your brand name and filter on authorHandle in the results.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/dev-community-mentions/">Brand Mentions Monitor: Hacker News, Bluesky, GitHub, Lemmy</a></h3><p>Find public mentions of your brand, product or keyword on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one run: text, link…</p><span class="price">$0.40 per 1,000 · mention</span></div><div class="card"><h3><a href="../../actors/news-search/">News Search - Global News by Keyword, Google News Alternative</a></h3><p>Search news articles from the last 72 hours worldwide by keyword, source domain, country, language or theme, using the GDELT Project&#x27;s open…</p><span class="price">$1.20 per 1,000 · article</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/news-monitoring-by-keyword-gdelt/">How to Monitor News Mentions by Keyword Worldwide (Google News Alternative)</a></h3><p>Give News Search your keywords and filters (source domains, countries mentioned, languages, sentiment), choose how many hours back to search (1 to…</p></div><div class="card"><h3><a href="../../guides/export-youtube-comments-to-csv/">How to Export YouTube Comments to CSV (Official API, With Replies)</a></h3><p>Create a free YouTube Data API v3 key, paste it and your video URLs into YouTube Comments Scraper, choose newest or top comments and whether to…</p></div><div class="card"><h3><a href="../../guides/find-company-job-board-ats/">How to Find a Company's Job Board and ATS (Workday, Greenhouse, Lever, Ashby)</a></h3><p>Open any job on the company&#x27;s careers page and look at the host: myworkdayjobs.com, greenhouse.io, lever.co, ashbyhq.com and similar tell you the…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

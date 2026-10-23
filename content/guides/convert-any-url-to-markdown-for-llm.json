@@ -1,0 +1,119 @@
+{
+  "slug": "convert-any-url-to-markdown-for-llm",
+  "category": "documents-ai",
+  "title": "How to Convert Any URL to Markdown for LLMs and RAG",
+  "metaTitle": "Convert Any URL to Markdown for LLMs and RAG",
+  "metaDescription": "Turn web pages, PDFs, Word, Excel and PowerPoint links into clean Markdown with a token estimate, ready for an LLM prompt, a vector store or an AI agent.",
+  "actor": "any-url-to-markdown",
+  "alsoActors": ["pdf-ocr", "ocr-to-text"],
+  "summary": "Pass one URL or a list to Any URL to Markdown. It detects whether each link is a web page, a PDF, an Office file, an e-book, CSV, JSON or an image, picks the matching converter and returns one row per URL with clean Markdown, a title, metadata and a token estimate.",
+  "intro": [
+    "LLMs read Markdown well. Headings, lists and tables survive, and the noise of raw HTML (navigation, scripts, cookie banners, inline styles) is gone, so the same content costs far fewer tokens. The trouble is that the links you want to feed a model are rarely all web pages. A research agent finds a PDF report, a pricing spreadsheet, a slide deck and a blog post, and each needs a different parser.",
+    "[Any URL to Markdown](actor:any-url-to-markdown) puts those parsers behind one input. Web pages go through Mozilla Readability, PDFs are read from their text layer with heading detection, DOCX, XLSX, PPTX, OpenDocument and EPUB files are converted with their tables kept, and images or scanned PDF pages go through Tesseract OCR. Every row says which `route` was used, so you can check the result.",
+    "This guide covers a single conversion, batch conversion for a RAG index, calling it from an agent, and keeping the cost predictable. If your sources are mostly PDFs, the [PDF to Markdown guide](guide:convert-pdf-to-markdown-for-rag) goes deeper on that format."
+  ],
+  "steps": [
+    {
+      "name": "Try one URL first",
+      "text": "Open the actor on Apify and put a link in `url`. The prefilled example is the arXiv PDF of \"Attention Is All You Need\". Run it and look at the row: `detectedFormat` says what the file really was (a link ending in .php can still be a PDF), `route` says which converter ran, and `tokenEstimate` gives a rough size for your context window. Check `markdown` for the structure you expect: headings as #, tables as pipe tables."
+    },
+    {
+      "name": "Decide how much of each web page to keep",
+      "text": "`onlyMainContent` is on by default and keeps only the article or main block, which is what you want for blog posts, documentation and news. Turn it off for pages where the useful content sits outside the main block, such as a pricing page with several comparison tables. Turn on `includeText` if you also need a plain-text version, for example to compute embeddings on text without Markdown syntax."
+    },
+    {
+      "name": "Set limits for documents and OCR",
+      "text": "PDFs are read up to `maxPdfPages` (500 by default). Pages without a text layer are sent to OCR only while `ocr` is on and only up to `maxOcrPages` per PDF (20 by default), because OCR is the expensive route. If you never want to pay for OCR, switch `ocr` off: images and scanned pages then come back as free error rows. For spreadsheets, `maxRowsPerSheet` cuts each sheet at 1,000 rows by default, and cut rows are flagged `truncated: true`.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"url\": \"https://en.wikipedia.org/wiki/Retrieval-augmented_generation\",\n  \"urls\": [\n    \"https://arxiv.org/pdf/1706.03762\",\n    \"https://calibre-ebook.com/downloads/demos/demo.docx\"\n  ],\n  \"onlyMainContent\": true,\n  \"includeText\": false,\n  \"ocr\": true,\n  \"ocrLanguages\": [\"eng\"],\n  \"maxOcrPages\": 10,\n  \"maxPdfPages\": 300\n}"
+      }
+    },
+    {
+      "name": "Batch convert a list of sources for your index",
+      "text": "Put up to 1,000 links in `urls` (duplicates are removed). Each row is independent, so one bad link does not fail the run: failed downloads, robots.txt blocks, unsupported formats and empty pages come back as error rows and are not charged. After the run, filter on the rows that have Markdown and send them to your chunker.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nsources = open(\"sources.txt\").read().split()\n\nrun = client.actor(\"actor-forge/any-url-to-markdown\").call(run_input={\n    \"urls\": sources,\n    \"onlyMainContent\": True,\n    \"maxOcrPages\": 10,\n})\n\ndocs = []\nfor row in client.dataset(run[\"defaultDatasetId\"]).iterate_items():\n    if not row.get(\"markdown\"):\n        print(\"no Markdown for\", row.get(\"url\"))\n        continue\n    docs.append({\"source\": row[\"url\"], \"title\": row.get(\"title\"), \"text\": row[\"markdown\"]})\n\nprint(len(docs), \"documents,\", sum(len(d[\"text\"]) // 4 for d in docs), \"tokens (approx.)\")\n"
+      }
+    },
+    {
+      "name": "Chunk by heading before embedding",
+      "text": "Because headings are kept, you can split on them instead of on a fixed character count, which keeps each chunk about one topic. A simple approach is to split on lines starting with # or ##, then split any chunk that is still too long. Store `url` and `title` with every chunk so answers can cite their source."
+    },
+    {
+      "name": "Call it from an agent or a workflow",
+      "text": "The input is one string and the output is one Markdown string, which suits tool calls. In an MCP client, n8n, Make or Zapier, call the actor's run-sync endpoint with `{\"url\": \"...\"}` and read `markdown` from the first row. Use `tokenEstimate` to decide whether the page fits in the remaining context or needs summarising first."
+    }
+  ],
+  "sampleInput": {
+    "url": "https://arxiv.org/pdf/1706.03762",
+    "urls": ["https://en.wikipedia.org/wiki/Retrieval-augmented_generation"],
+    "onlyMainContent": true,
+    "ocr": true,
+    "maxOcrPages": 20
+  },
+  "outputFields": [
+    ["`url`", "The link you gave, after duplicates were removed."],
+    ["`detectedFormat`", "What the file actually was: html, pdf, docx, xlsx, pptx, epub, csv, json, png and so on."],
+    ["`route`", "Which converter ran: html, pdf-text, office, image-ocr and others. Useful for spotting OCR output, which deserves a closer check."],
+    ["`title`", "Page or document title, from the HTML or the document metadata."],
+    ["`markdown`", "The converted content with headings, lists, links and tables kept."],
+    ["`tokenEstimate`", "Characters divided by 4. A planning number, not an exact tokenizer count."],
+    ["`truncated`", "true when a PDF page cap, OCR cap, row cap or the size limit cut the result."]
+  ],
+  "sampleOutputNote": "Rows from the actor's README, one per URL (Markdown shortened):",
+  "costExample": "Web pages cost $0.001 each, documents $0.002 each (a PDF is charged once per started 50 text pages), and OCR $0.003 per image or scanned page. Converting 2,000 blog posts and docs pages is $2.00. A batch of 300 web pages, 40 text PDFs of under 50 pages and 5 scanned pages comes to $0.30 + $0.08 + $0.015 = $0.395. Error rows are free.",
+  "comparison": {
+    "title": "Price compared with other URL-to-Markdown actors",
+    "columns": ["Actor (Apify Store)", "Listed price per 1,000 pages", "Notes"],
+    "rows": [
+      ["ActorForge Any URL to Markdown", "$1.00 web pages, $2.00 documents, $3.00 OCR pages", "Static HTML, PDFs, Office files, EPUB, images in one input"],
+      ["gazidev/website-to-markdown", "from $0.40", "Web pages and site crawling, RAG chunks"],
+      ["bikram07/web-to-markdown-crawl4ai", "from $1.00", "Real browser, so JavaScript pages render"],
+      ["s-r/rag-web-browser", "from $2.00", "Search query or URL list in"],
+      ["scrapesage/url-to-markdown", "from $2.20", "Readability main-content mode"],
+      ["eltociear/url-to-markdown-for-llms", "$3.00", "Main content plus byline and date"]
+    ],
+    "note": "Competitor prices are the starting prices shown on their Apify Store listings when this guide was written (2026-10-23) and may have changed. If you only convert web pages and want the lowest price, a cheaper page-only actor can beat ours; ours is built for mixed lists of pages and documents. If you need JavaScript rendering, use a browser-based actor."
+  },
+  "tips": [
+    "Point the actor at the document itself, not a viewer page. A Google Drive or SharePoint preview URL is a web page that wraps the file and usually needs a login.",
+    "For OCR, set `ocrLanguages` to the languages actually in the documents (up to 3). Wrong languages produce noticeably worse text. For more than the 7 built-in languages, use [OCR to Text](actor:ocr-to-text).",
+    "Keep the `route` column in your index. If answers built on image-ocr rows look wrong, you know where to look.",
+    "Large spreadsheets are better handled as data than as Markdown. Raise `maxRowsPerSheet` only if the model really needs the rows."
+  ],
+  "limitations": [
+    "Pages are fetched as static HTML without a browser. Single-page apps that render content with JavaScript come back as a free error row, not as Markdown.",
+    "It converts the URLs you give it and does not crawl or follow links.",
+    "Legacy .doc, .xls and .ppt files, RTF, .odp, HEIC/AVIF and SVG are not supported (reported, not charged). Files over 50 MB, password-protected PDFs and pages behind a login cannot be read.",
+    "OCR covers English, German, French, Spanish, Italian, Portuguese and Dutch. Handwriting and blurry photos convert poorly."
+  ],
+  "responsibleUse": [
+    "The actor respects robots.txt by default (including on redirects and direct file links), identifies itself with an honest user agent and backs off when a site answers 429 or 403. Leave `respectRobotsTxt` on.",
+    "Converting a page does not give you rights to its content. Check the licence or terms before you store third-party documents in an index that other people can query, and keep the source URL with every chunk."
+  ],
+  "faq": [
+    {
+      "q": "Does it handle pages that need JavaScript?",
+      "a": "No. It reads the HTML the server sends. Pages that are an empty app shell without JavaScript are reported as an error and not charged; use a browser-based crawler for those."
+    },
+    {
+      "q": "How accurate is tokenEstimate?",
+      "a": "It is the character count divided by 4. For English text with GPT and Claude tokenizers that is usually close enough to plan context use, but it is not an exact count, and it is less accurate for code and non-Latin scripts."
+    },
+    {
+      "q": "Can I convert a whole website?",
+      "a": "Not with this actor; it converts only the URLs you list. Build the list first, for example from the site's sitemap, then pass it in `urls` (up to 1,000 per run)."
+    },
+    {
+      "q": "What happens to a link that fails?",
+      "a": "You get a row with the reason (blocked by robots.txt, download failed, unsupported format, empty page) and it is not charged. The rest of the run continues."
+    }
+  ],
+  "related": [
+    "convert-pdf-to-markdown-for-rag",
+    "ocr-scanned-pdf-to-text-api",
+    "extract-structured-data-from-website-with-ai"
+  ]
+}

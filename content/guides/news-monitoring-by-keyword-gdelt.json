@@ -1,0 +1,117 @@
+{
+  "slug": "news-monitoring-by-keyword-gdelt",
+  "category": "seo-marketing",
+  "title": "How to Monitor News Mentions by Keyword Worldwide (Google News Alternative)",
+  "metaTitle": "Monitor News Mentions by Keyword: Google News Alternative",
+  "metaDescription": "Track news articles about a brand, company or topic from the last 72 hours worldwide, filtered by source, country, language and tone, from GDELT's open feeds.",
+  "actor": "news-search",
+  "alsoActors": ["dev-community-mentions", "any-url-to-markdown"],
+  "summary": "Give News Search your keywords and filters (source domains, countries mentioned, languages, sentiment), choose how many hours back to search (1 to 72), and get one row per matching article with URL, title, source, time, tone, themes, locations and organisations. Schedule it with monitor mode on and each run returns only new articles.",
+  "intro": [
+    "Most news monitoring starts with Google News or Google Alerts. Both are fine for reading, but neither gives you structured data: Google News has no official API, scraping it is fragile and against Google's terms, and Alerts arrive as emails. Commercial media-monitoring services fix that at a monthly price that only makes sense for large PR teams.",
+    "The GDELT Project offers a third route. Every 15 minutes it publishes an open file describing the news articles it has seen worldwide: tens of thousands of sites, in English and around 65 translated languages, each article tagged with tone, themes, locations and organisations. GDELT licenses the data for unlimited commercial use with attribution.",
+    "[News Search](actor:news-search) reads those files for you and filters them by your keywords and criteria. This guide covers writing keywords that match well (GDELT does not index full article text), filtering by source and country, setting up a scheduled monitor and sending alerts."
+  ],
+  "steps": [
+    {
+      "name": "Write keywords that match GDELT's fields",
+      "text": "Keywords are matched as whole words, case-insensitively, in the article title, its URL, the organisations GDELT extracted and the names mentioned, not in the full body text. So include the forms that appear in headlines: the company name and its common short form (\"Volkswagen\", \"VW\"), a product name, or both \"artificial intelligence\" and \"AI\". `keywordMatch` set to `all` requires every keyword; `excludeKeywords` removes noise such as a homonym."
+    },
+    {
+      "name": "Set the time window and volume",
+      "text": "`lookbackHours` goes from 1 to 72 for English-language news, measured from the newest GDELT batch; the translated feed is searched over at most 24 hours. Results come newest first. `maxArticles` stops the run after that many rows, which also caps the cost."
+    },
+    {
+      "name": "Filter by source, country, language and tone",
+      "text": "`sourceDomains` limits results to sites you trust (subdomains included), and `excludeSourceDomains` drops press-release mills or aggregators. `countries` keeps articles that mention a place in a country, by English name (\"Germany\", \"United Kingdom\"). `languages` takes ISO codes; a non-English language switches to the translated feed automatically, or set `feed` to `all`. `sentiment` keeps positive (tone ≥ 1.5), negative (≤ −1.5) or neutral articles, which is handy for a \"negative coverage\" alert.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"keywords\": [\"Tesla\", \"Cybertruck\"],\n  \"excludeKeywords\": [\"Nikola Tesla\"],\n  \"lookbackHours\": 72,\n  \"maxArticles\": 300,\n  \"feed\": \"all\",\n  \"countries\": [\"Germany\", \"United States\"],\n  \"sentiment\": \"negative\"\n}"
+      }
+    },
+    {
+      "name": "Turn it into a scheduled monitor",
+      "text": "Save the input as an Apify task, switch on `newSinceLastRun` and schedule it every hour or every few hours. Each run skips the GDELT batches an earlier run with the same filters already scanned, so you only receive and pay for new articles. The state lives in a key-value store named news-search-state in your account. A run with no new matches returns one free status row instead of failing."
+    },
+    {
+      "name": "Send new articles to Slack or a sheet",
+      "text": "Attach an Apify integration or webhook to the task, or call the API from Make, n8n or Zapier when a run succeeds, and post `title`, `sourceDomain` and `url` to a channel. For analysis, pull the rows into pandas and chart article counts and average tone per day.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/news-search\").call(run_input={\n    \"keywords\": [\"Nvidia\"],\n    \"lookbackHours\": 72,\n    \"maxArticles\": 1000,\n})\ndf = pd.DataFrame(client.dataset(run[\"defaultDatasetId\"]).list_items().items)\ndf = df[df[\"type\"] == \"article\"]\n\ndf[\"hour\"] = pd.to_datetime(df[\"publishedAt\"]).dt.floor(\"6h\")\nprint(df.groupby(\"hour\").agg(articles=(\"url\", \"count\"), tone=(\"tone\", \"mean\")))\nprint(df[\"sourceDomain\"].value_counts().head(15))\n"
+      }
+    },
+    {
+      "name": "Fetch full text only for the articles you need",
+      "text": "Rows carry the title and metadata, not the article body. When you need the text, for summaries or an LLM digest, pass the selected URLs to [Any URL to Markdown](actor:any-url-to-markdown). Doing it for a filtered shortlist rather than every row keeps costs down and limits how much publisher content you copy."
+    }
+  ],
+  "sampleInput": {
+    "keywords": ["artificial intelligence"],
+    "lookbackHours": 24,
+    "maxArticles": 100,
+    "feed": "english",
+    "sentiment": "any"
+  },
+  "outputFields": [
+    ["`url`, `title`, `sourceDomain`", "The article, its page title and the site that published it."],
+    ["`publishedAt`", "The 15-minute GDELT batch in which the article was first seen (usually within 15 minutes of publication). `publishedAtPrecision` says so."],
+    ["`language`, `feed`", "Article language and whether it came from the English or translated feed."],
+    ["`tone`, `sentiment`, `positiveScore`, `negativeScore`", "GDELT's tone score and the positive, neutral or negative label derived from it."],
+    ["`themes`, `locations`, `countries`, `organisations`", "GDELT's tags for the article: topics, places with coordinates, countries and organisations mentioned."],
+    ["`matchedKeywords`, `matchedIn`", "Which of your keywords matched and where (title, URL, organisations, names)."],
+    ["`image`, `source`", "Lead image URL, and the GDELT attribution to keep when you republish."]
+  ],
+  "sampleOutputNote": "Article rows from the actor's README:",
+  "costExample": "Each article row is $0.0012, so 500 articles about your brand cost $0.60 and a monitor that finds about 50 new articles a day costs roughly $1.80 a month. Runs with no matches return a free status row.",
+  "comparison": {
+    "title": "How it compares with the usual options",
+    "columns": ["Option", "Cost", "Structured data", "Notes"],
+    "rows": [
+      ["ActorForge News Search", "$1.20 per 1,000 articles", "Yes: tone, themes, places, organisations", "72-hour window, title-level matching"],
+      ["Google Alerts", "Free", "No (email or RSS)", "No source or country filters"],
+      ["Google News scraping", "Varies", "Partly", "No official API; against Google's terms"],
+      ["GDELT's own DOC API", "Free", "Yes", "Rate-limited, query syntax to learn, results capped per query"]
+    ],
+    "note": "Written on 2026-10-23. Commercial media-monitoring services cover paywalled sources, print and broadcast that GDELT does not, and add analysts; if you need that coverage, they are the right tool."
+  },
+  "tips": [
+    "Run a broad search with no `sourceDomains` once, look at `sourceDomain` counts, then build your include and exclude lists from what you see.",
+    "GDELT sometimes skips or delays a 15-minute batch. Missing batches are listed in the run summary, so check it if a known article is missing.",
+    "`themes` takes GDELT GKG theme codes or prefixes (ECON_STOCKMARKET, ECON, TAX_FNCACT). Theme filters work well for topic monitoring when there is no single keyword.",
+    "For mentions in developer and tech communities rather than news, use the [Brand Mentions Monitor](actor:dev-community-mentions) with the same keywords."
+  ],
+  "limitations": [
+    "Only the last 72 hours (24 hours for the translated feed). This is a monitoring tool, not a news archive.",
+    "Keywords are not matched against the article body, so recall is lower than a full-text search engine.",
+    "No article bodies, no \"top stories\" ranking, and no paywalled, print or broadcast coverage beyond what GDELT's web monitoring sees.",
+    "`publishedAt` is when GDELT saw the article, not the publisher's own timestamp."
+  ],
+  "responsibleUse": [
+    "Keep the GDELT credit from the `source` field when you republish rows; it is the condition of GDELT's open licence. Headlines and article text belong to their publishers, so link to articles rather than copying them in full.",
+    "`includePeople` is off by default. If you switch it on, the names are mostly public figures; do not use the feed to track private individuals."
+  ],
+  "faq": [
+    {
+      "q": "Does it need an API key?",
+      "a": "No. GDELT's files are public, and the actor reads them directly."
+    },
+    {
+      "q": "Can I search news older than three days?",
+      "a": "No. The actor scans the GDELT batches of the last 72 hours. For history, schedule it now with monitor mode and store the results as they come in."
+    },
+    {
+      "q": "Does it cover non-English news?",
+      "a": "Yes, through GDELT's translated feed, which covers about 65 languages over the last 24 hours. Titles stay in the original language; themes and organisations are in English."
+    },
+    {
+      "q": "Is it affiliated with Google News?",
+      "a": "No. It does not touch Google at all. It is an alternative built on the GDELT Project's open data and is not affiliated with GDELT either."
+    }
+  ],
+  "related": [
+    "monitor-brand-mentions-hacker-news-bluesky-github",
+    "google-trends-trending-searches-by-country",
+    "monitor-competitor-ads-google-ads-transparency"
+  ]
+}

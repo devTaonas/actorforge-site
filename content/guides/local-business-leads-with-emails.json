@@ -1,0 +1,113 @@
+{
+  "slug": "local-business-leads-with-emails",
+  "category": "business-leads",
+  "title": "How to Build a Local Business Lead List With Emails (Without Scraping Google Maps)",
+  "metaTitle": "Local Business Leads With Emails, No Google Maps Scraping",
+  "metaDescription": "Turn \"dentists in Austin\" into a lead list with phone, website and company emails from open Overture Maps data and each business's own site, with sources.",
+  "actor": "business-leads-with-emails",
+  "alsoActors": ["business-places-data"],
+  "summary": "Type a city and a business type into Business Leads with Emails. It pulls matching places from the open Overture Maps dataset, reads each business's own website (home page plus up to two contact pages) for company emails, phones and socials, and returns one lead row per business with the source of every email.",
+  "intro": [
+    "The usual way to build a local lead list is to scrape Google Maps and then crawl each listing's website for an email address. It works until it does not: Google Maps scraping depends on proxies and browser automation, and Google's terms do not allow it.",
+    "[Business Leads with Emails](actor:business-leads-with-emails) gets the same kind of list from two sources that are open about being used this way. Places come from the Overture Maps Foundation places dataset (more than 80 million businesses worldwide, refreshed monthly, under permissive licences). Contacts come from each business's own website, read once, with robots.txt obeyed. Every email in the output says where it was found.",
+    "This guide covers defining the area and category, deciding how much website reading you need, filtering to leads with emails, and what coverage to expect. If you only need names, addresses and phones, the cheaper [Business Places Data](actor:business-places-data) actor and its [guide](guide:business-leads-without-google-maps) are enough."
+  ],
+  "steps": [
+    {
+      "name": "Describe the area",
+      "text": "Put a city in `location`: \"Austin, TX\", \"Berlin\", \"London, Ontario\". About 32,000 cities with 15,000+ people are built in; smaller towns need a region or country. You can also type the whole query, \"dentists in Austin TX\", and the part before \"in\" becomes the category. For precise areas, use `lat`, `lon` and `radiusKm` (results then come nearest first) or a `bbox` of up to 1.5 × 1.5 degrees. Add `countryCode` when a city name exists in several countries."
+    },
+    {
+      "name": "Pick categories",
+      "text": "Use plain words in `categories` (dentist, plumber, restaurant, lawyer, hotel) or Overture category ids (dental_clinic, italian_restaurant). A parent category includes its children. To see all 2,100+ ids with worldwide counts, run once with `listCategories` on and a filter such as \"dent\"; that run is free. Leave categories empty to get every place in the area, which is rarely what you want for outreach."
+    },
+    {
+      "name": "Decide how deep to read websites",
+      "text": "`enrichWebsites` is on by default. Each business's website is read once: the home page plus up to `maxPagesPerSite` − 1 contact, imprint or about pages. The website charge is per website, not per page, so keep `maxPagesPerSite` at 3 unless speed matters. `includeWebsiteSignals` adds facts from the home page already downloaded (HTTPS, CMS or site builder, shop platform, analytics and ad pixels, booking widget, copyright year), which are useful if you sell web or marketing services."
+    },
+    {
+      "name": "Filter to the leads you will actually use",
+      "text": "Turn on `onlyWithEmail` to deliver only businesses that ended up with a company email; the rest are dropped and never charged. `requirePhone` does the same for phone numbers. `websiteFilter` set to `with` keeps only businesses with their own website; `without` is for agencies looking for businesses that have none. `maxPlaces` (200 by default) is applied before any website is read, so it also caps cost.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"location\": \"Austin, TX\",\n  \"categories\": [\"dentist\"],\n  \"maxPlaces\": 300,\n  \"enrichWebsites\": true,\n  \"maxPagesPerSite\": 3,\n  \"onlyWithEmail\": true,\n  \"includeWebsiteSignals\": true,\n  \"minConfidence\": 0.5\n}"
+      }
+    },
+    {
+      "name": "Export and check the sources",
+      "text": "Download the dataset as CSV or Excel. Before outreach, look at `emailSources` (Overture, or the exact page of the business's site where the address was found) and `websiteStatus`. A status of `blocked` means the site refused automated readers, so the row carries Overture's contacts only. Keep the `attribution` field if you republish the data; it carries the credit lines the licences require.",
+      "code": {
+        "lang": "bash",
+        "code": "DATASET_ID=\"your-dataset-id\"\ncurl -s -H \"Authorization: Bearer $APIFY_TOKEN\" \\\n  \"https://api.apify.com/v2/datasets/$DATASET_ID/items?format=csv&clean=true&fields=name,category,email,phone,website,websiteStatus,fullAddress,contactPageUrl,emailSources\" \\\n  -o austin_dentists.csv\n"
+      }
+    }
+  ],
+  "sampleInput": {
+    "location": "Austin, TX",
+    "categories": ["dentist"],
+    "maxPlaces": 200,
+    "enrichWebsites": true,
+    "onlyWithEmail": false
+  },
+  "outputFields": [
+    ["`name`, `category`, `fullAddress`", "Business name, Overture category and formatted address (`lat`/`lon` too)."],
+    ["`email`, `emails`", "The best company email and all company emails kept for the business."],
+    ["`emailSources`", "Where each email came from: Overture, or the URL of the page on the business's own site."],
+    ["`phone`, `phones`", "Published numbers in E.164 format (+15125550100), fax numbers left out."],
+    ["`website`, `websiteStatus`", "The site and what happened when it was read: ok, no-contacts, blocked, robots-disallowed, unreachable, social-only and so on."],
+    ["`contactPageUrl`, `contactFormDetected`, `socials`", "The contact page, whether it has a form, and company social profiles."],
+    ["`websiteSignals`", "CMS or site builder, shop platform, pixels, booking widget, HTTPS, mobile viewport, copyright year."],
+    ["`droppedPersonalEmails`", "How many personal-looking addresses were found and removed."]
+  ],
+  "sampleOutputNote": "Lead rows from the actor's README:",
+  "costExample": "Each run pays $0.003 once for the area query, $0.001 per lead row, and $0.0015 per unique website that was read and gave at least one contact. 200 dentists in Austin with about 120 readable sites comes to $0.003 + $0.20 + $0.18 = $0.383. Chains that share one website are charged once; blocked, unreachable and robots-disallowed sites are free.",
+  "comparison": {
+    "title": "Price compared with Google Maps email extractors",
+    "columns": ["Option", "Listed price per 1,000 results", "Data source"],
+    "rows": [
+      ["ActorForge Business Leads with Emails", "about $2.50 per 1,000 fully enriched leads", "Overture Maps open data plus each business's own website"],
+      ["Google Maps email extractor actors (Apify Store)", "roughly $1 to $7 per 1,000", "Google Maps listings plus website crawling"],
+      ["compass/google-maps-extractor (Apify Store)", "$6.00 per 1,000 places", "Google Maps listings"]
+    ],
+    "note": "Competitor prices are ranges seen on Apify Store listings on 2026-10-23 and change often. Google-based tools return things ours cannot: star ratings, review counts, opening hours and photos. Compare the cost per usable email, not per row, because many businesses publish no email at all."
+  },
+  "tips": [
+    "Email coverage varies by trade and country. On 2026-10-22, 50 Austin dentists gave 68% with a company email from Overture alone and 74% after reading the websites; 50 Berlin restaurants gave 0% and 52%. Test a small area first.",
+    "Raise `minConfidence` to 0.9 for cleaner lists in dense cities, or lower it towards 0 for rural areas with fewer, older records.",
+    "Use `keyword` to find a brand or a word in the business name, such as \"orthodontics\" or \"Starbucks\".",
+    "Sites that hide emails in images or behind JavaScript forms will not yield an address. `contactFormDetected` tells you where a form is the only route."
+  ],
+  "limitations": [
+    "This is not Google data: there are no reviews, star ratings, review counts, opening hours, photos or price levels.",
+    "Places are as fresh as the latest monthly Overture release, and coverage differs by country.",
+    "Websites behind strict bot protection (often 20 to 35% of a city's sites) come back as `blocked`. The actor uses no proxies or browser and stops at the first 403, 429 or CAPTCHA.",
+    "One area per run, up to about one metro area and 5,000 places."
+  ],
+  "responsibleUse": [
+    "Only company mailboxes are kept, by allowlist: role addresses such as info@, kontakt@, office@ or bookings@, and addresses made of the business name or domain. Personal-looking addresses (first names, surnames, initials, owner addresses from an imprint) are dropped and counted, not delivered.",
+    "Cold email is regulated. Before contacting anyone, check what GDPR, PECR, CAN-SPAM, CASL or your local rules require for business-to-business outreach, give a clear way to opt out, and honour it. You are responsible for how you use the list."
+  ],
+  "faq": [
+    {
+      "q": "Is this the same data as Google Maps?",
+      "a": "No. Places come from the Overture Maps Foundation, which merges open and contributed datasets. Many businesses appear in both, but the fields differ, and there are no Google reviews, ratings or opening hours."
+    },
+    {
+      "q": "Can I use the leads commercially?",
+      "a": "Overture's place data is under non-share-alike licences (CDLA Permissive 2.0, Apache 2.0, CC0) that allow commercial use with attribution, which each row carries. Contacting the businesses is subject to marketing and privacy law in their country."
+    },
+    {
+      "q": "Why did a business with a website get no email?",
+      "a": "Check `websiteStatus`. The site may have blocked automated readers, disallowed it in robots.txt, shown the address only as an image, or published only a personal address, which is dropped."
+    },
+    {
+      "q": "Which countries work?",
+      "a": "Any country Overture covers, which is most of the world. Density is highest in North America and Western Europe. Try a small `maxPlaces` run to see coverage for your area."
+    }
+  ],
+  "related": [
+    "business-leads-without-google-maps",
+    "extract-structured-data-from-website-with-ai",
+    "find-company-job-board-ats"
+  ]
+}

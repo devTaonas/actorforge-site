@@ -1,0 +1,105 @@
+{
+  "slug": "monitor-brand-mentions-hacker-news-bluesky-github",
+  "category": "seo-marketing",
+  "title": "How to Monitor Brand Mentions on Hacker News, Bluesky, GitHub and Mastodon",
+  "metaTitle": "Monitor Brand Mentions on Hacker News, Bluesky and GitHub",
+  "metaDescription": "Track public mentions of your product or library on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one table, with only new mentions per run.",
+  "actor": "dev-community-mentions",
+  "alsoActors": ["news-search"],
+  "summary": "Enter your brand, product or library names in Brand Mentions Monitor, pick sources and a time window, and get one normalised row per public mention across Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and pull requests, and DEV. Schedule it with newSinceLastRun on to receive only mentions you have not seen.",
+  "intro": [
+    "For a developer tool, an open-source project or a tech startup, the conversations that matter rarely happen where general social-listening tools look. A Hacker News thread, a GitHub issue in someone else's repository, a Bluesky post from a well-known engineer or a Lemmy discussion can move sign-ups or reveal a bug days before a support ticket arrives.",
+    "Each of those platforms has a public API, and each has its own query syntax, pagination, rate limits and data shape. [Brand Mentions Monitor](actor:dev-community-mentions) queries all six with your keywords, keyless (an optional free GitHub token raises GitHub's limit), and returns the results in one schema: source, link, title and text snippet, public author handle, time, likes, replies, reposts and score.",
+    "This guide covers choosing keywords that avoid noise, picking sources, setting up a scheduled feed with only new mentions, and routing them to Slack. Reddit and X are not included, because their APIs now need paid or commercial agreements."
+  ],
+  "steps": [
+    {
+      "name": "Choose keywords and exclusions",
+      "text": "Put brand names, product names and package names in `keywords`, for example \"supabase\" or \"Next.js\". Hacker News, Bluesky, Lemmy and GitHub search the full text. Mastodon and DEV have no keyless full-text search, so there the keyword is used as a hashtag or tag (\"Next.js\" becomes #nextjs). If your name is a common word, add `excludeKeywords` for the unrelated meanings, and words such as \"hiring\" if job posts are noise for you."
+    },
+    {
+      "name": "Pick sources and a time window",
+      "text": "`sources` defaults to all six: hackernews, bluesky, lemmy, mastodon, github and devto. Drop the ones that are irrelevant to you; GitHub is the most useful for libraries, Hacker News and Bluesky for launches and opinions. `sinceHours` sets how far back to look (168, one week, by default; up to 8,760). `maxResultsPerSource` caps rows per source, shared fairly between keywords, newest first."
+    },
+    {
+      "name": "Tune per-source options",
+      "text": "`includeComments` (on by default) adds Hacker News and Lemmy comments and Bluesky and Mastodon replies; turn it off for top-level posts only. `blueskySort` can be `latest` or `top`, `blueskyLanguage` limits posts to one language and `blueskyAuthor` tracks a single account (for example your own). Add a free GitHub personal access token with no scopes in `githubToken` to go from 10 to 30 search requests per minute.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"keywords\": [\"supabase\", \"supabase-js\"],\n  \"excludeKeywords\": [\"hiring\"],\n  \"sources\": [\"hackernews\", \"bluesky\", \"github\", \"lemmy\"],\n  \"sinceHours\": 24,\n  \"maxResultsPerSource\": 100,\n  \"includeComments\": true,\n  \"newSinceLastRun\": true\n}"
+      }
+    },
+    {
+      "name": "Schedule it and receive only new mentions",
+      "text": "Save the input as a task with `newSinceLastRun` on and schedule it, for example every six hours. Each run skips mentions already delivered for the same keywords and sources, so you see and pay for each mention once. Only hashed ids are stored, in a key-value store named dev-community-mentions-state in your account. A run with nothing new returns one free status row."
+    },
+    {
+      "name": "Route mentions to Slack and triage them",
+      "text": "Connect the task to Slack through Make, n8n, Zapier or an Apify webhook, and post `source`, `title` or the start of `text`, `likeCount` and `url`. Sort by engagement so a Hacker News story with a high `score` or a Bluesky post with many reposts reaches someone quickly. For a weekly report, aggregate mentions per source and day.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/dev-community-mentions\").call(run_input={\n    \"keywords\": [\"supabase\"],\n    \"sinceHours\": 168,\n    \"maxResultsPerSource\": 100,\n})\ndf = pd.DataFrame(client.dataset(run[\"defaultDatasetId\"]).list_items().items)\ndf = df[df[\"type\"] == \"mention\"]\n\ndf[\"engagement\"] = df[[\"likeCount\", \"replyCount\", \"repostCount\", \"score\"]].fillna(0).sum(axis=1)\nprint(df.sort_values(\"engagement\", ascending=False)[[\"source\", \"engagement\", \"url\"]].head(10))\nprint(df.groupby([\"source\", pd.to_datetime(df[\"createdAt\"]).dt.date]).size().unstack(0).fillna(0))\n"
+      }
+    },
+    {
+      "name": "Add news coverage alongside",
+      "text": "Community mentions and press coverage are different audiences. Run [News Search](actor:news-search) with the same keywords to see articles from news sites worldwide over the last 72 hours, and keep both feeds in one channel or sheet."
+    }
+  ],
+  "sampleInput": {
+    "keywords": ["openai"],
+    "sources": ["hackernews", "bluesky", "lemmy", "mastodon", "github", "devto"],
+    "sinceHours": 168,
+    "maxResultsPerSource": 50
+  },
+  "outputFields": [
+    ["`source`, `contentType`", "Platform (hackernews, bluesky, lemmy, mastodon, github, devto) and what the row is: story, comment, post, issue, pull request, article."],
+    ["`url`, `title`, `text`", "Link to the mention, its title where there is one, and a text snippet of up to 1,000 characters (`textTruncated` tells you if it was cut)."],
+    ["`authorHandle`", "The public handle of the poster. No profile details, followers or emails."],
+    ["`createdAt`", "When the post or comment was created."],
+    ["`likeCount`, `replyCount`, `repostCount`, `score`", "Engagement as each platform reports it; fields a platform does not have are null."],
+    ["`channel`", "Where it was posted: HN thread, Lemmy community, GitHub repository or Mastodon hashtag."],
+    ["`matchedKeyword`", "Which of your keywords produced the row."]
+  ],
+  "sampleOutputNote": "Mention rows from the actor's README:",
+  "costExample": "Each mention row is $0.0004, so 500 mentions cost $0.20. A monitor that finds about 40 new mentions a day costs roughly $0.50 a month. There is no start fee beyond the tiny platform start event, and runs with no matches return a free status row.",
+  "tips": [
+    "Lemmy's largest server, lemmy.world, asks for one request per minute in its robots.txt, and the actor respects it, so every extra keyword adds about a minute. Fewer, better keywords keep runs fast.",
+    "GitHub is searched keyless at 10 requests per minute per IP, which is shared on Apify. If GitHub is skipped with a note, add a free token.",
+    "Package names make precise keywords (for example \"supabase-js\"), because they rarely appear outside technical discussion.",
+    "Run once with a long `sinceHours` to build a baseline, then switch to a short window with `newSinceLastRun` for the ongoing feed."
+  ],
+  "limitations": [
+    "Reddit and X/Twitter are not covered, because their APIs require paid or commercial agreements.",
+    "Mastodon and DEV are matched by hashtag or tag, not full text, so posts that mention your name without the tag are missed there.",
+    "Results are newest first per source, up to `maxResultsPerSource`; very busy keywords can exceed that in the window.",
+    "If one source is down or refuses a request, the run continues with the others and notes the problem in the summary."
+  ],
+  "responsibleUse": [
+    "Only public posts and public handles are returned. Bluesky accounts that opted out of logged-out visibility and Mastodon accounts marked noindex are skipped. Use the feed to follow conversations about your product, not to build profiles of individual people.",
+    "Text is a snippet, not an archive copy. If you store mentions, respect deletions and each platform's terms, and do not use GitHub data for spam or resale, which GitHub's terms forbid."
+  ],
+  "faq": [
+    {
+      "q": "Do I need API keys for these platforms?",
+      "a": "No. All sources are queried through public, documented APIs without keys. A free GitHub token is optional and only raises GitHub's rate limit."
+    },
+    {
+      "q": "Why is Reddit not included?",
+      "a": "Reddit's API now requires a commercial agreement for this kind of use, and scraping it would break its terms. The same applies to X/Twitter."
+    },
+    {
+      "q": "How do I avoid paying for the same mention twice?",
+      "a": "Turn on newSinceLastRun for scheduled runs. The actor remembers hashed ids of delivered mentions for the same keywords and sources and skips them next time."
+    },
+    {
+      "q": "Can I track my own company account's posts?",
+      "a": "On Bluesky, yes: set blueskyAuthor to your handle. For the other platforms, search for your brand name and filter on authorHandle in the results."
+    }
+  ],
+  "related": [
+    "news-monitoring-by-keyword-gdelt",
+    "export-youtube-comments-to-csv",
+    "find-company-job-board-ats"
+  ]
+}

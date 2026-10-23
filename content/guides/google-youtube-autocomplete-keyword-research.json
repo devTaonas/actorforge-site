@@ -1,0 +1,105 @@
+{
+  "slug": "google-youtube-autocomplete-keyword-research",
+  "category": "seo-marketing",
+  "title": "How to Do Long-Tail Keyword Research With Google, YouTube and Bing Autocomplete",
+  "metaTitle": "Long-Tail Keyword Research From Autocomplete in Bulk",
+  "metaDescription": "Expand seed keywords with a-z, question and preposition modifiers across Google, YouTube and Bing autocomplete, any country, and export the long tail to CSV.",
+  "actor": "keyword-suggestions",
+  "alsoActors": ["google-trends"],
+  "summary": "Give Keyword Suggestions a list of seed keywords, pick engines (Google, YouTube, Bing, Baidu), an expansion (a-z, questions or prepositions) and a country and language. Each seed and engine comes back as one row with every deduplicated suggestion; flat mode gives one keyword per row for a spreadsheet.",
+  "intro": [
+    "Autocomplete is one of the few free, first-hand signals of what people actually type into a search box. Type \"coffee maker w\" and the suggestions (with grinder, walmart, water filter) are queries real users run often enough for the engine to suggest them. Repeating that for every letter, every question word and every preposition is how long-tail keyword lists are built. By hand it is slow; for fifty seeds in three markets it is impractical.",
+    "[Keyword Suggestions](actor:keyword-suggestions) automates the loop. It sends each seed, plus its expansions, to Google's and YouTube's public suggest endpoint, Bing's OpenSearch suggestion feed and, if you want, Baidu, then merges and deduplicates the results per seed and engine. An a-z expansion is 27 requests and typically returns 250 to 450 unique suggestions per seed and engine.",
+    "This guide covers choosing seeds, picking the expansion that matches your goal, running markets side by side, and turning the output into content clusters. Autocomplete tells you what is searched, not how often, so it ends with how to add a volume or trend signal."
+  ],
+  "steps": [
+    {
+      "name": "Choose seeds that are short and specific",
+      "text": "Good seeds are two or three words that describe a topic, product type or problem: \"coffee maker\", \"running shoes\", \"invoice template\". Very long seeds get few or no suggestions; one-word seeds return generic results. Put them in `seeds`; duplicates are removed case-insensitively."
+    },
+    {
+      "name": "Pick the expansion for your goal",
+      "text": "`a-z` (the default) sends \"seed\", \"seed a\" … \"seed z\" and gives the broadest long tail. `questions` prefixes who, what, why, how, can, is, should and similar words, which is ideal for blog topics and FAQ sections. `prepositions` appends for, with, without, vs, near, like and others, which surfaces comparisons and buying intent. `none` sends just the seed for about 10 suggestions at the lower price, handy for a quick check across hundreds of seeds."
+    },
+    {
+      "name": "Pick engines and market",
+      "text": "`engines` defaults to Google, YouTube and Bing. YouTube suggestions are the ones to use for video titles and tags; they lean towards tutorials, reviews and brand names. Add `baidu` for Chinese-language research (Baidu ignores country and language). Set `country` and `language` for the market (gl/hl for Google and YouTube, the language-COUNTRY market for Bing). To compare markets, run the same seeds once per country.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"seeds\": [\"coffee maker\", \"espresso machine\", \"cold brew\"],\n  \"engines\": [\"google\", \"youtube\", \"bing\"],\n  \"expansion\": \"questions\",\n  \"country\": \"gb\",\n  \"language\": \"en\",\n  \"outputMode\": \"flat\"\n}"
+      }
+    },
+    {
+      "name": "Choose grouped or flat output",
+      "text": "`grouped` (default) gives one row per seed and engine with `count`, a `keywords` list and a `suggestions` array where each item has the text, its position, the exact query that produced it and the modifier. `flat` gives one row per suggestion with `seed`, `engine`, `suggestion`, `position`, `query` and `modifier`, which is what you want in a spreadsheet. The price is the same in both modes, because billing is per seed and engine, never per keyword."
+    },
+    {
+      "name": "Merge engines and cluster the results",
+      "text": "A keyword suggested by Google, YouTube and Bing alike is a safer bet than one that appears on a single engine. Count the engines per suggestion, then group by modifier or by the first word after the seed to form topic clusters. Each cluster is a candidate page or video.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/keyword-suggestions\").call(run_input={\n    \"seeds\": [\"coffee maker\", \"espresso machine\"],\n    \"engines\": [\"google\", \"youtube\", \"bing\"],\n    \"expansion\": \"a-z\",\n    \"country\": \"us\",\n    \"language\": \"en\",\n    \"outputMode\": \"flat\",\n})\ndf = pd.DataFrame(client.dataset(run[\"defaultDatasetId\"]).list_items().items)\ndf = df[df[\"suggestion\"].notna()]\ndf[\"kw\"] = df[\"suggestion\"].str.lower().str.strip()\n\nby_kw = (df.groupby([\"seed\", \"kw\"])\n           .agg(engines=(\"engine\", \"nunique\"), bestPosition=(\"position\", \"min\"))\n           .reset_index()\n           .sort_values([\"engines\", \"bestPosition\"], ascending=[False, True]))\nby_kw.to_csv(\"long_tail_keywords.csv\", index=False)\nprint(by_kw.head(20))\n"
+      }
+    },
+    {
+      "name": "Add a demand signal",
+      "text": "Autocomplete does not include search volume. To prioritise, check your shortlist in Google Trends: the [Google Trends Scraper](actor:google-trends) returns interest over time on a best-effort basis (up to five terms compared at once), which shows whether a phrase is rising, seasonal or flat. If you have access to a keyword tool with volumes, paste the shortlist there instead."
+    }
+  ],
+  "sampleInput": {
+    "seeds": ["coffee maker", "running shoes"],
+    "engines": ["google", "youtube", "bing"],
+    "expansion": "a-z",
+    "country": "us",
+    "language": "en",
+    "outputMode": "grouped"
+  },
+  "outputFields": [
+    ["`seed`, `engine`, `country`, `expansion`", "Which seed, engine, market and expansion the row is for."],
+    ["`status`", "ok, or why the row is empty or partial (rate-limited, no suggestions, error). Only ok rows are charged."],
+    ["`count`, `keywords`", "Grouped mode: number of unique suggestions and the list of them."],
+    ["`suggestions`", "Grouped mode: each suggestion with its `position`, the `query` that produced it and the `modifier` (the letter or word added)."],
+    ["`suggestion`, `position`, `query`, `modifier`", "Flat mode: the same, one suggestion per row."]
+  ],
+  "sampleOutputNote": "Grouped rows from the actor's README (keyword lists shortened):",
+  "costExample": "A seed and engine with expansion `none` costs $0.0003; with a-z, questions or prepositions it is $0.001. So 100 seeds with a-z on Google, YouTube and Bing is 300 rows, $0.30, and usually returns tens of thousands of keywords. 1,000 seeds on Google alone without expansion is $0.30. Empty, partial and rate-limited rows are free, and there is no per-run start fee beyond the tiny platform start event.",
+  "tips": [
+    "Run `questions` and `prepositions` as separate runs from `a-z` if you want to label intent; the `modifier` column then tells you which question word or preposition produced each keyword.",
+    "Google partly localises suggestions by the requester's IP, not only by `country`, so a few results can reflect the data-centre location. Cross-check important markets on Bing.",
+    "Google can rate-limit shared cloud IPs. When that happens the remaining rows come back as rate-limited and free; re-run those seeds later.",
+    "Strip brand names you cannot target (competitor trademarks) before handing the list to writers or advertisers."
+  ],
+  "limitations": [
+    "Suggestions are not search volumes, and there is no keyword difficulty or CPC data.",
+    "Each request returns about 10 suggestions (Bing up to about 20), so depth comes from expansion, not from one call.",
+    "Amazon, DuckDuckGo, Naver, eBay, Yahoo and Yandex are deliberately not included, because their robots.txt or terms do not allow automated suggestion requests.",
+    "The actor is polite by design: at most 2 requests in flight and at least 350 ms between requests per host, so an a-z seed takes about 10 seconds per engine."
+  ],
+  "responsibleUse": [
+    "The actor only calls public suggestion endpoints that robots.txt does not disallow, with an honest user agent and no proxies, and it stops an engine after repeated 429s or any 401/403. Please do not work around those limits by splitting a job into many parallel runs.",
+    "Autocomplete can surface sensitive or offensive phrases about real people and brands. Review a list before publishing it or building pages on it."
+  ],
+  "faq": [
+    {
+      "q": "Is autocomplete data the same as search volume?",
+      "a": "No. A suggestion means enough people type that phrase for the engine to suggest it, but you do not get a number. Use Google Trends or a volume tool to rank the shortlist."
+    },
+    {
+      "q": "Can I research YouTube keywords specifically?",
+      "a": "Yes. Select only the youtube engine. The suggestions come from YouTube's own search box and suit video titles, descriptions and tags."
+    },
+    {
+      "q": "Does flat output cost more?",
+      "a": "No. Billing is per seed and engine row with suggestions, whatever the output mode or the number of keywords."
+    },
+    {
+      "q": "Which countries and languages work?",
+      "a": "Any two-letter country and language code that Google and Bing accept, for example de/de, fr/fr, in/en or br/pt. Baidu is Chinese only and ignores both."
+    }
+  ],
+  "related": [
+    "google-trends-trending-searches-by-country",
+    "audit-every-url-in-sitemap-seo",
+    "export-youtube-comments-to-csv"
+  ]
+}

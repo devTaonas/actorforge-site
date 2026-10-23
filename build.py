@@ -34,6 +34,14 @@ API = "https://api.apify.com/v2"
 INDEXNOW_KEY = "34fe8e4ca4aa7d818ce3141830ef220b"
 BRAND = "ActorForge"
 
+# Apify affiliate (FirstPromoter) referral code, e.g. "abc123" -> Apify links become
+# https://apify.com/actor-forge/x?fpr=abc123.  Leave EMPTY to keep every link
+# unchanged and hide the disclosure.  The APIFY_AFFILIATE_FPR environment
+# variable, when set, overrides this value (e.g. as a CI secret).
+APIFY_AFFILIATE_FPR = ""
+AFFILIATE_DISCLOSURE = ("Disclosure: links to apify.com on this site are affiliate links. If you sign up "
+                        "through one, {brand} may earn a commission from Apify at no extra cost to you.")
+
 CATEGORIES = [
     ("business-leads", "Business Leads & Company Data",
      "B2B lead lists, company registers, funding rounds, hiring signals and planning permissions, from official and open sources."),
@@ -368,11 +376,13 @@ def topbar():
 
 
 def footer(used_cats):
+    disclosure = (f'<p class="disclosure" style="font-style:italic">{esc(AFFILIATE_DISCLOSURE.format(brand=BRAND))}</p>'
+                  if affiliate_code() else "")
     cats = " · ".join(f'<a href="{rel("categories/" + c + "/")}">{esc(CAT[c][1])}</a>' for c in used_cats)
     return (f'<footer><div class="wrap"><p>{cats}</p><p><strong>{BRAND}</strong> builds pay-per-result data tools '
             f'on the Apify platform. All actors: <a href="{STORE_URL}" rel="noopener">apify.com/actor-forge</a>. '
             f'{BRAND} is independent and not affiliated with the data sources named on this site.</p>'
-            f'<p><a href="{rel("sitemap.xml")}">Sitemap</a></p></div></footer>\n</body>\n</html>\n')
+            f'{disclosure}<p><a href="{rel("sitemap.xml")}">Sitemap</a></p></div></footer>\n</body>\n</html>\n')
 
 
 def crumbs_html(items):
@@ -666,17 +676,28 @@ def render_guide(g, ctx):
     parts.append("</ol>")
     sample_in = g.get("sampleInput") or auto_input(a)
     parts.append("<h2>Sample input</h2>" + code_block(json.dumps(sample_in, ensure_ascii=False, indent=2), "json"))
+    if g.get("outputFields"):
+        parts.append("<h2>Output fields that matter</h2>" + table_html(["Field", "What it holds"], g["outputFields"], cut_cols=(1,)))
     sample = output_sample(a)
     if sample:
         parts.append("<h2>Sample output</h2><p>" + inline(g.get("sampleOutputNote") or "Sample rows from the actor's README.") + "</p>" + sample)
     parts.append(f"<h2>Run it from code</h2>{api_snippets(a['name'], sample_in)}")
     if g.get("costExample"):
         parts.append(f"<h2>What it costs</h2><p>{inline(g['costExample'])}</p>{pricing_table(a)}")
+    comp = g.get("comparison")
+    if comp and comp.get("rows"):
+        parts.append(f"<h3>{inline(comp.get('title') or 'How the price compares')}</h3>" + table_html(comp["columns"], comp["rows"]))
+        if comp.get("note"):
+            parts.append(f'<p class="muted">{inline(comp["note"])}</p>')
     parts.append(f'<div class="cta"><p><strong>Ready to try it?</strong> {esc(a["title"])} runs on Apify, '
                  f'pay per result.</p><a class="btn" href="{run_url}" rel="noopener">Run on Apify →</a> '
                  f'<a href="{rel("actors/" + a["name"] + "/")}">Read the full actor page</a></div>')
     if g.get("tips"):
         parts.append("<h2>Tips and pitfalls</h2><ul>" + "".join(f"<li>{inline(t)}</li>" for t in g["tips"]) + "</ul>")
+    if g.get("limitations"):
+        parts.append("<h2>Limitations</h2><ul>" + "".join(f"<li>{inline(t)}</li>" for t in g["limitations"]) + "</ul>")
+    if g.get("responsibleUse"):
+        parts.append("<h2>Responsible use</h2>" + "".join(f"<p>{inline(t)}</p>" for t in g["responsibleUse"]))
     if faq:
         parts.append("<h2>FAQ</h2>" + faq_html(faq))
     tools = [a["name"]] + [x for x in g.get("alsoActors") or [] if x in ctx["actors"] and x != a["name"]]
@@ -808,6 +829,33 @@ def render_404(ctx):
 
 # --------------------------------------------------------------------------- build
 
+def affiliate_code():
+    code = os.environ.get("APIFY_AFFILIATE_FPR", APIFY_AFFILIATE_FPR).strip()
+    if code and not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", code):
+        raise SystemExit(f"APIFY_AFFILIATE_FPR must be the bare referral code, got {code!r}")
+    return code
+
+
+def add_affiliate(page_html, code):
+    """Append fpr=<code> to every <a href> that points at apify.com (not console,
+    docs or api subdomains) and mark those links rel="sponsored".  With an empty
+    code the page is returned unchanged."""
+    if not code:
+        return page_html
+
+    def fix(m):
+        url = html.unescape(m.group(2))
+        base, _, frag = url.partition("#")
+        if re.search(r"[?&]fpr=", base):
+            return m.group(0)
+        base += ("&" if "?" in base else "?") + "fpr=" + code
+        new = base + ("#" + frag if frag else "")
+        rest = m.group(3).replace('rel="noopener"', 'rel="sponsored noopener"')
+        return f'{m.group(1)}"{esc(new)}"{rest}'
+
+    return re.sub(r'(<a\s[^>]*?href=)"(https://apify\.com(?:[/?#][^"]*)?)"([^>]*)', fix, page_html)
+
+
 def write(path, text):
     full = os.path.join(ROOT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -866,6 +914,8 @@ def build(offline):
 
     today = _dt.date.today().isoformat()
     new_lm = {}
+    code = affiliate_code()
+    pages = [(p, add_affiliate(t, code)) for p, t in pages]
     for path, text in pages:
         # hash ignores dateModified so that the date itself does not cause churn
         h = hashlib.sha256(re.sub(r'"dateModified":"[^"]*",?', "", text).encode()).hexdigest()[:16]
@@ -875,7 +925,7 @@ def build(offline):
     with open(lm_path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(new_lm, f, indent=1, sort_keys=True)
 
-    write("404.html", render_404(ctx))
+    write("404.html", add_affiliate(render_404(ctx), code))
     urls = "".join(f"<url><loc>{BASE_URL}{p}</loc><lastmod>{new_lm[p]['date']}</lastmod></url>\n" for p, _ in pages)
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")

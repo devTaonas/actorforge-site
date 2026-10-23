@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert Any URL to Markdown for LLMs and RAG</title>
+<meta name="description" content="Turn web pages, PDFs, Word, Excel and PowerPoint links into clean Markdown with a token estimate, ready for an LLM prompt, a vector store or an AI agent.">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Convert Any URL to Markdown for LLMs and RAG">
+<meta property="og:description" content="Turn web pages, PDFs, Word, Excel and PowerPoint links into clean Markdown with a token estimate, ready for an LLM prompt, a vector store or an AI agent.">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Convert Any URL to Markdown for LLMs and RAG","description":"Turn web pages, PDFs, Word, Excel and PowerPoint links into clean Markdown with a token estimate, ready for an LLM prompt, a vector store or an AI agent.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/","mainEntityOfPage":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/","author":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"about":{"@type":"SoftwareApplication","name":"Any URL to Markdown — Web Pages, PDF, Word, Excel & OCR","url":"https://devtaonas.github.io/actorforge-site/actors/any-url-to-markdown/"}},{"@type":"HowTo","name":"How to Convert Any URL to Markdown for LLMs and RAG","description":"Turn web pages, PDFs, Word, Excel and PowerPoint links into clean Markdown with a token estimate, ready for an LLM prompt, a vector store or an AI agent.","tool":[{"@type":"HowToTool","name":"Any URL to Markdown — Web Pages, PDF, Word, Excel & OCR"}],"step":[{"@type":"HowToStep","position":1,"name":"Try one URL first","text":"Open the actor on Apify and put a link in url. The prefilled example is the arXiv PDF of \"Attention Is All You Need\". Run it and look at the row: detectedFormat says what the file really was (a link ending in .php can still be a PDF), route says which converter ran, and tokenEstimate gives a rough size for your context window. Check markdown for the structure you expect: headings as #, tables as pipe tables.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/#step-1"},{"@type":"HowToStep","position":2,"name":"Decide how much of each web page to keep","text":"onlyMainContent is on by default and keeps only the article or main block, which is what you want for blog posts, documentation and news. Turn it off for pages where the useful content sits outside the main block, such as a pricing page with several comparison tables. Turn on includeText if you also need a plain-text version, for example to compute embeddings on text without Markdown syntax.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/#step-2"},{"@type":"HowToStep","position":3,"name":"Set limits for documents and OCR","text":"PDFs are read up to maxPdfPages (500 by default). Pages without a text layer are sent to OCR only while ocr is on and only up to maxOcrPages per PDF (20 by default), because OCR is the expensive route. If you never want to pay for OCR, switch ocr off: images and scanned pages then come back as free error rows. For spreadsheets, maxRowsPerSheet cuts each sheet at 1,000 rows by default, and cut rows are flagged truncated: true.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/#step-3"},{"@type":"HowToStep","position":4,"name":"Batch convert a list of sources for your index","text":"Put up to 1,000 links in urls (duplicates are removed). Each row is independent, so one bad link does not fail the run: failed downloads, robots.txt blocks, unsupported formats and empty pages come back as error rows and are not charged. After the run, filter on the rows that have Markdown and send them to your chunker.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/#step-4"},{"@type":"HowToStep","position":5,"name":"Chunk by heading before embedding","text":"Because headings are kept, you can split on them instead of on a fixed character count, which keeps each chunk about one topic. A simple approach is to split on lines starting with # or ##, then split any chunk that is still too long. Store url and title with every chunk so answers can cite their source.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/#step-5"},{"@type":"HowToStep","position":6,"name":"Call it from an agent or a workflow","text":"The input is one string and the output is one Markdown string, which suits tool calls. In an MCP client, n8n, Make or Zapier, call the actor's run-sync endpoint with {\"url\": \"...\"} and read markdown from the first row. Use tokenEstimate to decide whether the page fits in the remaining context or needs summarising first.","url":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/#step-6"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://devtaonas.github.io/actorforge-site/guides/"},{"@type":"ListItem","position":3,"name":"How to Convert Any URL to Markdown for LLMs and RAG","item":"https://devtaonas.github.io/actorforge-site/guides/convert-any-url-to-markdown-for-llm/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does it handle pages that need JavaScript?","acceptedAnswer":{"@type":"Answer","text":"No. It reads the HTML the server sends. Pages that are an empty app shell without JavaScript are reported as an error and not charged; use a browser-based crawler for those."}},{"@type":"Question","name":"How accurate is tokenEstimate?","acceptedAnswer":{"@type":"Answer","text":"It is the character count divided by 4. For English text with GPT and Claude tokenizers that is usually close enough to plan context use, but it is not an exact count, and it is less accurate for code and non-Latin scripts."}},{"@type":"Question","name":"Can I convert a whole website?","acceptedAnswer":{"@type":"Answer","text":"Not with this actor; it converts only the URLs you list. Build the list first, for example from the site's sitemap, then pass it in urls (up to 1,000 per run)."}},{"@type":"Question","name":"What happens to a link that fails?","acceptedAnswer":{"@type":"Answer","text":"You get a row with the reason (blocked by robots.txt, download failed, unsupported format, empty page) and it is not charged. The rest of the run continues."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">How to Convert Any URL to Markdown for LLMs and RAG</li></ol></nav><h1>How to Convert Any URL to Markdown for LLMs and RAG</h1><p>Uses <a href="../../actors/any-url-to-markdown/" style="color:#fff">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></p></div></div>
+<main id="main"><div class="wrap"><div class="tldr"><strong>Short answer:</strong> Pass one URL or a list to Any URL to Markdown. It detects whether each link is a web page, a PDF, an Office file, an e-book, CSV, JSON or an image, picks the matching converter and returns one row per URL with clean Markdown, a title, metadata and a token estimate.</div><p>LLMs read Markdown well. Headings, lists and tables survive, and the noise of raw HTML (navigation, scripts, cookie banners, inline styles) is gone, so the same content costs far fewer tokens. The trouble is that the links you want to feed a model are rarely all web pages. A research agent finds a PDF report, a pricing spreadsheet, a slide deck and a blog post, and each needs a different parser.</p><p><a href="../../actors/any-url-to-markdown/">Any URL to Markdown</a> puts those parsers behind one input. Web pages go through Mozilla Readability, PDFs are read from their text layer with heading detection, DOCX, XLSX, PPTX, OpenDocument and EPUB files are converted with their tables kept, and images or scanned PDF pages go through Tesseract OCR. Every row says which <code>route</code> was used, so you can check the result.</p><p>This guide covers a single conversion, batch conversion for a RAG index, calling it from an agent, and keeping the cost predictable. If your sources are mostly PDFs, the <a href="../../guides/convert-pdf-to-markdown-for-rag/">PDF to Markdown guide</a> goes deeper on that format.</p><h2>Step by step</h2><ol class="steps"><li id="step-1"><h3>Try one URL first</h3><p>Open the actor on Apify and put a link in <code>url</code>. The prefilled example is the arXiv PDF of "Attention Is All You Need". Run it and look at the row: <code>detectedFormat</code> says what the file really was (a link ending in .php can still be a PDF), <code>route</code> says which converter ran, and <code>tokenEstimate</code> gives a rough size for your context window. Check <code>markdown</code> for the structure you expect: headings as #, tables as pipe tables.</p></li><li id="step-2"><h3>Decide how much of each web page to keep</h3><p><code>onlyMainContent</code> is on by default and keeps only the article or main block, which is what you want for blog posts, documentation and news. Turn it off for pages where the useful content sits outside the main block, such as a pricing page with several comparison tables. Turn on <code>includeText</code> if you also need a plain-text version, for example to compute embeddings on text without Markdown syntax.</p></li><li id="step-3"><h3>Set limits for documents and OCR</h3><p>PDFs are read up to <code>maxPdfPages</code> (500 by default). Pages without a text layer are sent to OCR only while <code>ocr</code> is on and only up to <code>maxOcrPages</code> per PDF (20 by default), because OCR is the expensive route. If you never want to pay for OCR, switch <code>ocr</code> off: images and scanned pages then come back as free error rows. For spreadsheets, <code>maxRowsPerSheet</code> cuts each sheet at 1,000 rows by default, and cut rows are flagged <code>truncated: true</code>.</p><pre><code class="language-json">{
+  "url": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation",
+  "urls": [
+    "https://arxiv.org/pdf/1706.03762",
+    "https://calibre-ebook.com/downloads/demos/demo.docx"
+  ],
+  "onlyMainContent": true,
+  "includeText": false,
+  "ocr": true,
+  "ocrLanguages": ["eng"],
+  "maxOcrPages": 10,
+  "maxPdfPages": 300
+}</code></pre></li><li id="step-4"><h3>Batch convert a list of sources for your index</h3><p>Put up to 1,000 links in <code>urls</code> (duplicates are removed). Each row is independent, so one bad link does not fail the run: failed downloads, robots.txt blocks, unsupported formats and empty pages come back as error rows and are not charged. After the run, filter on the rows that have Markdown and send them to your chunker.</p><pre><code class="language-python">import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+sources = open("sources.txt").read().split()
+
+run = client.actor("actor-forge/any-url-to-markdown").call(run_input={
+    "urls": sources,
+    "onlyMainContent": True,
+    "maxOcrPages": 10,
+})
+
+docs = []
+for row in client.dataset(run["defaultDatasetId"]).iterate_items():
+    if not row.get("markdown"):
+        print("no Markdown for", row.get("url"))
+        continue
+    docs.append({"source": row["url"], "title": row.get("title"), "text": row["markdown"]})
+
+print(len(docs), "documents,", sum(len(d["text"]) // 4 for d in docs), "tokens (approx.)")
+</code></pre></li><li id="step-5"><h3>Chunk by heading before embedding</h3><p>Because headings are kept, you can split on them instead of on a fixed character count, which keeps each chunk about one topic. A simple approach is to split on lines starting with # or ##, then split any chunk that is still too long. Store <code>url</code> and <code>title</code> with every chunk so answers can cite their source.</p></li><li id="step-6"><h3>Call it from an agent or a workflow</h3><p>The input is one string and the output is one Markdown string, which suits tool calls. In an MCP client, n8n, Make or Zapier, call the actor's run-sync endpoint with <code>{"url": "..."}</code> and read <code>markdown</code> from the first row. Use <code>tokenEstimate</code> to decide whether the page fits in the remaining context or needs summarising first.</p></li></ol><h2>Sample input</h2><pre><code class="language-json">{
+  "url": "https://arxiv.org/pdf/1706.03762",
+  "urls": [
+    "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+  ],
+  "onlyMainContent": true,
+  "ocr": true,
+  "maxOcrPages": 20
+}</code></pre><h2>Output fields that matter</h2><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">What it holds</th></tr></thead><tbody><tr><td><code>url</code></td><td class="cut">The link you gave, after duplicates were removed.</td></tr><tr><td><code>detectedFormat</code></td><td class="cut">What the file actually was: html, pdf, docx, xlsx, pptx, epub, csv, json, png and so on.</td></tr><tr><td><code>route</code></td><td class="cut">Which converter ran: html, pdf-text, office, image-ocr and others. Useful for spotting OCR output, which deserves a closer check.</td></tr><tr><td><code>title</code></td><td class="cut">Page or document title, from the HTML or the document metadata.</td></tr><tr><td><code>markdown</code></td><td class="cut">The converted content with headings, lists, links and tables kept.</td></tr><tr><td><code>tokenEstimate</code></td><td class="cut">Characters divided by 4. A planning number, not an exact tokenizer count.</td></tr><tr><td><code>truncated</code></td><td class="cut">true when a PDF page cap, OCR cap, row cap or the size limit cut the result.</td></tr></tbody></table></div><h2>Sample output</h2><p>Rows from the actor's README, one per URL (Markdown shortened):</p><div class="tablewrap"><table><thead><tr><th scope="col">url</th><th scope="col">detectedFormat</th><th scope="col">route</th><th scope="col">title</th><th scope="col">tokenEstimate</th><th scope="col">markdown</th></tr></thead><tbody><tr><td class="cut">https://arxiv.org/pdf/1706.03762</td><td class="cut">pdf</td><td class="cut">pdf-text</td><td class="cut">Attention Is All You Need</td><td class="cut">9600</td><td class="cut">Provided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures…</td></tr><tr><td class="cut">https://en.wikipedia.org/wiki/Retrieval-augmented_generation</td><td class="cut">html</td><td class="cut">html</td><td class="cut">Retrieval-augmented generation - Wikipedia</td><td class="cut">5811</td><td class="cut">Retrieval-augmented generation (RAG) is a technique that enables large language models…</td></tr><tr><td class="cut">https://calibre-ebook.com/downloads/demos/demo.docx</td><td class="cut">docx</td><td class="cut">office</td><td class="cut">DOCX Demo</td><td class="cut">2604</td><td class="cut"># Demonstration of DOCX support in calibre\n\nThis document demonstrates the ability of the calibre DOCX Input plugin…</td></tr><tr><td class="cut">https://raw.githubusercontent.com/apache/poi/trunk/test-data/spreadsheet/SampleSS.xlsx</td><td class="cut">xlsx</td><td class="cut">office</td><td class="cut">Sample Spreadsheet</td><td class="cut">96</td><td class="cut">## First Sheet\n\n| Test spreadsheet | column_B |\n| --- | --- |\n| 2nd row | 2nd row 2nd column |…</td></tr></tbody></table></div><h2>Run it from code</h2><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~any-url-to-markdown/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://arxiv.org/pdf/1706.03762", "urls": ["https://en.wikipedia.org/wiki/Retrieval-augmented_generation"], "onlyMainContent": true, "ocr": true, "maxOcrPages": 20}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "url": "https://arxiv.org/pdf/1706.03762",
+  "urls": [
+    "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+  ],
+  "onlyMainContent": true,
+  "ocr": true,
+  "maxOcrPages": 20
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~any-url-to-markdown/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "url": "https://arxiv.org/pdf/1706.03762",
+    "urls": [
+        "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+    ],
+    "onlyMainContent": True,
+    "ocr": True,
+    "maxOcrPages": 20
+}
+
+run = client.actor("actor-forge/any-url-to-markdown").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>What it costs</h2><p>Web pages cost $0.001 each, documents $0.002 each (a PDF is charged once per started 50 text pages), and OCR $0.003 per image or scanned page. Converting 2,000 blog posts and docs pages is $2.00. A batch of 300 web pages, 40 text PDFs of under 50 pages and 5 scanned pages comes to $0.30 + $0.08 + $0.015 = $0.395. Error rows are free.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Page result</td><td class="cut">Charged per web page converted to Markdown</td><td>$0.001</td><td>$1</td><td class="cut">1,000 web pages = $1.00</td></tr><tr><td>Document converted</td><td class="cut">Charged per PDF (each started 50 text pages), Word, Excel, PowerPoint, OpenDocument, EPUB, CSV or JSON file converted</td><td>$0.002</td><td>$2</td><td class="cut">A 15-page PDF = $0.002; a 120-page PDF = $0.006; 1,000 Word files = $2.00</td></tr><tr><td>Page ocr</td><td class="cut">Charged per image, or scanned PDF page, read by OCR</td><td>$0.003</td><td>$3</td><td class="cut">A 10-page scanned PDF = $0.03</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 1 GB = $0.00005</td></tr></tbody></table></div><h3>Price compared with other URL-to-Markdown actors</h3><div class="tablewrap"><table><thead><tr><th scope="col">Actor (Apify Store)</th><th scope="col">Listed price per 1,000 pages</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>ActorForge Any URL to Markdown</td><td>$1.00 web pages, $2.00 documents, $3.00 OCR pages</td><td>Static HTML, PDFs, Office files, EPUB, images in one input</td></tr><tr><td>gazidev/website-to-markdown</td><td>from $0.40</td><td>Web pages and site crawling, RAG chunks</td></tr><tr><td>bikram07/web-to-markdown-crawl4ai</td><td>from $1.00</td><td>Real browser, so JavaScript pages render</td></tr><tr><td>s-r/rag-web-browser</td><td>from $2.00</td><td>Search query or URL list in</td></tr><tr><td>scrapesage/url-to-markdown</td><td>from $2.20</td><td>Readability main-content mode</td></tr><tr><td>eltociear/url-to-markdown-for-llms</td><td>$3.00</td><td>Main content plus byline and date</td></tr></tbody></table></div><p class="muted">Competitor prices are the starting prices shown on their Apify Store listings when this guide was written (2026-10-23) and may have changed. If you only convert web pages and want the lowest price, a cheaper page-only actor can beat ours; ours is built for mixed lists of pages and documents. If you need JavaScript rendering, use a browser-based actor.</p><div class="cta"><p><strong>Ready to try it?</strong> Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR runs on Apify, pay per result.</p><a class="btn" href="https://apify.com/actor-forge/any-url-to-markdown" rel="noopener">Run on Apify →</a> <a href="../../actors/any-url-to-markdown/">Read the full actor page</a></div><h2>Tips and pitfalls</h2><ul><li>Point the actor at the document itself, not a viewer page. A Google Drive or SharePoint preview URL is a web page that wraps the file and usually needs a login.</li><li>For OCR, set <code>ocrLanguages</code> to the languages actually in the documents (up to 3). Wrong languages produce noticeably worse text. For more than the 7 built-in languages, use <a href="../../actors/ocr-to-text/">OCR to Text</a>.</li><li>Keep the <code>route</code> column in your index. If answers built on image-ocr rows look wrong, you know where to look.</li><li>Large spreadsheets are better handled as data than as Markdown. Raise <code>maxRowsPerSheet</code> only if the model really needs the rows.</li></ul><h2>Limitations</h2><ul><li>Pages are fetched as static HTML without a browser. Single-page apps that render content with JavaScript come back as a free error row, not as Markdown.</li><li>It converts the URLs you give it and does not crawl or follow links.</li><li>Legacy .doc, .xls and .ppt files, RTF, .odp, HEIC/AVIF and SVG are not supported (reported, not charged). Files over 50 MB, password-protected PDFs and pages behind a login cannot be read.</li><li>OCR covers English, German, French, Spanish, Italian, Portuguese and Dutch. Handwriting and blurry photos convert poorly.</li></ul><h2>Responsible use</h2><p>The actor respects robots.txt by default (including on redirects and direct file links), identifies itself with an honest user agent and backs off when a site answers 429 or 403. Leave <code>respectRobotsTxt</code> on.</p><p>Converting a page does not give you rights to its content. Check the licence or terms before you store third-party documents in an index that other people can query, and keep the source URL with every chunk.</p><h2>FAQ</h2><details><summary>Does it handle pages that need JavaScript?</summary><p>No. It reads the HTML the server sends. Pages that are an empty app shell without JavaScript are reported as an error and not charged; use a browser-based crawler for those.</p></details><details><summary>How accurate is tokenEstimate?</summary><p>It is the character count divided by 4. For English text with GPT and Claude tokenizers that is usually close enough to plan context use, but it is not an exact count, and it is less accurate for code and non-Latin scripts.</p></details><details><summary>Can I convert a whole website?</summary><p>Not with this actor; it converts only the URLs you list. Build the list first, for example from the site's sitemap, then pass it in <code>urls</code> (up to 1,000 per run).</p></details><details><summary>What happens to a link that fails?</summary><p>You get a row with the reason (blocked by robots.txt, download failed, unsupported format, empty page) and it is not charged. The rest of the run continues.</p></details><h2>Actors used in this guide</h2><div class="grid"><div class="card"><h3><a href="../../actors/any-url-to-markdown/">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></h3><p>Turn any URL into clean, LLM-ready Markdown: web pages, PDFs, Word, Excel, PowerPoint, EPUB, CSV and JSON, plus OCR for images and scanned PDFs. One…</p><span class="price">$1 per 1,000 · page result</span></div><div class="card"><h3><a href="../../actors/pdf-ocr/">PDF OCR — Scanned PDF to Searchable Text (29 Languages)</a></h3><p>OCR scanned PDFs to text page by page with Tesseract 5 in 29 languages. Pages that already have a text layer are read directly at a tenth of the…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="../../actors/ocr-to-text/">OCR — Scanned PDF &amp; Image to Text (Tesseract, 29 Languages)</a></h3><p>Extract text from scanned PDFs and images (PNG, JPEG, TIFF, WebP, GIF, BMP) with Tesseract 5 OCR in 29 languages. PDF pages that already have text…</p><span class="price">$3 per 1,000 · page ocr</span></div></div><h2>Related guides</h2><div class="grid"><div class="card"><h3><a href="../../guides/convert-pdf-to-markdown-for-rag/">How to Convert PDF to Markdown for RAG Pipelines</a></h3><p>Send your PDF links to the Any URL to Markdown actor, read the markdown field of each result, then split it by heading into token-sized chunks…</p></div><div class="card"><h3><a href="../../guides/ocr-scanned-pdf-to-text-api/">How to OCR Scanned PDFs to Text with an API</a></h3><p>Send scanned PDF links to the PDF OCR actor, get text back one row per page with a confidence score, and use that score to flag pages for review.…</p></div><div class="card"><h3><a href="../../guides/extract-structured-data-from-website-with-ai/">How to Extract Structured Data From Any Website With AI (No Selectors)</a></h3><p>Give AI Web Extractor a list of URLs and a plain-English instruction, optionally with a field list or JSON schema. Each page is fetched, cleaned to…</p></div></div><p><a href="../../guides/">All guides</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

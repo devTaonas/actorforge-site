@@ -1,0 +1,119 @@
+{
+  "slug": "scrape-google-play-app-store-ratings-reviews",
+  "category": "ecommerce-apps",
+  "title": "How to Scrape Google Play and App Store Ratings, Reviews and Charts",
+  "metaTitle": "Scrape Google Play & App Store Ratings and Reviews",
+  "metaDescription": "Export app ratings, rating histograms, installs, versions and anonymised Google Play reviews for any app and country, plus Apple's top free and paid charts.",
+  "actor": "app-store-scraper",
+  "alsoActors": [],
+  "summary": "List apps by Google Play package name or App Store id (or paste their store URLs), choose countries, and App Store & Google Play Scraper returns one normalised row per app, store and country with rating, ratings count, histogram, installs, price and version. Switch on reviews for up to 20 anonymised Google Play reviews per app, or add Apple's top charts to discover apps.",
+  "intro": [
+    "App store data drives a lot of everyday decisions: which competitor shipped an update, whose rating dropped after a release, how a category's top charts move from week to week, and what users complain about in reviews. Both stores show this publicly on their app pages, but in two different shapes, in many countries, with no export button.",
+    "[App Store & Google Play Scraper](actor:app-store-scraper) reads those public pages (and Apple's official marketing RSS feed for charts) and maps both stores into one schema, so a Google Play row and an App Store row for the same app sit side by side in one table.",
+    "This guide shows how to find the right identifiers, build a multi-country competitor table, pull reviews for sentiment work, and schedule a monitor. It is also upfront about what the public pages do not offer, because that matters for planning: there are no App Store review texts and no deep Google Play review history."
+  ],
+  "steps": [
+    {
+      "name": "Collect the app identifiers",
+      "text": "For Google Play, the package name is the `id` parameter in the store URL: play.google.com/store/apps/details?id=com.spotify.music gives `com.spotify.music`. For the App Store, the number after `id` in the URL is the app id: apps.apple.com/us/app/spotify-music-and-podcasts/id324684580 gives `324684580`. You can paste either form into `apps`; the actor works out which store each line belongs to. Keyword search is not available (both stores disallow their search pages in robots.txt), so start from a list you know, or from the charts in step 4."
+    },
+    {
+      "name": "Pick countries and language",
+      "text": "`countries` takes two-letter store codes (us, gb, de, jp, br and so on, up to 50). Each app is fetched once per country, because ratings, prices and even availability differ by storefront. `language` sets the language of Google Play text and reviews (en, de, pt-BR); App Store text always comes in the storefront's own language."
+    },
+    {
+      "name": "Build a competitor table",
+      "text": "Put your app and its competitors in `apps` and run. You get rows of `type: app` with title, developer, rating, ratings count, the 1 to 5 star histogram, installs (Google Play only), price, in-app purchases, content rating, version, release and update dates, plus similar apps and more apps by the same developer. Rating histograms are often more telling than the average: a rising share of 1-star ratings after an update shows up there first.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"apps\": [\n    \"com.spotify.music\",\n    \"com.soundcloud.android\",\n    \"https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580\"\n  ],\n  \"countries\": [\"us\", \"gb\", \"de\"],\n  \"language\": \"en\"\n}"
+      }
+    },
+    {
+      "name": "Discover apps from Apple's top charts",
+      "text": "Add `top-free` and/or `top-paid` to `charts` and set `chartSize` (1 to 100). Each chart position becomes a `type: chart` row for every country you chose. Turn on `includeChartAppDetails` to also fetch a full app row for each charting app, which is a cheap way to snapshot a market. Google Play charts are not supported."
+    },
+    {
+      "name": "Pull Google Play reviews for sentiment work",
+      "text": "Turn on `includeReviews`. For each app, country and language you get up to 20 reviews, the \"most relevant\" set the public page shows, as `type: review` rows with rating, text, date, thumbs-up count, app version and the developer's reply. Reviewer names, avatars and user ids are removed. Use `reviewsSince` to drop older ones. Twenty reviews per app is a sample, not a census, so treat it as a qualitative signal.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/app-store-scraper\").call(run_input={\n    \"apps\": [\"com.spotify.music\", \"com.soundcloud.android\"],\n    \"countries\": [\"us\", \"gb\"],\n    \"includeReviews\": True,\n})\nrows = pd.DataFrame(client.dataset(run[\"defaultDatasetId\"]).list_items().items)\n\nreviews = rows[rows[\"type\"] == \"review\"]\nprint(reviews.groupby(\"appVersion\")[\"rating\"].agg([\"count\", \"mean\"]).tail(10))\n"
+      }
+    },
+    {
+      "name": "Schedule it as a monitor",
+      "text": "Save the input as a task and add a daily or weekly schedule in Apify. Turn on `onlyNewReviewsSinceLastRun` and each run returns only reviews it has not delivered before (state is kept in a key-value store in your account), so you pay once per review and build up history over time. Compare `version` and `updatedAt` between runs to detect releases."
+    }
+  ],
+  "sampleInput": {
+    "apps": [
+      "com.spotify.music",
+      "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580"
+    ],
+    "countries": ["us"],
+    "language": "en",
+    "charts": ["top-free"],
+    "chartSize": 25,
+    "includeReviews": true
+  },
+  "outputFields": [
+    ["`type`", "app, chart, review or error. Filter on it before analysis."],
+    ["`store`", "google-play or app-store."],
+    ["`rating`, `ratingsCount`", "Average star rating and number of ratings in that country's store."],
+    ["`histogram`", "Number of ratings at each star level, keys 1 to 5."],
+    ["`installs`", "Install range such as 1,000,000,000+ (Google Play only; Apple does not publish installs)."],
+    ["`priceText`, `version`, `updatedAt`", "Price as shown, current version and last update date."],
+    ["`text`, `thumbsUp`, `appVersion`, `developerReply`", "On review rows: the review, its helpful votes, the app version it was written for and any reply. Reviewer identity is removed."]
+  ],
+  "sampleOutputNote": "App, chart and review rows from the actor's README:",
+  "costExample": "App rows are $0.0008 each (one app in one country), chart positions $0.0002, and Google Play reviews $0.00004. Tracking 30 apps in 5 countries is 150 app rows, $0.12 per run. Adding 20 reviews for each of those 150 app-country pairs adds 3,000 reviews, $0.12. A top-25 free and top-25 paid chart for one country costs $0.01. Error rows (app not found in a country, store blocked) are free.",
+  "comparison": {
+    "title": "Price compared with other app store actors",
+    "columns": ["What", "ActorForge", "Others on the Apify Store (2026-10-23)"],
+    "rows": [
+      ["App details", "$0.80 per 1,000 app rows", "about $2.30 to $3.45 per 1,000 for the leading app-details actor, plus a per-run fee"],
+      ["Google Play reviews", "$0.04 per 1,000", "listings from about $0.09 to $5.00 per 1,000"]
+    ],
+    "note": "Competitor figures are from their Store listings on 2026-10-23 and can change. Review-only actors that page deeper through Google's review endpoints return far more reviews per app than our 20; we do not use those endpoints because Google's robots.txt disallows them. If you need thousands of reviews per app, ours is not the right tool."
+  },
+  "tips": [
+    "Run the same apps in several countries if you sell internationally. Ratings and review themes can differ a lot between storefronts.",
+    "An app missing from one country gives a free error row, not a failed run, so you can safely use one country list for all apps.",
+    "Google Play no longer shows app size on the web, so `size` is null for Play apps. App Store rows have size but no installs.",
+    "Developer e-mails are kept only when they are company support mailboxes on the developer's own domain."
+  ],
+  "limitations": [
+    "No keyword search in either store, because both stores' robots.txt disallow their search pages. Start from ids, URLs or Apple's charts.",
+    "No App Store review texts. Apple's review feed sits under a path its robots.txt disallows, so App Store rows have rating, count and histogram only.",
+    "Google Play reviews are capped at the 20 \"most relevant\" reviews per app, country and language, with no newest-first sort and no deep history. Monitoring mode builds history going forward.",
+    "If a store shows a CAPTCHA or keeps answering 429/403, the actor stops asking that store for the rest of the run and returns free error rows. It uses no proxies and does not solve CAPTCHAs."
+  ],
+  "responsibleUse": [
+    "Review text is returned as the user wrote it, but without names or ids. Keep it that way: do not try to re-identify reviewers, and quote reviews in aggregate rather than as a list of individuals' opinions.",
+    "The actor re-checks each store's robots.txt at the start of every run and reads only allowed pages, at most two requests at a time per store with pauses. Store data is the stores' and developers' content, so check the store terms before republishing it."
+  ],
+  "faq": [
+    {
+      "q": "Can I get App Store reviews?",
+      "a": "No. Apple's customer-review feed is under a path that Apple's robots.txt disallows, so this actor does not read it. App Store rows still include the rating, ratings count and star histogram."
+    },
+    {
+      "q": "Why do I only get 20 Google Play reviews per app?",
+      "a": "That is what the public app page shows. Google's paging endpoints for reviews are disallowed by its robots.txt. Run the actor on a schedule with onlyNewReviewsSinceLastRun to accumulate more over time."
+    },
+    {
+      "q": "Can I search for apps by keyword?",
+      "a": "No, both stores disallow their search pages in robots.txt. Use package names, App Store ids or URLs, or start from Apple's top free and top paid charts."
+    },
+    {
+      "q": "Does it return the same fields for both stores?",
+      "a": "Yes, both stores are mapped to one schema. Fields a store does not publish (installs on the App Store, size on Google Play) are null."
+    }
+  ],
+  "related": [
+    "export-shopify-store-product-data",
+    "google-youtube-autocomplete-keyword-research",
+    "monitor-brand-mentions-hacker-news-bluesky-github"
+  ]
+}

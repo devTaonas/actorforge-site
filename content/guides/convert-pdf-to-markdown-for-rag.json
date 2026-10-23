@@ -93,6 +93,7 @@
   ],
   "related": [
     "ocr-scanned-pdf-to-text-api",
-    "extract-text-from-images-screenshots"
+    "extract-text-from-images-screenshots",
+    "convert-any-url-to-markdown-for-llm"
   ]
 }

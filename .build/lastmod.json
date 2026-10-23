@@ -1,39 +1,51 @@
 {
  "": {
-  "date": "2026-10-22",
-  "hash": "ae0ae1c3d369cab9"
+  "date": "2026-10-23",
+  "hash": "bb7383029c711f9f"
  },
  "actors/": {
-  "date": "2026-10-22",
-  "hash": "c2d8169129b8061b"
+  "date": "2026-10-23",
+  "hash": "a972060ca1b5a4f1"
  },
  "actors/ads-transparency/": {
   "date": "2026-10-22",
   "hash": "0dd551b058ce82fb"
  },
+ "actors/ai-web-extractor/": {
+  "date": "2026-10-23",
+  "hash": "0958b2ea0c3ed9bf"
+ },
  "actors/any-url-to-markdown/": {
-  "date": "2026-10-22",
-  "hash": "626db0039a361e55"
+  "date": "2026-10-23",
+  "hash": "d13d3a4930bf42b6"
  },
  "actors/app-store-scraper/": {
-  "date": "2026-10-22",
-  "hash": "c5d5ac3c3cf6f00a"
+  "date": "2026-10-23",
+  "hash": "73af3bdacbb4933d"
  },
  "actors/bilibili-scraper/": {
   "date": "2026-10-22",
   "hash": "6889a0c2efee35e3"
  },
+ "actors/business-leads-with-emails/": {
+  "date": "2026-10-23",
+  "hash": "3eaaf6cea200693a"
+ },
  "actors/business-places-data/": {
-  "date": "2026-10-22",
-  "hash": "3b7b6268b846b261"
+  "date": "2026-10-23",
+  "hash": "e2725498d68239e1"
  },
  "actors/career-site-jobs/": {
-  "date": "2026-10-22",
-  "hash": "e998e17d760a2e51"
+  "date": "2026-10-23",
+  "hash": "41dee148d53bef8a"
  },
  "actors/china-trending-topics/": {
   "date": "2026-10-22",
   "hash": "acf6c65d8189a13a"
+ },
+ "actors/dev-community-mentions/": {
+  "date": "2026-10-23",
+  "hash": "b85df16dc3ccb56b"
  },
  "actors/douyin-hot-search/": {
   "date": "2026-10-22",
@@ -43,25 +55,33 @@
   "date": "2026-10-22",
   "hash": "07a355f443ff14d4"
  },
+ "actors/google-ads-scraper/": {
+  "date": "2026-10-23",
+  "hash": "0383d494d99a3b38"
+ },
  "actors/google-trends/": {
-  "date": "2026-10-22",
-  "hash": "16fa3748e72d8bab"
+  "date": "2026-10-23",
+  "hash": "c2397c9adcd22562"
  },
  "actors/image-to-text-ocr/": {
   "date": "2026-10-22",
   "hash": "08cbadebfa1bc96f"
  },
  "actors/keyword-suggestions/": {
-  "date": "2026-10-22",
-  "hash": "3d985e42936c9c71"
+  "date": "2026-10-23",
+  "hash": "6dc15d5a83386c30"
+ },
+ "actors/news-search/": {
+  "date": "2026-10-23",
+  "hash": "0664a0b40676bb77"
  },
  "actors/ocr-to-text/": {
-  "date": "2026-10-22",
-  "hash": "11db5b4a2d044229"
+  "date": "2026-10-23",
+  "hash": "75b2a41e99b48e99"
  },
  "actors/pdf-ocr/": {
-  "date": "2026-10-22",
-  "hash": "3b95032688601055"
+  "date": "2026-10-23",
+  "hash": "b3ac1d2abc51b014"
  },
  "actors/seo-audit/": {
   "date": "2026-10-22",
@@ -96,68 +116,80 @@
   "hash": "62ce6299a398eca0"
  },
  "actors/youtube-api-scraper/": {
-  "date": "2026-10-22",
-  "hash": "6840f11fe02009f5"
+  "date": "2026-10-23",
+  "hash": "8c35e41e053ef867"
  },
  "actors/youtube-channel-api/": {
   "date": "2026-10-22",
   "hash": "879dd71108136db2"
  },
  "actors/youtube-comments-api/": {
-  "date": "2026-10-22",
-  "hash": "e9a545ee9e5c1690"
+  "date": "2026-10-23",
+  "hash": "ce6145edc1d492aa"
  },
  "actors/youtube-search-api/": {
   "date": "2026-10-22",
   "hash": "57e5d7ca31e1afbd"
  },
  "categories/business-leads/": {
-  "date": "2026-10-22",
-  "hash": "9c98321ddc13c961"
+  "date": "2026-10-23",
+  "hash": "d46c498927604032"
  },
  "categories/china-trends/": {
   "date": "2026-10-22",
   "hash": "b26a140474d45792"
  },
  "categories/documents-ai/": {
-  "date": "2026-10-22",
-  "hash": "57c7ecc0f2289f92"
+  "date": "2026-10-23",
+  "hash": "01e23b01d4a5a0e5"
  },
  "categories/ecommerce-apps/": {
-  "date": "2026-10-22",
-  "hash": "eea6a4a95081493b"
+  "date": "2026-10-23",
+  "hash": "cb03ca906bc7afa5"
  },
  "categories/seo-marketing/": {
-  "date": "2026-10-22",
-  "hash": "c1cc84c9489b80d4"
+  "date": "2026-10-23",
+  "hash": "9f8acfebb55d2e0b"
  },
  "categories/video-social/": {
-  "date": "2026-10-22",
-  "hash": "3eabfd3471723fa9"
+  "date": "2026-10-23",
+  "hash": "12f75e7784191e5f"
  },
  "guides/": {
-  "date": "2026-10-22",
-  "hash": "6c747332d1b83cfa"
+  "date": "2026-10-23",
+  "hash": "2b0ce973e0e953e9"
  },
  "guides/audit-every-url-in-sitemap-seo/": {
-  "date": "2026-10-22",
-  "hash": "02845ded364fcd3c"
+  "date": "2026-10-23",
+  "hash": "bfaee484016665f3"
  },
  "guides/business-leads-without-google-maps/": {
-  "date": "2026-10-22",
-  "hash": "364e628c1e013864"
+  "date": "2026-10-23",
+  "hash": "954da2614bb27703"
  },
  "guides/check-if-phrase-is-trademarked-uspto/": {
   "date": "2026-10-22",
   "hash": "79a1245ae3d88420"
  },
+ "guides/convert-any-url-to-markdown-for-llm/": {
+  "date": "2026-10-23",
+  "hash": "deab4cae228a0d5a"
+ },
  "guides/convert-pdf-to-markdown-for-rag/": {
-  "date": "2026-10-22",
-  "hash": "b4315befbb0d994b"
+  "date": "2026-10-23",
+  "hash": "bc1273f44b7b82c0"
  },
  "guides/export-shopify-store-product-data/": {
-  "date": "2026-10-22",
-  "hash": "bbc3f8f29cfbdf2e"
+  "date": "2026-10-23",
+  "hash": "d508467054d7d542"
+ },
+ "guides/export-youtube-comments-to-csv/": {
+  "date": "2026-10-23",
+  "hash": "fa45d9468d85eab0"
+ },
+ "guides/extract-structured-data-from-website-with-ai/": {
+  "date": "2026-10-23",
+  "hash": "8041313da0567bf9"
  },
  "guides/extract-text-from-images-screenshots/": {
   "date": "2026-10-22",
@@ -168,16 +200,36 @@
   "hash": "9c8361fbd3be12de"
  },
  "guides/google-trends-trending-searches-by-country/": {
-  "date": "2026-10-22",
-  "hash": "275bda4c3e1126bb"
+  "date": "2026-10-23",
+  "hash": "b36a97a1e7e66c27"
+ },
+ "guides/google-youtube-autocomplete-keyword-research/": {
+  "date": "2026-10-23",
+  "hash": "868fccbf56dd0162"
+ },
+ "guides/local-business-leads-with-emails/": {
+  "date": "2026-10-23",
+  "hash": "0e70df6c8a267afc"
+ },
+ "guides/monitor-brand-mentions-hacker-news-bluesky-github/": {
+  "date": "2026-10-23",
+  "hash": "78d9628fdb5ab766"
  },
  "guides/monitor-competitor-ads-google-ads-transparency/": {
-  "date": "2026-10-22",
-  "hash": "5638435912ff7cb8"
+  "date": "2026-10-23",
+  "hash": "05a9c1e2f58247ac"
+ },
+ "guides/news-monitoring-by-keyword-gdelt/": {
+  "date": "2026-10-23",
+  "hash": "ebdeb124e8fd6050"
  },
  "guides/ocr-scanned-pdf-to-text-api/": {
   "date": "2026-10-22",
   "hash": "de812b8e3fbd7f73"
+ },
+ "guides/scrape-google-play-app-store-ratings-reviews/": {
+  "date": "2026-10-23",
+  "hash": "a5d4cd988ba9c79d"
  },
  "guides/sec-form-d-startup-funding-data/": {
   "date": "2026-10-22",
@@ -196,7 +248,7 @@
   "hash": "e160a7983e74187e"
  },
  "guides/youtube-data-official-api/": {
-  "date": "2026-10-22",
-  "hash": "ac9784d3a2f9526b"
+  "date": "2026-10-23",
+  "hash": "6ea96a7934af1cee"
  }
 }

@@ -1,0 +1,107 @@
+{
+  "slug": "extract-structured-data-from-website-with-ai",
+  "category": "documents-ai",
+  "title": "How to Extract Structured Data From Any Website With AI (No Selectors)",
+  "metaTitle": "Extract Structured Data From Any Website With AI",
+  "metaDescription": "Describe the fields you want in plain English or a JSON schema and get clean JSON per page or per item: products, prices, jobs, contacts. Token costs capped.",
+  "actor": "ai-web-extractor",
+  "alsoActors": ["any-url-to-markdown"],
+  "summary": "Give AI Web Extractor a list of URLs and a plain-English instruction, optionally with a field list or JSON schema. Each page is fetched, cleaned to compact Markdown and sent to a low-cost LLM in JSON mode; you get one JSON object per page, or one row per item in list mode. Token spend is capped by maxLlmCostUsd.",
+  "intro": [
+    "Classic scrapers break when a site changes its layout, because they depend on CSS selectors or XPath tied to the page structure. For a handful of pages on many different sites (supplier product pages, event listings, company \"about\" pages, job boards) writing and maintaining a selector set per site is not worth it.",
+    "An LLM can read the page the way a person does and fill in the fields you ask for. [AI Web Extractor](actor:ai-web-extractor) handles the plumbing around that: it fetches each page, strips navigation, scripts and cookie banners, converts it to compact Markdown, trims it to a token budget, calls the model in JSON mode, then validates the reply and repairs it if it was cut off. The default model is Google Gemini 2.5 Flash Lite through Apify's OpenRouter integration; any OpenRouter model id works.",
+    "This guide covers writing an instruction that extracts reliably, using a schema, list mode for catalogues, crawling one site, and keeping the two parts of the bill under control. Be clear on the trade-off: AI extraction is flexible but not deterministic, so check what matters."
+  ],
+  "steps": [
+    {
+      "name": "Start with one page and a precise instruction",
+      "text": "Put one URL in `startUrls` and describe exactly what you want in `instruction`, including formats: \"Extract the product name, the price as a number without currency sign, the currency code and whether it is in stock (true/false).\" The model is told to use only what is on the page and return null for anything missing. Turn on `includeMarkdown` for the first runs so you can see the text the model actually received."
+    },
+    {
+      "name": "Pin the shape with a schema",
+      "text": "For stable columns, add `schema`. The simple form is a map of field names to descriptions. A full JSON Schema also works and is passed to the model as a structured-output schema, which makes types more reliable. Field names in the schema become the keys of `data` in every row.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"startUrls\": [{ \"url\": \"https://books.toscrape.com/\" }],\n  \"instruction\": \"List every book on the page with its title, price and star rating.\",\n  \"outputMode\": \"list\",\n  \"schema\": {\n    \"title\": \"book title\",\n    \"price\": \"number, no currency sign\",\n    \"currency\": \"ISO currency code\",\n    \"rating\": \"integer 1-5\"\n  },\n  \"maxPages\": 5,\n  \"maxLlmCostUsd\": 0.05\n}"
+      }
+    },
+    {
+      "name": "Use list mode for listings and catalogues",
+      "text": "Set `outputMode` to `list` when one page holds many items: a product grid, search results, a job board, a directory. The schema then describes one item, and each item becomes its own row with `itemIndex`. A list page is still charged once by the actor, however many rows it yields. A list of 50 items needs roughly 1,500 to 3,000 output tokens, so raise `maxOutputTokens` if rows say `truncated: true`."
+    },
+    {
+      "name": "Crawl one site, narrowly",
+      "text": "To follow links from the start pages, set `maxCrawlDepth` to 1 or 2. The crawl stays on the same host. Use `includeGlobs` such as `https://example.com/products/**` and `excludeGlobs` such as `**/cart**` to keep it on the pages you want, and `maxPages` to stop after a number of successfully extracted pages."
+    },
+    {
+      "name": "Set both cost limits",
+      "text": "There are two lines on the bill. The actor's own fee is $0.003 per extracted page and is limited by the run's maximum total charge. The AI tokens are charged separately to your Apify account by Apify's OpenRouter actor at OpenRouter's rates, ten times that on Apify's free plan, and are limited by `maxLlmCostUsd` (default $0.10): before each page the worst-case token cost is reserved, and the run stops cleanly before passing the cap. Lower `maxInputTokens` (default 8,000) to make long pages cheaper; turn off `includeLinks` if you do not need URLs back."
+    },
+    {
+      "name": "Validate the results",
+      "text": "Every row has `inputTokens`, `outputTokens` and `llmCostUsd`, so you can see what each page cost. Spot-check a sample against the pages, and add rules in your own code for fields that matter (price is a positive number, URL is absolute). If a model keeps getting a field wrong, make the instruction more specific or try a stronger model such as google/gemini-2.5-flash on that site only.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/ai-web-extractor\").call(run_input={\n    \"startUrls\": [{\"url\": \"https://books.toscrape.com/\"}],\n    \"instruction\": \"List every book with title and price as a number.\",\n    \"outputMode\": \"list\",\n    \"schema\": {\"title\": \"book title\", \"price\": \"number\"},\n    \"maxLlmCostUsd\": 0.05,\n})\nrows = list(client.dataset(run[\"defaultDatasetId\"]).iterate_items())\nitems = [r[\"data\"] for r in rows if r.get(\"data\")]\nbad = [i for i in items if not isinstance(i.get(\"price\"), (int, float)) or i[\"price\"] <= 0]\nprint(len(items), \"items,\", len(bad), \"need review\")\nprint(\"token cost $\", round(sum(r.get(\"llmCostUsd\") or 0 for r in rows), 5))\n"
+      }
+    }
+  ],
+  "sampleInput": {
+    "startUrls": [{ "url": "https://books.toscrape.com/" }],
+    "instruction": "List every book on the page with its title and price.",
+    "outputMode": "list",
+    "schema": { "title": "book title", "price": "price as shown" },
+    "maxPages": 3,
+    "maxLlmCostUsd": 0.05
+  },
+  "outputFields": [
+    ["`url`", "The page the data came from."],
+    ["`data`", "The extracted JSON object, with the keys from your schema or instruction."],
+    ["`itemIndex`, `itemCount`", "List mode: position of the item on the page and how many items it had."],
+    ["`model`", "The OpenRouter model that answered."],
+    ["`inputTokens`, `outputTokens`, `llmCostUsd`", "Token use and the estimated token charge on your Apify account for that page."],
+    ["`truncated`", "true when the page was cut to maxInputTokens or the reply hit maxOutputTokens."],
+    ["`redactedEmails`", "How many personal-looking email addresses were replaced (personal-data protection is on by default)."]
+  ],
+  "sampleOutputNote": "Rows from the actor's README; in list mode the token figures sit on the first item of each page:",
+  "costExample": "The actor charges $0.003 per page it extracts successfully, so 1,000 product pages is $3.00; failed and robots-blocked pages are free. On top of that, the AI tokens with the default model are typically $0.0002 to $0.0005 per page on a paid Apify plan (about $0.30 for 1,000 pages), and about ten times that on the free plan. Both parts are shown per row and in the run summary.",
+  "tips": [
+    "Ask for units and formats explicitly (\"number, no currency sign\", \"ISO date\"). Vague instructions produce strings like \"£51.77\" in one row and 51.77 in the next.",
+    "Turn on `onlyMainContent` for articles and blog posts; leave it off for product pages and listings, where the data is often outside the main article block.",
+    "For product pages with structured data in the HTML, AI extraction is still convenient, but a deterministic parser will be cheaper at large volumes.",
+    "Pages that are empty without JavaScript return a free `needs-javascript` status row. If you only need clean text for your own pipeline, [Any URL to Markdown](actor:any-url-to-markdown) skips the model entirely."
+  ],
+  "limitations": [
+    "Pages are fetched as static HTML with no browser. JavaScript-only sites, logins, CAPTCHAs and bot walls are not supported, and the actor does not try to get around them.",
+    "LLMs can be wrong or miss items, especially on long pages cut by `maxInputTokens`. Check important data.",
+    "Token charges are separate from the actor's price and are not limited by the run's maximum total charge; use `maxLlmCostUsd`. Your Apify billing page is the authoritative figure.",
+    "Crawling is same-host only, up to depth 2."
+  ],
+  "responsibleUse": [
+    "robots.txt is respected by default and requests identify themselves as ActorForge-AIWebExtractor. Page text is treated as data and the model is told to ignore instructions inside pages, but no prompt-injection defence is perfect, so do not pipe extracted text straight into actions without checks.",
+    "By default the model is told not to return private individuals' contact details, and personal-looking emails are replaced (role mailboxes such as info@ are kept). Switch `allowPersonalData` on only if you have a lawful basis to process personal data."
+  ],
+  "faq": [
+    {
+      "q": "Do I need an OpenAI or OpenRouter API key?",
+      "a": "No. The actor calls Apify's own OpenRouter actor with your run's token, and the tokens are billed to your Apify account at OpenRouter's rates."
+    },
+    {
+      "q": "Which model should I use?",
+      "a": "Start with the default google/gemini-2.5-flash-lite, which is cheap and good at extraction. Move a difficult site to a stronger model such as google/gemini-2.5-flash or openai/gpt-4o-mini if accuracy is not good enough."
+    },
+    {
+      "q": "What happens if my Apify account runs out of credit for tokens?",
+      "a": "The run stops with one free status row explaining that the AI service was unavailable, and the run still finishes as succeeded."
+    },
+    {
+      "q": "Is this cheaper than a browser-based AI scraper?",
+      "a": "Usually, because there is no browser to run and pages are trimmed before they reach the model. The trade-off is that it cannot read pages that need JavaScript."
+    }
+  ],
+  "related": [
+    "convert-any-url-to-markdown-for-llm",
+    "local-business-leads-with-emails",
+    "export-shopify-store-product-data"
+  ]
+}

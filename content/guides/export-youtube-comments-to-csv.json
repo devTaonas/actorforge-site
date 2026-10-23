@@ -1,0 +1,160 @@
+{
+  "slug": "export-youtube-comments-to-csv",
+  "category": "video-social",
+  "title": "How to Export YouTube Comments to CSV (Official API, With Replies)",
+  "metaTitle": "Export YouTube Comments to CSV With the Official API",
+  "metaDescription": "Export comments and replies from any YouTube video to CSV or JSON through the official Data API v3 with your own free key. Usernames stripped, replies linked.",
+  "actor": "youtube-comments-api",
+  "alsoActors": [
+    "youtube-api-scraper"
+  ],
+  "summary": "Create a free YouTube Data API v3 key, paste it and your video URLs into YouTube Comments Scraper, choose newest or top comments and whether to include replies, then download the dataset as CSV. Each comment is one row with text, likes, reply count and dates; replies point to their parent with parentId.",
+  "intro": [
+    "YouTube has no export button for comments, not even for your own videos. The usual options are a browser extension, a web tool with a small free cap, or the YouTube Data API, which is reliable and free up to a daily quota but means writing code to page through comment threads and fetch long reply chains.",
+    "[YouTube Comments Scraper](actor:youtube-comments-api) is that API client, already written. You bring your own key, so the data comes from YouTube's official API under your own quota: nothing is scraped from youtube.com and there are no proxies or logins. The commenter's display name, channel id and avatar are removed from every row, which is what you want for sentiment analysis, product feedback and LLM datasets, where the text matters and the identities do not.",
+    "This guide goes from an empty Google Cloud project to a CSV of comments and replies, and covers quota, sorting, keyword filtering and analysis. ActorForge is not affiliated with YouTube or Google; the [official API guide](guide:youtube-data-official-api) covers the other YouTube modes."
+  ],
+  "steps": [
+    {
+      "name": "Create a free YouTube Data API v3 key",
+      "text": "In the Google Cloud Console, create a project, open APIs & Services → Library, enable YouTube Data API v3, then go to Credentials → Create credentials → API key. The key starts with AIza. No billing account is needed. If you restrict the key, allow YouTube Data API v3 only and do not add IP or referrer restrictions, because Apify runs on changing IPs. Paste the key into the actor's API key field; it is a secret input, stored encrypted and never written to the output."
+    },
+    {
+      "name": "Add the videos",
+      "text": "Put the videos in `videoUrls`. Watch URLs, youtu.be links, Shorts, live and embed URLs and bare 11-character video ids all work, and duplicates are removed. Comments on Shorts are fetched the same way as on regular videos."
+    },
+    {
+      "name": "Choose order, volume and replies",
+      "text": "`commentOrder` is `time` (newest first) by default; use `relevance` for YouTube's top comments. `maxCommentsPerVideo` caps top-level comments per video (100 by default). Turn on `includeReplies` to get replies as their own rows, limited by `maxRepliesPerComment` (20 by default) so one huge thread cannot use up the run. Use `searchTerms` to have YouTube return only comments containing a word, for example a product name.",
+      "code": {
+        "lang": "json",
+        "code": "{\n  \"apiKey\": \"AIza...your key...\",\n  \"mode\": \"comments\",\n  \"videoUrls\": [\n    \"https://www.youtube.com/watch?v=jNQXAC9IVRw\",\n    \"https://youtu.be/dQw4w9WgXcQ\"\n  ],\n  \"commentOrder\": \"relevance\",\n  \"maxCommentsPerVideo\": 500,\n  \"includeReplies\": true,\n  \"maxRepliesPerComment\": 10\n}"
+      }
+    },
+    {
+      "name": "Download the comments as CSV",
+      "text": "When the run finishes, open the dataset and export it as CSV, Excel or JSON, or use the API. Pick the columns you need with `fields` so the spreadsheet stays tidy. Comment text can contain line breaks and commas; the CSV export quotes them correctly, but open the file with an import dialog (Data → From Text/CSV in Excel) rather than double-clicking if accented characters look wrong.",
+      "code": {
+        "lang": "bash",
+        "code": "DATASET_ID=\"your-dataset-id\"\ncurl -s -H \"Authorization: Bearer $APIFY_TOKEN\" \\\n  \"https://api.apify.com/v2/datasets/$DATASET_ID/items?format=csv&clean=true&fields=videoId,commentId,parentId,isReply,text,likeCount,replyCount,publishedAt,updatedAt\" \\\n  -o youtube_comments.csv\n"
+      }
+    },
+    {
+      "name": "Analyse the comments",
+      "text": "Load the rows into pandas. Top-level comments have `isReply` false; replies carry the `parentId` of the comment they answer, so you can rebuild threads. A first pass that works well: most-liked comments, comment volume per day after publication, and a keyword count for the themes you care about. For sentiment or topic labelling, send the text column to an LLM in batches.",
+      "code": {
+        "lang": "python",
+        "code": "import os\nimport pandas as pd\nfrom apify_client import ApifyClient\n\nclient = ApifyClient(os.environ[\"APIFY_TOKEN\"])\nrun = client.actor(\"actor-forge/youtube-comments-api\").call(run_input={\n    \"apiKey\": os.environ[\"YOUTUBE_API_KEY\"],\n    \"mode\": \"comments\",\n    \"videoUrls\": [\"https://www.youtube.com/watch?v=jNQXAC9IVRw\"],\n    \"maxCommentsPerVideo\": 1000,\n    \"includeReplies\": True,\n})\ndf = pd.DataFrame(client.dataset(run[\"defaultDatasetId\"]).list_items().items)\ndf = df[df[\"type\"] == \"comment\"]\n\ntop = df[~df[\"isReply\"]].nlargest(10, \"likeCount\")[[\"likeCount\", \"text\"]]\nprint(top.to_string())\n\ndf[\"day\"] = pd.to_datetime(df[\"publishedAt\"]).dt.date\nprint(df.groupby(\"day\").size().tail(14))\ndf.to_csv(\"comments.csv\", index=False)\n"
+      }
+    }
+  ],
+  "sampleInput": {
+    "apiKey": "AIzaSy...your-own-key",
+    "mode": "comments",
+    "videoUrls": [
+      "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+    ],
+    "maxCommentsPerVideo": 100,
+    "includeReplies": true,
+    "maxRepliesPerComment": 20,
+    "commentOrder": "time"
+  },
+  "sampleOutputNote": "Comment and reply rows from the actor's README. Replace the apiKey value with your own key before running:",
+  "outputFields": [
+    [
+      "`commentId`",
+      "YouTube's id for the comment or reply."
+    ],
+    [
+      "`videoId`, `videoUrl`",
+      "The video the comment belongs to."
+    ],
+    [
+      "`isReply`, `parentId`",
+      "Whether the row is a reply, and the id of the top-level comment it answers."
+    ],
+    [
+      "`text`",
+      "The comment as written, including any @mentions the commenter typed."
+    ],
+    [
+      "`likeCount`, `replyCount`",
+      "Likes on the comment, and the number of replies on a top-level comment."
+    ],
+    [
+      "`publishedAt`, `updatedAt`",
+      "When the comment was posted and last edited (ISO timestamps)."
+    ]
+  ],
+  "costExample": "Each comment or reply row is $0.0005, so 10,000 comments cost $5.00 and 1,000 comments $0.50. There is no extra charge for the API calls; they use your own free quota. Videos with comments turned off, private or deleted videos and invalid ids return free error rows.",
+  "comparison": {
+    "title": "Price compared with other YouTube comment tools",
+    "columns": [
+      "Tool",
+      "Price for 10,000 comments",
+      "How it gets the data"
+    ],
+    "rows": [
+      [
+        "ActorForge YouTube Comments Scraper",
+        "$5.00",
+        "Official Data API v3 with your own free key"
+      ],
+      [
+        "streamers/youtube-comments-scraper (Apify)",
+        "about $20",
+        "Scrapes youtube.com, no key needed"
+      ],
+      [
+        "logiover/youtube-comments-scraper (Apify)",
+        "from about $35",
+        "No key needed, per its listing"
+      ],
+      [
+        "Comment Picker (web tool)",
+        "Premium plan",
+        "Free plan capped at 50 comments per export"
+      ]
+    ],
+    "note": "Prices are from the tools' own listings on 2026-10-23 and may have changed. The scraper-based actors do not need a Google Cloud key, which is less setup, and they may return commenter names, which ours never does. Writing your own script against the API is free apart from your time."
+  },
+  "tips": [
+    "Quota: comment threads cost 1 unit per 100 comments, so the free 10,000 units a day cover roughly a million comments. Quota resets at midnight Pacific Time.",
+    "`maxCommentsPerVideo` counts top-level comments only. Replies are capped separately, per thread, by `maxRepliesPerComment` (0 turns them off).",
+    "For a channel-wide study, first get the channel's video ids with the [YouTube Channel Scraper](actor:youtube-channel-api), then feed them to this actor.",
+    "Comment counts on the video page include replies and may lag; expect your row count to differ from the number YouTube shows."
+  ],
+  "limitations": [
+    "You need your own YouTube Data API v3 key. Without one the run stops immediately with instructions and nothing is charged.",
+    "Author names, channel ids, avatars and channel URLs are never returned. If you need a list of commenters, this actor will not give you one.",
+    "The API does not say whether a comment is pinned or hearted, and like counts the creator hides come back as null.",
+    "If your key runs out of quota (403 quotaExceeded), the run stops cleanly, keeps the rows already delivered and does not charge for the failed call."
+  ],
+  "responsibleUse": [
+    "YouTube's Developer Policies require stored API data to be refreshed or deleted at least every 30 days. Set a retention period on the datasets or re-run to refresh them. By using the actor you also accept the YouTube Terms of Service.",
+    "Comment text can still contain personal details that people typed into it. If you publish or share a dataset, quote in aggregate and remove anything that identifies a private person."
+  ],
+  "faq": [
+    {
+      "q": "Do I need to pay Google for the API key?",
+      "a": "No. A key from a Google Cloud project without billing gets 10,000 free quota units a day, which is about a million comments with this actor."
+    },
+    {
+      "q": "Can I export comments from someone else's video?",
+      "a": "Yes, for any public video with comments turned on. The API returns public comments only; held-for-review and deleted comments are not included."
+    },
+    {
+      "q": "Why are there no usernames in the export?",
+      "a": "They are stripped on purpose so the dataset is about what was said, not who said it. That keeps analysis and sharing simpler under privacy rules."
+    },
+    {
+      "q": "Does it work for YouTube Shorts?",
+      "a": "Yes. Paste the Shorts URL or its video id; comments are fetched the same way."
+    }
+  ],
+  "related": [
+    "youtube-data-official-api",
+    "google-youtube-autocomplete-keyword-research",
+    "monitor-brand-mentions-hacker-news-bluesky-github"
+  ]
+}
