@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website Crawler — Site Content to Markdown for AI &amp; RAG</title>
+<meta name="description" content="Crawl a whole website and extract the main content of every page as clean Markdown and plain text for chatbots, RAG knowledge bases and AI agents.…">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/website-crawler/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Website Crawler — Site Content to Markdown for AI &amp; RAG">
+<meta property="og:description" content="Crawl a whole website and extract the main content of every page as clean Markdown and plain text for chatbots, RAG knowledge bases and AI agents.…">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/website-crawler/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Website Crawler — Site Content to Markdown for AI & RAG","description":"Crawl a whole website and extract the main content of every page as clean Markdown and plain text for chatbots, RAG knowledge bases and AI agents.…","applicationCategory":"BusinessApplication","applicationSubCategory":"SEO & Marketing Intelligence","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/website-crawler/","sameAs":"https://apify.com/actor-forge/website-crawler","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Page result","description":"Charged per page converted and delivered (all output formats included)","price":"0.001","priceCurrency":"USD","url":"https://apify.com/actor-forge/website-crawler"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"SEO & Marketing Intelligence","item":"https://devtaonas.github.io/actorforge-site/categories/seo-marketing/"},{"@type":"ListItem","position":3,"name":"Website Crawler — Site Content to Markdown for AI & RAG","item":"https://devtaonas.github.io/actorforge-site/actors/website-crawler/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a></li><li aria-current="page">Website Crawler — Site Content to Markdown for AI &amp; RAG</li></ol></nav><h1>Website Crawler — Site Content to Markdown for AI &amp; RAG</h1><p>Crawl a whole website and extract the main content of every page as clean Markdown and plain text for chatbots, RAG knowledge bases and AI agents. Sitemap-aware, skips menus, footers and thin pages. Static HTML, no browser. Flat $1 per 1,000 pages, no compute bill.</p><a class="btn" href="https://apify.com/actor-forge/website-crawler" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p><strong>Crawl a whole website into your chatbot, RAG pipeline or AI knowledge base.</strong> Give it a start URL and it crawls the site: it follows links <strong>and the sitemap</strong>, stays on the site and under the path you gave, and returns one row per page with the <strong>main content only, as Markdown and plain text</strong>. Menus, sidebars, footers, cookie banners and buttons are removed with Firefox Reader View's algorithm, and thin pages under 20 words (tag lists, empty archives, pagination) are skipped and not charged. Each row also has the title, description, language, author, publish date, canonical URL and word count. Typical jobs: <strong>build a chatbot or customer-support knowledge base</strong> from your docs and help center, load a site into a <strong>vector database</strong> (Pinecone, Qdrant, Weaviate) for RAG, power <strong>site search</strong>, collect <strong>LLM training data</strong>, or give AI agents a whole documentation site as context. Defaults are set for whole-site crawls: up to 200 pages, sitemap on, Markdown plus text. <strong>It fetches static HTML with no browser</strong>, which is fast and cheap and works for most documentation, blogs, help centers and marketing sites; pages that only render with JavaScript are detected, reported and not charged. <strong>Flat, predictable pricing: $1 per 1,000 pages, with no compute bill on top.</strong> Duplicate pages, non-HTML files, JavaScript-only pages and pages blocked by robots.txt are never charged.</p><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "startUrls": [
+    "https://docs.apify.com/platform/actors"
+  ],
+  "maxPages": 5,
+  "maxDepth": 1
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>startUrls</code></td><td>array</td><td>yes</td><td></td><td class="cut">Where to start crawling. The crawl stays on the same site and under each URL's path: https://docs.example.com/guides crawls only the guides; a bare domain crawls the whole site. Use include globs to widen or narrow it.</td></tr><tr><td><code>maxPages</code></td><td>integer</td><td>no</td><td><code>200</code></td><td class="cut">Stop after converting this many pages (across all start URLs). To convert only the start URLs themselves, set Max link depth to 0.</td></tr><tr><td><code>maxDepth</code></td><td>integer</td><td>no</td><td><code>10</code></td><td class="cut">How many links away from a start URL to follow. 0 = only the start URLs themselves (no crawling, no sitemaps).</td></tr><tr><td><code>includeSubdomains</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Also crawl subdomains of the start site (e.g. blog.example.com when starting at example.com). Pages on another host are only reached when you also set include globs that cover them, e.g. https://*.example.com/.</td></tr><tr><td><code>includeGlobs</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Only crawl URLs matching one of these, e.g. https://example.com/blog/ ( = anything, * = anything except /). Replaces the default 'stay under the start path' rule.</td></tr><tr><td><code>excludeGlobs</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Never crawl URLs matching these, e.g. /tag/ or /login*.</td></tr><tr><td><code>useSitemap</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Also discover pages from the site's sitemap.xml (and sitemaps listed in robots.txt). Finds pages that links miss.</td></tr><tr><td><code>onlyMainContent</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Keep just the article or main content (Firefox Reader View's algorithm), dropping menus, sidebars, footers and banners. Turn off to keep the whole page body (navigation is still removed).</td></tr><tr><td><code>removeSelectors</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Extra elements to strip before conversion, e.g. .newsletter-signup or #comments.</td></tr><tr><td><code>outputFormats</code></td><td>array</td><td>no</td><td><code>["markdown", "text"]</code></td><td class="cut">Which content fields to return for each page. Same price whatever you pick.</td></tr><tr><td><code>includeLinks</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Add the list of absolute links found on each page.</td></tr><tr><td><code>minWords</code></td><td>integer</td><td>no</td><td><code>20</code></td><td class="cut">Skip thin pages (tag lists, empty archives, pagination) with fewer words than this. Default 20. Skipped pages are not charged. Set 0 to keep every page.</td></tr><tr><td><code>respectRobotsTxt</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Skip pages that the site's robots.txt disallows for crawlers.</td></tr></tbody></table></div></details><h2>Output example</h2><p>Sample rows from a real run (long text shortened). Export as JSON, CSV, Excel or via the API.</p><div class="tablewrap"><table><thead><tr><th scope="col">url</th><th scope="col">title</th><th scope="col">wordCount</th><th scope="col">language</th><th scope="col">markdown</th></tr></thead><tbody><tr><td class="cut">https://docs.apify.com/actors/development</td><td class="cut">Actor development - Platform - Apify Documentation</td><td class="cut">412</td><td class="cut">en</td><td class="cut">## Actor development\n\nActors are serverless programs…</td></tr><tr><td class="cut">https://simonwillison.net/2024/Dec/31/llms-in-2024/</td><td class="cut">Things we learned about LLMs in 2024</td><td class="cut">7262</td><td class="cut">en-gb</td><td class="cut">31st December 2024\n\nA _lot_ has happened in the world of Large Language Models…</td></tr><tr><td class="cut">https://en.wikipedia.org/wiki/Retrieval-augmented_generation</td><td class="cut">Retrieval-augmented generation - Wikipedia</td><td class="cut">2382</td><td class="cut">en</td><td class="cut">Retrieval-augmented generation (RAG) is a technique that enables large language models…</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Page result</td><td class="cut">Charged per page converted and delivered (all output formats included)</td><td>$0.001</td><td>$1</td><td class="cut">100 pages = $0.10; a 1,000-page documentation site = $1.00</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 1 GB (the default) = $0.00005; at 4 GB = $0.0002</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try Website Crawler on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/website-crawler" rel="noopener">Run on Apify →</a></div><h2>Limits and honest notes</h2><ul><li>Static HTML only: pages are fetched without a browser. Single-page apps whose content is rendered only by JavaScript are detected, reported and not charged; use a browser-based crawler for those.</li><li>The crawl stays on the start URL's host and under its path, unless you set include globs. To cover subdomains or both the www and bare domain, add include globs such as https://*.example.com/**.</li><li>Pages disallowed by robots.txt are skipped by default. If a site's robots.txt can't be fetched (HTTP 5xx or a network error, after one retry), the whole site is skipped (RFC 9309) and its start URL is reported as skipped, not charged. Login-protected content is not supported. Some sites block datacenter IPs; those start URLs are reported with their HTTP error and not charged.</li><li>Duplicates are removed by normalised URL (tracking parameters and fragments ignored), redirect target and identical content, and are never charged twice.</li><li>Very large sites: results stream as they are crawled, and runs resume after a platform migration without re-charging pages already delivered.</li><li>Respects your run budget: set a maximum total charge and the crawl stops cleanly at the cap.</li><li>This is the Website to Markdown crawler with defaults for whole-site knowledge-base crawls (Markdown and text, 200 pages, 20-word minimum). Every option can be changed per run.</li></ul><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~website-crawler/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"startUrls": ["https://docs.apify.com/platform/actors"], "maxPages": 5, "maxDepth": 1}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "startUrls": [
+    "https://docs.apify.com/platform/actors"
+  ],
+  "maxPages": 5,
+  "maxDepth": 1
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~website-crawler/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "startUrls": [
+        "https://docs.apify.com/platform/actors"
+    ],
+    "maxPages": 5,
+    "maxDepth": 1
+}
+
+run = client.actor("actor-forge/website-crawler").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/ads-transparency/">Google Ads Transparency Scraper — Competitor Ads &amp; Monitoring</a></h3><p>Scrape competitor ads from the Google Ads Transparency Center by domain, advertiser name or ID: format, first/last shown, regions, impressions, ad…</p><span class="price">$0.60 per 1,000 · ad result</span></div><div class="card"><h3><a href="../../actors/bluesky-posts-search/">Bluesky Posts Search - Keyword &amp; Hashtag Posts, No Login</a></h3><p>Search Bluesky posts by keyword, phrase or hashtag without an account or API key: text, link, author handle, time, likes, replies, reposts, language…</p><span class="price">$0.30 per 1,000 · post</span></div><div class="card"><h3><a href="../../actors/dev-community-mentions/">Brand Mentions Monitor: Hacker News, Bluesky, GitHub, Lemmy</a></h3><p>Find public mentions of your brand, product or keyword on Hacker News, Bluesky, Lemmy, Mastodon, GitHub issues and DEV in one run: text, link…</p><span class="price">$0.40 per 1,000 · mention</span></div><div class="card"><h3><a href="../../actors/google-ads-scraper/">Google Ads Scraper — Ads Transparency by Domain or Advertiser</a></h3><p>Google Ads scraper for competitor research: every Search, YouTube, Display and Shopping ad a domain or advertiser runs, read from the public Google…</p><span class="price">$0.60 per 1,000 · ad result</span></div></div><div class="cta"><p><strong>Try Website Crawler on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/website-crawler" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/seo-marketing/">More SEO &amp; Marketing Intelligence tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

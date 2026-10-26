@@ -1,179 +1,219 @@
 {
  "": {
-  "date": "2026-10-23",
-  "hash": "bb7383029c711f9f"
+  "date": "2026-10-26",
+  "hash": "1dfd1804994c11a9"
  },
  "actors/": {
-  "date": "2026-10-23",
-  "hash": "a972060ca1b5a4f1"
+  "date": "2026-10-26",
+  "hash": "114bf08bda0a2eb2"
  },
  "actors/ads-transparency/": {
-  "date": "2026-10-22",
-  "hash": "0dd551b058ce82fb"
+  "date": "2026-10-26",
+  "hash": "7464e02265f7d931"
  },
  "actors/ai-web-extractor/": {
-  "date": "2026-10-23",
-  "hash": "0958b2ea0c3ed9bf"
+  "date": "2026-10-26",
+  "hash": "9944d6b911556a85"
  },
  "actors/any-url-to-markdown/": {
-  "date": "2026-10-23",
-  "hash": "d13d3a4930bf42b6"
+  "date": "2026-10-26",
+  "hash": "93c66bca8088e8ac"
  },
  "actors/app-store-scraper/": {
-  "date": "2026-10-23",
-  "hash": "73af3bdacbb4933d"
+  "date": "2026-10-26",
+  "hash": "f7720ed1f6ff5699"
  },
  "actors/bilibili-scraper/": {
-  "date": "2026-10-22",
-  "hash": "6889a0c2efee35e3"
+  "date": "2026-10-26",
+  "hash": "b9392ef89476c3e7"
+ },
+ "actors/bluesky-posts-search/": {
+  "date": "2026-10-26",
+  "hash": "c357365ac8b4d9c4"
  },
  "actors/business-leads-with-emails/": {
-  "date": "2026-10-23",
-  "hash": "3eaaf6cea200693a"
+  "date": "2026-10-26",
+  "hash": "6764af7be7261b45"
  },
  "actors/business-places-data/": {
-  "date": "2026-10-23",
-  "hash": "e2725498d68239e1"
+  "date": "2026-10-26",
+  "hash": "5e83c419ee09a4c4"
+ },
+ "actors/career-page-jobs/": {
+  "date": "2026-10-26",
+  "hash": "30c8f29c92594a37"
  },
  "actors/career-site-jobs/": {
-  "date": "2026-10-23",
-  "hash": "41dee148d53bef8a"
+  "date": "2026-10-26",
+  "hash": "ed7a89a72be5a6b5"
  },
  "actors/china-trending-topics/": {
-  "date": "2026-10-22",
-  "hash": "acf6c65d8189a13a"
+  "date": "2026-10-26",
+  "hash": "06bcd2db9551deb9"
+ },
+ "actors/company-registry-lookup/": {
+  "date": "2026-10-26",
+  "hash": "46df1d5a75971035"
+ },
+ "actors/contact-details-scraper/": {
+  "date": "2026-10-26",
+  "hash": "6b0aa52458e9df8d"
  },
  "actors/dev-community-mentions/": {
-  "date": "2026-10-23",
-  "hash": "b85df16dc3ccb56b"
+  "date": "2026-10-26",
+  "hash": "1e9e838bd58f4286"
+ },
+ "actors/domain-enrichment/": {
+  "date": "2026-10-26",
+  "hash": "f8c21e162b78f3d9"
  },
  "actors/douyin-hot-search/": {
-  "date": "2026-10-22",
-  "hash": "440579a367dfdafe"
+  "date": "2026-10-26",
+  "hash": "e631a661ef1df20f"
  },
  "actors/facebook-pages-data/": {
-  "date": "2026-10-22",
-  "hash": "07a355f443ff14d4"
+  "date": "2026-10-26",
+  "hash": "7d76b474d00b0709"
  },
  "actors/google-ads-scraper/": {
-  "date": "2026-10-23",
-  "hash": "0383d494d99a3b38"
+  "date": "2026-10-26",
+  "hash": "86992f75fb76def9"
+ },
+ "actors/google-play-scraper/": {
+  "date": "2026-10-26",
+  "hash": "f3a6fa9523f8eca9"
  },
  "actors/google-trends/": {
-  "date": "2026-10-23",
-  "hash": "c2397c9adcd22562"
+  "date": "2026-10-26",
+  "hash": "417195afc5a97b3c"
  },
  "actors/image-to-text-ocr/": {
-  "date": "2026-10-22",
-  "hash": "08cbadebfa1bc96f"
+  "date": "2026-10-26",
+  "hash": "e76804985368343b"
  },
  "actors/keyword-suggestions/": {
-  "date": "2026-10-23",
-  "hash": "6dc15d5a83386c30"
+  "date": "2026-10-26",
+  "hash": "2e8347c1aa1d1f32"
  },
  "actors/news-search/": {
-  "date": "2026-10-23",
-  "hash": "0664a0b40676bb77"
+  "date": "2026-10-26",
+  "hash": "f0db9e6a715acd21"
  },
  "actors/ocr-to-text/": {
-  "date": "2026-10-23",
-  "hash": "75b2a41e99b48e99"
+  "date": "2026-10-26",
+  "hash": "3fc7c969f3f03d7b"
  },
  "actors/pdf-ocr/": {
-  "date": "2026-10-23",
-  "hash": "b3ac1d2abc51b014"
+  "date": "2026-10-26",
+  "hash": "44dcbd4c70b4ed6b"
+ },
+ "actors/public-tenders/": {
+  "date": "2026-10-26",
+  "hash": "eaddcfadc4023e09"
  },
  "actors/seo-audit/": {
-  "date": "2026-10-22",
-  "hash": "448733173b682e34"
+  "date": "2026-10-26",
+  "hash": "1533ee3f152f6336"
  },
  "actors/shopify-store-scraper/": {
-  "date": "2026-10-22",
-  "hash": "a55a895a8ce0c242"
+  "date": "2026-10-26",
+  "hash": "ba38911248ef201e"
  },
  "actors/startup-funding-rounds/": {
-  "date": "2026-10-22",
-  "hash": "cebfc60c017c4a51"
+  "date": "2026-10-26",
+  "hash": "6e441dc3502b2b5e"
  },
  "actors/uk-companies-house-enrichment/": {
-  "date": "2026-10-22",
-  "hash": "1d2e9c08b4132cad"
+  "date": "2026-10-26",
+  "hash": "516b66996c64aeec"
  },
  "actors/uk-planning-applications/": {
-  "date": "2026-10-22",
-  "hash": "1544d2d7d4d50bcd"
+  "date": "2026-10-26",
+  "hash": "7f339e77caa61996"
  },
  "actors/uspto-trademark-search/": {
-  "date": "2026-10-22",
-  "hash": "164ddcc00fac3a0d"
+  "date": "2026-10-26",
+  "hash": "a2502c04d51df99b"
  },
  "actors/wayback-snapshots/": {
-  "date": "2026-10-22",
-  "hash": "c3dd39873c4c6a40"
+  "date": "2026-10-26",
+  "hash": "2e0c6537aa0c034c"
+ },
+ "actors/web-fetch/": {
+  "date": "2026-10-26",
+  "hash": "6e7d99c503d6fe9d"
+ },
+ "actors/website-crawler/": {
+  "date": "2026-10-26",
+  "hash": "65bff2059e42a556"
  },
  "actors/weibo-hot-search/": {
-  "date": "2026-10-22",
-  "hash": "62ce6299a398eca0"
+  "date": "2026-10-26",
+  "hash": "7236e6bc8e95556e"
  },
  "actors/youtube-api-scraper/": {
-  "date": "2026-10-23",
-  "hash": "8c35e41e053ef867"
+  "date": "2026-10-26",
+  "hash": "faf892c30ba9e1d3"
  },
  "actors/youtube-channel-api/": {
-  "date": "2026-10-22",
-  "hash": "879dd71108136db2"
+  "date": "2026-10-26",
+  "hash": "f3f50dedcf612fb9"
  },
  "actors/youtube-comments-api/": {
-  "date": "2026-10-23",
-  "hash": "ce6145edc1d492aa"
+  "date": "2026-10-26",
+  "hash": "35cfab1773da3b5a"
  },
  "actors/youtube-search-api/": {
-  "date": "2026-10-22",
-  "hash": "57e5d7ca31e1afbd"
+  "date": "2026-10-26",
+  "hash": "8e421bb2ff67f85f"
+ },
+ "actors/youtube-shorts-api/": {
+  "date": "2026-10-26",
+  "hash": "244ef91485c23db1"
  },
  "categories/business-leads/": {
-  "date": "2026-10-23",
-  "hash": "d46c498927604032"
+  "date": "2026-10-26",
+  "hash": "a22dfde6aa0a4edd"
  },
  "categories/china-trends/": {
-  "date": "2026-10-22",
-  "hash": "b26a140474d45792"
+  "date": "2026-10-26",
+  "hash": "da30f26641639864"
  },
  "categories/documents-ai/": {
-  "date": "2026-10-23",
-  "hash": "01e23b01d4a5a0e5"
+  "date": "2026-10-26",
+  "hash": "0000e7d5c8937971"
  },
  "categories/ecommerce-apps/": {
-  "date": "2026-10-23",
-  "hash": "cb03ca906bc7afa5"
+  "date": "2026-10-26",
+  "hash": "df05ccda96e03196"
  },
  "categories/seo-marketing/": {
-  "date": "2026-10-23",
-  "hash": "9f8acfebb55d2e0b"
+  "date": "2026-10-26",
+  "hash": "ad8e4fb44f74831a"
  },
  "categories/video-social/": {
-  "date": "2026-10-23",
-  "hash": "12f75e7784191e5f"
+  "date": "2026-10-26",
+  "hash": "d0bb8a75da3c005f"
  },
  "guides/": {
   "date": "2026-10-23",
   "hash": "2b0ce973e0e953e9"
  },
  "guides/audit-every-url-in-sitemap-seo/": {
-  "date": "2026-10-23",
-  "hash": "bfaee484016665f3"
+  "date": "2026-10-26",
+  "hash": "4b178f912caec479"
  },
  "guides/business-leads-without-google-maps/": {
-  "date": "2026-10-23",
-  "hash": "954da2614bb27703"
+  "date": "2026-10-26",
+  "hash": "b19df22286ddcd26"
  },
  "guides/check-if-phrase-is-trademarked-uspto/": {
-  "date": "2026-10-22",
-  "hash": "79a1245ae3d88420"
+  "date": "2026-10-26",
+  "hash": "14f81cfe55187d20"
  },
  "guides/convert-any-url-to-markdown-for-llm/": {
-  "date": "2026-10-23",
-  "hash": "deab4cae228a0d5a"
+  "date": "2026-10-26",
+  "hash": "51bee40b58ea396a"
  },
  "guides/convert-pdf-to-markdown-for-rag/": {
   "date": "2026-10-23",
@@ -184,60 +224,60 @@
   "hash": "d508467054d7d542"
  },
  "guides/export-youtube-comments-to-csv/": {
-  "date": "2026-10-23",
-  "hash": "fa45d9468d85eab0"
+  "date": "2026-10-26",
+  "hash": "3e75496875f2ff1b"
  },
  "guides/extract-structured-data-from-website-with-ai/": {
-  "date": "2026-10-23",
-  "hash": "8041313da0567bf9"
+  "date": "2026-10-26",
+  "hash": "92d504e09e2b08ff"
  },
  "guides/extract-text-from-images-screenshots/": {
-  "date": "2026-10-22",
-  "hash": "5dbe0088744c6027"
+  "date": "2026-10-26",
+  "hash": "88dfb029e626aa7a"
  },
  "guides/find-company-job-board-ats/": {
-  "date": "2026-10-22",
-  "hash": "9c8361fbd3be12de"
+  "date": "2026-10-26",
+  "hash": "18eb3f9def7c5a89"
  },
  "guides/google-trends-trending-searches-by-country/": {
   "date": "2026-10-23",
   "hash": "b36a97a1e7e66c27"
  },
  "guides/google-youtube-autocomplete-keyword-research/": {
-  "date": "2026-10-23",
-  "hash": "868fccbf56dd0162"
+  "date": "2026-10-26",
+  "hash": "14edaa9ca0f7cfaa"
  },
  "guides/local-business-leads-with-emails/": {
-  "date": "2026-10-23",
-  "hash": "0e70df6c8a267afc"
+  "date": "2026-10-26",
+  "hash": "b8b14a52d93dafa0"
  },
  "guides/monitor-brand-mentions-hacker-news-bluesky-github/": {
-  "date": "2026-10-23",
-  "hash": "78d9628fdb5ab766"
+  "date": "2026-10-26",
+  "hash": "cc4c1e05b3984aed"
  },
  "guides/monitor-competitor-ads-google-ads-transparency/": {
-  "date": "2026-10-23",
-  "hash": "05a9c1e2f58247ac"
+  "date": "2026-10-26",
+  "hash": "41791f4ca48a5344"
  },
  "guides/news-monitoring-by-keyword-gdelt/": {
-  "date": "2026-10-23",
-  "hash": "ebdeb124e8fd6050"
+  "date": "2026-10-26",
+  "hash": "23b56534a66946a5"
  },
  "guides/ocr-scanned-pdf-to-text-api/": {
-  "date": "2026-10-22",
-  "hash": "de812b8e3fbd7f73"
+  "date": "2026-10-26",
+  "hash": "c673f30386f610ba"
  },
  "guides/scrape-google-play-app-store-ratings-reviews/": {
-  "date": "2026-10-23",
-  "hash": "a5d4cd988ba9c79d"
+  "date": "2026-10-26",
+  "hash": "106d7b06c6111671"
  },
  "guides/sec-form-d-startup-funding-data/": {
-  "date": "2026-10-22",
-  "hash": "5b35743a5892e53a"
+  "date": "2026-10-26",
+  "hash": "49d478783e7196f7"
  },
  "guides/uk-company-directors-companies-house-export/": {
-  "date": "2026-10-22",
-  "hash": "a854476a4c48fd82"
+  "date": "2026-10-26",
+  "hash": "97ca79e5992f06af"
  },
  "guides/uk-planning-applications-leads/": {
   "date": "2026-10-22",
@@ -248,7 +288,7 @@
   "hash": "e160a7983e74187e"
  },
  "guides/youtube-data-official-api/": {
-  "date": "2026-10-23",
-  "hash": "6ea96a7934af1cee"
+  "date": "2026-10-26",
+  "hash": "fe18c7b65365d714"
  }
 }
