@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Scraper — Download All Images from Any Website</title>
+<meta name="description" content="Scrape and download every image from the web pages and image URLs you list (not a Google Images search): img, srcset, lazy-loaded, CSS backgrounds, og:image.…">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/image-scraper/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Image Scraper — Download All Images from Any Website">
+<meta property="og:description" content="Scrape and download every image from the web pages and image URLs you list (not a Google Images search): img, srcset, lazy-loaded, CSS backgrounds, og:image.…">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/image-scraper/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Image Scraper — Download All Images from Any Website","description":"Scrape and download every image from the web pages and image URLs you list (not a Google Images search): img, srcset, lazy-loaded, CSS backgrounds, og:image.…","applicationCategory":"BusinessApplication","applicationSubCategory":"E-commerce & App Stores","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/image-scraper/","sameAs":"https://apify.com/actor-forge/image-scraper","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Image result","description":"Charged per image saved (metadata and ZIP included at no extra cost)","price":"0.003","priceCurrency":"USD","url":"https://apify.com/actor-forge/image-scraper"},{"@type":"Offer","name":"File downloaded","description":"Charged per file saved in Any files mode (type detection, SHA-256 and ZIP included)","price":"0.002","priceCurrency":"USD","url":"https://apify.com/actor-forge/image-scraper"},{"@type":"Offer","name":"Transfer 10mb","description":"Charged per started 10 MB of each file saved in Any files mode","price":"0.001","priceCurrency":"USD","url":"https://apify.com/actor-forge/image-scraper"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"E-commerce & App Stores","item":"https://devtaonas.github.io/actorforge-site/categories/ecommerce-apps/"},{"@type":"ListItem","position":3,"name":"Image Scraper — Download All Images from Any Website","item":"https://devtaonas.github.io/actorforge-site/actors/image-scraper/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a></li><li aria-current="page">Image Scraper — Download All Images from Any Website</li></ol></nav><h1>Image Scraper — Download All Images from Any Website</h1><p>Scrape and download every image from the web pages and image URLs you list (not a Google Images search): img, srcset, lazy-loaded, CSS backgrounds, og:image. Size and format filters, dedupe, ZIP, direct download links. $3 per 1,000 images.</p><a class="btn" href="https://apify.com/actor-forge/image-scraper" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p><strong>Scrape and download every image from the web pages and image URLs you list. This is not a Google Images search:</strong> you give it the pages or sites, and it collects their images. For each page it finds every image in the HTML: <code>&lt;img&gt;</code> tags, the <strong>largest size from srcset</strong> (one file per picture), lazy-loaded images (<code>data-src</code> and friends), <code>&lt;picture&gt;</code> sources, video posters, og:image / Twitter previews, favicons, linked full-size gallery images and <strong>CSS backgrounds</strong>. Direct image URLs are downloaded as they are. Each image is saved with a <strong>direct download link</strong>, its real <strong>format (sniffed from the file), width, height, file size, SHA-256, alt text and source page</strong>. Images narrower than 100 px (icons, spacers) and duplicates are skipped by default, and never charged; <strong>filter by width, height, file size or format</strong>, and optionally get everything as <strong>ZIP files</strong>. Use it for website migrations and backups, image datasets for machine learning, product images for e-commerce catalogues, SEO and alt-text audits, competitor creative research, or as an image tool for AI agents. You pay per image saved, not per URL: <strong>$3 per 1,000 images</strong>. Filtered, duplicate and failed images are never charged.</p><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "urls": [
+    "https://en.wikipedia.org/wiki/Lighthouse"
+  ],
+  "minWidth": 200,
+  "maxImages": 3
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>mode</code></td><td>string</td><td>no</td><td><code>"images"</code></td><td class="cut">Images (default): scan pages for every image (img, srcset, lazy, CSS…) and download direct image URLs. Any files: download other file types (PDF, ZIP, CSV, DOCX, MP3…) from a URL list or page links; for type filters…</td></tr><tr><td><code>urls</code></td><td>array</td><td>yes</td><td></td><td class="cut">Web pages to scrape all images from, and/or direct image URLs (mix freely). This is not a search: give the pages or sites whose images you want. Each page's static HTML is scanned; images added only by JavaScript…</td></tr><tr><td><code>includeSrcset</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">When an image offers several sizes (srcset), download the largest instead of the default src. One file per picture either way.</td></tr><tr><td><code>includeCssBackgrounds</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Also download images set as CSS backgrounds in style attributes and &lt;style&gt; blocks.</td></tr><tr><td><code>includeLinkedImages</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Also download images that links point to (e.g. a gallery thumbnail linking to the full-size photo).</td></tr><tr><td><code>includeMetaImages</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Also download og:image / twitter:image previews, favicons and apple-touch icons.</td></tr><tr><td><code>formats</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Only keep these formats (detected from the file itself, not the URL). Empty = all.</td></tr><tr><td><code>minWidth</code></td><td>integer</td><td>no</td><td><code>100</code></td><td class="cut">Skip images narrower than this. Default 100 drops icons and spacers; set 0 to keep everything. Skipped images are not charged.</td></tr><tr><td><code>minHeight</code></td><td>integer</td><td>no</td><td><code>0</code></td><td class="cut">Skip images shorter than this. Skipped images are not charged.</td></tr><tr><td><code>minFileSizeKb</code></td><td>number</td><td>no</td><td><code>0</code></td><td class="cut">Skip files smaller than this. Skipped files are not charged.</td></tr><tr><td><code>maxFileSizeMb</code></td><td>number</td><td>no</td><td></td><td class="cut">Skip files larger than this (up to 500 MB). Empty = 25 MB in image mode, 100 MB in file mode.</td></tr><tr><td><code>skipDuplicates</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Skip files whose content (SHA-256) is identical to one already downloaded, even from different URLs. Duplicates are not charged.</td></tr><tr><td><code>maxImages</code></td><td>integer</td><td>no</td><td><code>500</code></td><td class="cut">Stop after saving this many images in total.</td></tr><tr><td><code>maxImagesPerPage</code></td><td>integer</td><td>no</td><td><code>0</code></td><td class="cut">Cap candidates taken from each page (0 = no cap).</td></tr><tr><td><code>createZip</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Bundle everything into ZIP file(s) of up to 200 MB each. Links are in the run's OUTPUT record. No extra charge.</td></tr><tr><td><code>respectRobotsTxt</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Skip pages that the site's robots.txt disallows for crawlers.</td></tr></tbody></table></div></details><h2>Output example</h2><p>Sample rows from a real run (long text shortened). Export as JSON, CSV, Excel or via the API.</p><div class="tablewrap"><table><thead><tr><th scope="col">fileName</th><th scope="col">format</th><th scope="col">width</th><th scope="col">height</th><th scope="col">bytes</th><th scope="col">foundIn</th><th scope="col">pageUrl</th></tr></thead><tbody><tr><td class="cut">00006-500px-NJ_LBI_Lighthouse_04.jpg</td><td class="cut">jpeg</td><td class="cut">500</td><td class="cut">375</td><td class="cut">34802</td><td class="cut">srcset</td><td class="cut">https://en.wikipedia.org/wiki/Lighthouse</td></tr><tr><td class="cut">00008-500px-Torre_de_He-rcules_2023.jpg</td><td class="cut">jpeg</td><td class="cut">500</td><td class="cut">750</td><td class="cut">81015</td><td class="cut">srcset</td><td class="cut">https://en.wikipedia.org/wiki/Lighthouse</td></tr><tr><td class="cut">00001-1.sm.webp</td><td class="cut">webp</td><td class="cut">320</td><td class="cut">214</td><td class="cut">10474</td><td class="cut">direct</td><td class="cut"></td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Image result</td><td class="cut">Charged per image saved (metadata and ZIP included at no extra cost)</td><td>$0.003</td><td>$3</td><td class="cut">100 images = $0.30; 1,000 images = $3.00; a page with 40 images = $0.12</td></tr><tr><td>File downloaded</td><td class="cut">Charged per file saved in Any files mode (type detection, SHA-256 and ZIP included)</td><td>$0.002</td><td>$2</td><td class="cut">100 PDFs of 2 MB = $0.20 + $0.10 transfer = $0.30</td></tr><tr><td>Transfer 10mb</td><td class="cut">Charged per started 10 MB of each file saved in Any files mode</td><td>$0.001</td><td>$1</td><td class="cut">a 3 MB file = 1 event ($0.001); a 95 MB video = 10 events ($0.01)</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 1 GB = $0.00005</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try Image Scraper on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/image-scraper" rel="noopener">Run on Apify →</a></div><h2>Limits and honest notes</h2><ul><li>Not an image search engine: it does not search Google Images, Bing or stock sites. It downloads images from the pages and URLs you give it.</li><li>Pages are scanned as static HTML without a browser, which is fast and cheap. Images inserted only by JavaScript (infinite-scroll galleries, some single-page apps) are not found. Pass those image URLs directly instead.</li><li>Pages disallowed by the site's robots.txt are skipped by default (you can turn this off). If a site's robots.txt can't be fetched (HTTP 5xx or a network error, after one retry), all of that site's pages are skipped (RFC 9309), each with a free error row. Login-protected pages are not supported.</li><li>Images over the maximum file size (default 25 MB, up to 500 MB) are skipped. ZIP files are split into parts of up to 200 MB.</li><li>Formats: JPEG, PNG, GIF, WebP, AVIF, SVG, BMP, ICO, TIFF and HEIC, detected from the file bytes, so mislabelled files are handled correctly.</li><li>Download links work for the lifetime of the run's storage (Apify's default retention for your plan).</li><li>Only download images you have the right to use. Most images on the web are copyrighted.</li><li>Internal and private network addresses are always refused, including through redirects or DNS tricks.</li><li>Respects your run budget: set a maximum total charge and the actor stops cleanly at the cap.</li></ul><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~image-scraper/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"urls": ["https://en.wikipedia.org/wiki/Lighthouse"], "minWidth": 200, "maxImages": 3}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "urls": [
+    "https://en.wikipedia.org/wiki/Lighthouse"
+  ],
+  "minWidth": 200,
+  "maxImages": 3
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~image-scraper/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "urls": [
+        "https://en.wikipedia.org/wiki/Lighthouse"
+    ],
+    "minWidth": 200,
+    "maxImages": 3
+}
+
+run = client.actor("actor-forge/image-scraper").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/aliexpress-reviews/">AliExpress Reviews Scraper: Ratings, Photos, Countries</a></h3><p>Get AliExpress buyer reviews for any product ID or URL: star rating, review text, English translation, buyer country, SKU bought, date, review…</p><span class="price">$0.40 per 1,000 · review</span></div><div class="card"><h3><a href="../../actors/aliexpress-search-scraper/">AliExpress Product Search Scraper: Prices, Sold Count, Ratings</a></h3><p>Search AliExpress by keyword or search URL and get product rows: product ID, title, price, original price, discount, currency, sold count, star…</p><span class="price">$0.70 per 1,000 · product</span></div><div class="card"><h3><a href="../../actors/app-store-scraper/">App Store &amp; Google Play Scraper — Apps, Charts, Reviews</a></h3><p>Scrape Google Play and App Store app details (rating, histogram, installs, price, version, developer, screenshots, similar apps), Apple top charts…</p><span class="price">$0.80 per 1,000 · app result</span></div><div class="card"><h3><a href="../../actors/autoscout24-scraper/">AutoScout24 Car Listings Scraper: 9 EU Sites + AutoTrader.ca</a></h3><p>Scrape used and new car listings from AutoScout24 (Germany, Italy, France, Netherlands, Belgium, Austria, Spain, Luxembourg, .com) and…</p><span class="price">$0.40 per 1,000 · listing</span></div></div><div class="cta"><p><strong>Try Image Scraper on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/image-scraper" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/ecommerce-apps/">More E-commerce &amp; App Stores tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a> · <a href="../../categories/more/">More Data Tools</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

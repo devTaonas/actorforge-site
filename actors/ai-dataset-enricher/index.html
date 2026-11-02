@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Dataset Enricher - Bulk LLM Classify, Tag &amp; Summarise</title>
+<meta name="description" content="Run one AI prompt over every row of an Apify dataset, CSV/Excel/JSON file or pasted rows: classify, tag, score sentiment, summarise, translate or extract into…">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/ai-dataset-enricher/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="AI Dataset Enricher - Bulk LLM Classify, Tag &amp; Summarise">
+<meta property="og:description" content="Run one AI prompt over every row of an Apify dataset, CSV/Excel/JSON file or pasted rows: classify, tag, score sentiment, summarise, translate or extract into…">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/ai-dataset-enricher/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"AI Dataset Enricher - Bulk LLM Classify, Tag & Summarise","description":"Run one AI prompt over every row of an Apify dataset, CSV/Excel/JSON file or pasted rows: classify, tag, score sentiment, summarise, translate or extract into…","applicationCategory":"BusinessApplication","applicationSubCategory":"Documents, OCR & AI-Ready Text","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/ai-dataset-enricher/","sameAs":"https://apify.com/actor-forge/ai-dataset-enricher","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Row processed","description":"Charged per row successfully enriched by the model (failed, empty and skipped rows are free)","price":"0.0007","priceCurrency":"USD","url":"https://apify.com/actor-forge/ai-dataset-enricher"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Documents, OCR & AI-Ready Text","item":"https://devtaonas.github.io/actorforge-site/categories/documents-ai/"},{"@type":"ListItem","position":3,"name":"AI Dataset Enricher - Bulk LLM Classify, Tag & Summarise","item":"https://devtaonas.github.io/actorforge-site/actors/ai-dataset-enricher/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a></li><li aria-current="page">AI Dataset Enricher - Bulk LLM Classify, Tag &amp; Summarise</li></ol></nav><h1>AI Dataset Enricher - Bulk LLM Classify, Tag &amp; Summarise</h1><p>Run one AI prompt over every row of an Apify dataset, CSV/Excel/JSON file or pasted rows: classify, tag, score sentiment, summarise, translate or extract into typed fields you define. Cheap LLM via Apify's OpenRouter, billed at cost to your account. $0.70 per 1,000 rows plus tokens.</p><a class="btn" href="https://apify.com/actor-forge/ai-dataset-enricher" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p><strong>Run one AI prompt over every row of your data, in bulk.</strong> Point it at an <strong>Apify dataset</strong> (reviews, jobs, leads, products, posts, tickets…), a <strong>CSV, Excel or JSON file</strong> or rows pasted as JSON, write what you want in plain English (*"Classify the review's sentiment and main topic"*, *"Write a 20-word summary"*, *"Translate to English"*, *"Extract seniority and remote/on-site"*, *"Score this lead 1-10 for B2B SaaS fit"*), list the <strong>output fields</strong> you want (or give a JSON Schema), and get every row back with <strong>new, typed columns</strong> (numbers, booleans and lists are converted). It sends only the fields you choose, retries a bad reply once, caps the AI spend per run, and can <strong>estimate the cost first</strong> without calling the model. Use it for <strong>bulk sentiment analysis, text classification and tagging, lead scoring and qualification, data cleaning and normalisation, summarisation, translation, entity extraction and categorising products</strong>, inside Apify pipelines or from Make, n8n, Zapier and AI agents. Default model <strong>Google Gemini 2.5 Flash Lite</strong>; any OpenRouter model works (GPT-5 nano, GPT-4o mini, Gemini 2.5 Flash, Claude, Llama, Mistral…). <strong>$0.70 per 1,000 rows</strong> plus the AI tokens at cost.</p><p>### Two lines on your bill (please read)</p><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "rows": [
+    {
+      "text": "Great product, slow delivery"
+    }
+  ],
+  "prompt": "Classify sentiment (positive/neutral/negative) and the main topic",
+  "outputSchema": {
+    "sentiment": "string",
+    "topic": "string"
+  },
+  "maxLlmCostUsd": 0.005,
+  "maxOutputTokens": 150
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>rows</code></td><td>array</td><td>no</td><td></td><td class="cut">Rows pasted as a JSON array of objects. You can also (or instead) pick a dataset or give a file URL below.</td></tr><tr><td><code>datasetId</code></td><td>string</td><td>no</td><td></td><td class="cut">An Apify dataset to enrich, e.g. the output of a reviews, jobs or leads scraper. Picking it here gives this run read access to it.</td></tr><tr><td><code>fileUrl</code></td><td>string</td><td>no</td><td></td><td class="cut">A public CSV/TSV, JSON, JSON Lines or XLSX file (first row = column names, up to 50 MB).</td></tr><tr><td><code>prompt</code></td><td>string</td><td>yes</td><td></td><td class="cut">Plain-English instruction applied to every row, e.g. "Classify the review's sentiment and main topic", "Write a 20-word summary", "Translate the title to English", "Extract the company name and job seniority" or "Is…</td></tr><tr><td><code>outputSchema</code></td><td>object</td><td>no</td><td></td><td class="cut">The fields to add, as {"field": "description or type"} (types number, integer, boolean and array are converted), or a full JSON Schema (also sent as a structured-output schema). Empty: the model returns any JSON object.</td></tr><tr><td><code>inputFields</code></td><td>array</td><td>no</td><td></td><td class="cut">Only send these fields of each row (dot paths allowed), to save tokens and keep private columns out of the prompt. Empty: the whole row.</td></tr><tr><td><code>outputMode</code></td><td>string</td><td>no</td><td><code>"merge"</code></td><td class="cut">Merge: the original row plus the new fields. Enriched only: just the new fields and _rowIndex.</td></tr><tr><td><code>outputPrefix</code></td><td>string</td><td>no</td><td><code>""</code></td><td class="cut">Optional prefix such as ai_ so new fields never overwrite existing columns.</td></tr><tr><td><code>model</code></td><td>string</td><td>no</td><td><code>"google/gemini-2.5-flash-lite"</code></td><td class="cut">Any OpenRouter model id (openrouter.ai/models), e.g. google/gemini-2.5-flash-lite (default: cheap and fast), openai/gpt-5-nano, openai/gpt-4o-mini or google/gemini-2.5-flash (smarter). Tokens are billed to your Apify…</td></tr><tr><td><code>maxLlmCostUsd</code></td><td>number</td><td>no</td><td><code>0.1</code></td><td class="cut">Hard cap on the AI token charges this run may cause on your Apify account (estimated, including the 10× free-plan rate when it applies). The worst case of each row (its prompt plus maxOutputTokens) is reserved before…</td></tr><tr><td><code>maxRows</code></td><td>integer</td><td>no</td><td><code>1000</code></td><td class="cut">Process at most this many rows.</td></tr><tr><td><code>maxInputTokensPerRow</code></td><td>integer</td><td>no</td><td><code>2000</code></td><td class="cut">Rows larger than this (≈3 characters per token) are skipped with a free row; select fewer fields to fit.</td></tr><tr><td><code>maxOutputTokens</code></td><td>integer</td><td>no</td><td><code>400</code></td><td class="cut">max_tokens for each reply. A few labels need ~50; a summary ~150; long extractions more.</td></tr><tr><td><code>estimateOnly</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Read the rows and report the expected AI token cost and this actor's fee without calling the model (one free row).</td></tr><tr><td><code>allowPersonalData</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Off (default): the model is told not to output private individuals' personal contact details and personal-looking email addresses in its output are replaced. Switch on only if you have a lawful basis.</td></tr></tbody></table></div></details><h2>Output example</h2><p>Sample rows from a real run (long text shortened). Export as JSON, CSV, Excel or via the API.</p><div class="tablewrap"><table><thead><tr><th scope="col">text</th><th scope="col">sentiment</th><th scope="col">topic</th><th scope="col">_status</th><th scope="col">_inputTokens</th><th scope="col">_outputTokens</th><th scope="col">_llmCostUsd</th></tr></thead><tbody><tr><td class="cut">Great product, slow delivery</td><td class="cut">negative</td><td class="cut">delivery</td><td class="cut">ok</td><td class="cut">98</td><td class="cut">14</td><td class="cut">0.00015</td></tr><tr><td class="cut">Five stars, arrived next day</td><td class="cut">positive</td><td class="cut">delivery</td><td class="cut">ok</td><td class="cut">97</td><td class="cut">13</td><td class="cut">0.00015</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Row processed</td><td class="cut">Charged per row successfully enriched by the model (failed, empty and skipped rows are free)</td><td>$0.0007</td><td>$0.70</td><td class="cut">10,000 reviews classified = $7.00 (+ AI tokens on your account, ≈ $0.50 on a paid plan with the default model)</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 0.5 GB = $0.000025</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try AI Dataset Enricher - Bulk LLM Classify, Tag &amp; Summarise on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/ai-dataset-enricher" rel="noopener">Run on Apify →</a></div><h2>Limits and honest notes</h2><ul><li>AI tokens are a second, separate charge on your own Apify account, made by apify/openrouter at OpenRouter's rates (10× on the Apify free plan). They are not part of this actor's pay-per-event price and are not limited by the run's maximum total charge: use maxLlmCostUsd (default $0.10) to cap them, and estimateOnly to preview the cost. Each row's _llmCostUsd is an estimate from the usage OpenRouter reports; your Apify billing page is authoritative.</li><li>AI models make mistakes. The model is told to use only the row's content and to return null when unsure, but check results that matter, especially classifications used for decisions about people.</li><li>Row content is treated as data: the model is told to ignore instructions inside rows (prompt-injection defence), but no defence is perfect. Use inputFields to keep private columns out of the prompt.</li><li>Personal data: by default the model is told not to output private individuals' contact details and personal-looking emails in its output are replaced. Only switch allowPersonalData on with a lawful basis.</li><li>Datasets: with limited permissions the run can read only the dataset picked in the Dataset field (or passed by ID via the API). Files up to 50 MB; private and internal network addresses are refused at every redirect hop.</li><li>If the AI service rejects the request (no credit, rate limit, unknown model id, outage), the run stops with one free status row "llm-unavailable" explaining why, and still finishes as SUCCEEDED.</li></ul><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~ai-dataset-enricher/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"rows": [{"text": "Great product, slow delivery"}], "prompt": "Classify sentiment (positive/neutral/negative) and the main topic", "outputSchema": {"sentiment": "string", "topic": "string"}, "maxLlmCostUsd": 0.005, "maxOutputTokens": 150}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "rows": [
+    {
+      "text": "Great product, slow delivery"
+    }
+  ],
+  "prompt": "Classify sentiment (positive/neutral/negative) and the main topic",
+  "outputSchema": {
+    "sentiment": "string",
+    "topic": "string"
+  },
+  "maxLlmCostUsd": 0.005,
+  "maxOutputTokens": 150
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~ai-dataset-enricher/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "rows": [
+        {
+            "text": "Great product, slow delivery"
+        }
+    ],
+    "prompt": "Classify sentiment (positive/neutral/negative) and the main topic",
+    "outputSchema": {
+        "sentiment": "string",
+        "topic": "string"
+    },
+    "maxLlmCostUsd": 0.005,
+    "maxOutputTokens": 150
+}
+
+run = client.actor("actor-forge/ai-dataset-enricher").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/any-url-to-markdown/">Any URL to Markdown — Web Pages, PDF, Word, Excel &amp; OCR</a></h3><p>Turn any URL into clean, LLM-ready Markdown: web pages, PDFs, Word, Excel, PowerPoint, EPUB, CSV and JSON, plus OCR for images and scanned PDFs. One…</p><span class="price">$1 per 1,000 · page result</span></div><div class="card"><h3><a href="../../actors/image-to-text-ocr/">Image to Text OCR — Extract Text from Photos &amp; Screenshots</a></h3><p>Extract text from images (PNG, JPEG, TIFF, WebP, GIF, BMP) with Tesseract 5 OCR in 29 languages: screenshots, photos of documents, receipts, scans…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="../../actors/ocr-to-text/">OCR Scanned PDF &amp; Image to Text — Tesseract, 29 Languages</a></h3><p>Extract text from scanned PDFs and images (PNG, JPEG, TIFF, WebP, GIF, BMP) with Tesseract 5 OCR in 29 languages. PDF pages that already have text…</p><span class="price">$3 per 1,000 · page ocr</span></div><div class="card"><h3><a href="../../actors/pdf-ocr/">PDF OCR — Scanned PDF to Searchable Text (29 Languages)</a></h3><p>OCR scanned PDFs to text page by page with Tesseract 5 in 29 languages. Pages that already have a text layer are read directly at a tenth of the…</p><span class="price">$3 per 1,000 · page ocr</span></div></div><div class="cta"><p><strong>Try AI Dataset Enricher - Bulk LLM Classify, Tag &amp; Summarise on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/ai-dataset-enricher" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/documents-ai/">More Documents, OCR &amp; AI-Ready Text tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a> · <a href="../../categories/more/">More Data Tools</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>
