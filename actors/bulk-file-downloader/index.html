@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk File Downloader — URL List to Storage or ZIP</title>
+<meta name="description" content="Download any files in bulk from URL lists or the file links on a web page: PDF, ZIP, CSV, XLSX, DOCX, MP3, MP4 and more. Public download links, real type from…">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/bulk-file-downloader/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Bulk File Downloader — URL List to Storage or ZIP">
+<meta property="og:description" content="Download any files in bulk from URL lists or the file links on a web page: PDF, ZIP, CSV, XLSX, DOCX, MP3, MP4 and more. Public download links, real type from…">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/bulk-file-downloader/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Bulk File Downloader — URL List to Storage or ZIP","description":"Download any files in bulk from URL lists or the file links on a web page: PDF, ZIP, CSV, XLSX, DOCX, MP3, MP4 and more. Public download links, real type from…","applicationCategory":"BusinessApplication","applicationSubCategory":"More Data Tools","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/bulk-file-downloader/","sameAs":"https://apify.com/actor-forge/bulk-file-downloader","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"File downloaded","description":"Charged per file saved (type detection, SHA-256, download link and ZIP included)","price":"0.002","priceCurrency":"USD","url":"https://apify.com/actor-forge/bulk-file-downloader"},{"@type":"Offer","name":"Transfer 10mb","description":"Charged per started 10 MB of each file saved","price":"0.001","priceCurrency":"USD","url":"https://apify.com/actor-forge/bulk-file-downloader"},{"@type":"Offer","name":"Image result","description":"Charged per image saved, only in image mode (page image scanning)","price":"0.003","priceCurrency":"USD","url":"https://apify.com/actor-forge/bulk-file-downloader"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"More Data Tools","item":"https://devtaonas.github.io/actorforge-site/categories/more/"},{"@type":"ListItem","position":3,"name":"Bulk File Downloader — URL List to Storage or ZIP","item":"https://devtaonas.github.io/actorforge-site/actors/bulk-file-downloader/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/more/">More Data Tools</a></li><li aria-current="page">Bulk File Downloader — URL List to Storage or ZIP</li></ol></nav><h1>Bulk File Downloader — URL List to Storage or ZIP</h1><p>Download any files in bulk from URL lists or the file links on a web page: PDF, ZIP, CSV, XLSX, DOCX, MP3, MP4 and more. Public download links, real type from the bytes, size, SHA-256, type/glob filters, dedupe, size caps, optional ZIP. $2 per 1,000 files + $0.001 per 10 MB.</p><a class="btn" href="https://apify.com/actor-forge/bulk-file-downloader" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p><strong>Download any files in bulk, from a list of URLs or from the links on a web page.</strong> Paste direct links to PDFs, ZIP archives, CSV/XLSX exports, Word documents, MP3s, videos or any other file, or give it pages (a reports archive, a dataset index, a podcast page) and it follows every file link it finds: <code>&lt;a href&gt;</code> links, audio/video sources, embeds and objects. Each file is stored in the run's key-value store with a <strong>public download link</strong>, and its <strong>real type is detected from the file bytes</strong> (magic numbers: PDF, ZIP, DOCX/XLSX/PPTX, ODF, EPUB, legacy Office, GZIP/7z/RAR/TAR, MP3/WAV/FLAC/OGG, MP4/MOV/WebM, images, SQLite, Parquet, JSON/CSV/XML…), with the server's content type as a fallback. Every row carries the <strong>MIME type, size, SHA-256, source URL, page and link text</strong>. <strong>Filter by file type or URL glob</strong> (<code>*.pdf</code>, <code>/reports/**</code>), skip duplicates by content, cap the size <strong>per file (default 100 MB) and in total</strong>, and optionally get everything as <strong>ZIP files</strong>. Use it for archiving public documents, collecting datasets for analysis or machine learning, backing up website downloads, mirroring podcast episodes, or as a file-fetching tool for AI agents and automations. Pricing follows the real cost of moving data: <strong>$0.002 per file plus $0.001 per started 10 MB</strong>, so 1,000 small files cost about $3. Broken links, web pages, filtered types, oversized files and duplicates are never charged.</p><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "urls": [
+    "https://raw.githubusercontent.com/py-pdf/sample-files/main/001-trivial/minimal-document.pdf",
+    "https://www.w3schools.com/html/horse.mp3",
+    "https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv"
+  ]
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>mode</code></td><td>string</td><td>no</td><td><code>"files"</code></td><td class="cut">Any files (default): every file type from a URL list or page links. Images only: scans pages for every image (img, srcset, lazy, CSS backgrounds) and is billed per image — see Pricing.</td></tr><tr><td><code>urls</code></td><td>array</td><td>yes</td><td></td><td class="cut">Direct file URLs (any type) and/or web pages whose file links should be downloaded — mix freely. A page's static HTML is scanned for links, media sources and embeds. Links added by JavaScript aren't found.</td></tr><tr><td><code>fileTypes</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Only keep files of these types, e.g. pdf, zip, csv, docx, mp3. Matched against the type detected from the file bytes and against the URL extension. On pages, links with these extensions are followed. Empty = every type…</td></tr><tr><td><code>urlGlobs</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">On pages, also follow links matching these globs, e.g. *.pdf, /reports/, https://cdn.example.com/files/*. Use for download links without an extension (/download?id=…). * stays inside one folder, crosses folders.</td></tr><tr><td><code>maxFileSizeMb</code></td><td>number</td><td>no</td><td><code>100</code></td><td class="cut">Skip files larger than this (up to 500 MB). Oversized downloads are aborted early and never charged.</td></tr><tr><td><code>maxTotalSizeMb</code></td><td>number</td><td>no</td><td><code>2048</code></td><td class="cut">Stop downloading once the files saved add up to this many MB (0 = no cap). Keeps transfer charges predictable.</td></tr><tr><td><code>minFileSizeKb</code></td><td>number</td><td>no</td><td><code>0</code></td><td class="cut">Skip files smaller than this. Skipped files are not charged.</td></tr><tr><td><code>maxFiles</code></td><td>integer</td><td>no</td><td><code>1000</code></td><td class="cut">Stop after saving this many files in total.</td></tr><tr><td><code>skipDuplicates</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Skip files whose content (SHA-256) is identical to one already downloaded, even from different URLs. Duplicates are not charged.</td></tr><tr><td><code>createZip</code></td><td>boolean</td><td>no</td><td><code>false</code></td><td class="cut">Bundle everything into ZIP file(s) of up to 200 MB each. Links are in the run's OUTPUT record. No extra charge.</td></tr><tr><td><code>respectRobotsTxt</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Skip pages that the site's robots.txt disallows for crawlers (direct file URLs you list are always fetched).</td></tr></tbody></table></div></details><h2>Output example</h2><p>Sample rows from a real run (long text shortened). Export as JSON, CSV, Excel or via the API.</p><div class="tablewrap"><table><thead><tr><th scope="col">fileName</th><th scope="col">extension</th><th scope="col">mimeType</th><th scope="col">bytes</th><th scope="col">detectedBy</th><th scope="col">url</th></tr></thead><tbody><tr><td class="cut">00001-minimal-document.pdf</td><td class="cut">pdf</td><td class="cut">application/pdf</td><td class="cut">16978</td><td class="cut">magic</td><td class="cut">https://raw.githubusercontent.com/py-pdf/sample-files/main/001-trivial/minimal-document.pdf</td></tr><tr><td class="cut">00002-horse.mp3</td><td class="cut">mp3</td><td class="cut">audio/mpeg</td><td class="cut">28915</td><td class="cut">magic</td><td class="cut">https://www.w3schools.com/html/horse.mp3</td></tr><tr><td class="cut">00003-addresses.csv</td><td class="cut">csv</td><td class="cut">text/csv</td><td class="cut">328</td><td class="cut">magic</td><td class="cut">https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>File downloaded</td><td class="cut">Charged per file saved (type detection, SHA-256, download link and ZIP included)</td><td>$0.002</td><td>$2</td><td class="cut">1,000 small files = $2 + $1 transfer = $3; 100 PDFs of 2 MB = $0.30</td></tr><tr><td>Transfer 10mb</td><td class="cut">Charged per started 10 MB of each file saved</td><td>$0.001</td><td>$1</td><td class="cut">a 3 MB file = 1 event ($0.001); a 95 MB video = 10 events ($0.01); 1 GB of large files ≈ $0.10</td></tr><tr><td>Image result</td><td class="cut">Charged per image saved, only in image mode (page image scanning)</td><td>$0.003</td><td>$3</td><td class="cut">a page with 40 images = $0.12</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 1 GB = $0.00005</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try Bulk File Downloader on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/bulk-file-downloader" rel="noopener">Run on Apify →</a></div><h2>Limits and honest notes</h2><ul><li>Pages are scanned as static HTML without a browser, which is fast and cheap. Links added only by JavaScript are not found; pass those file URLs directly instead.</li><li>Pages disallowed by the site's robots.txt are skipped by default (you can turn this off). If a site's robots.txt can't be fetched (HTTP 5xx or a network error, after one retry), all of that site's pages are skipped (RFC 9309), each with a free error row. Direct file URLs you list are always fetched. Login-protected files are not supported.</li><li>Files over the per-file cap (default 100 MB, up to 500 MB) are aborted early and not charged. The total size cap (default 2 GB) stops the run cleanly; give the run 2-4 GB of memory for many large files. ZIP files are split into parts of up to 200 MB.</li><li>Without a type or glob filter, page links are followed only when they end in a common document, archive, data or media extension (images are left out; add jpg or png to File types to include them).</li><li>Download links work for the lifetime of the run's storage (Apify's default retention for your plan).</li><li>Only download files you have the right to use.</li><li>Internal and private network addresses are always refused, including through redirects or DNS tricks.</li><li>Respects your run budget: set a maximum total charge and the actor stops cleanly at the cap.</li></ul><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~bulk-file-downloader/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"urls": ["https://raw.githubusercontent.com/py-pdf/sample-files/main/001-trivial/minimal-document.pdf", "https://www.w3schools.com/html/horse.mp3", "https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv"]}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "urls": [
+    "https://raw.githubusercontent.com/py-pdf/sample-files/main/001-trivial/minimal-document.pdf",
+    "https://www.w3schools.com/html/horse.mp3",
+    "https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv"
+  ]
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~bulk-file-downloader/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "urls": [
+        "https://raw.githubusercontent.com/py-pdf/sample-files/main/001-trivial/minimal-document.pdf",
+        "https://www.w3schools.com/html/horse.mp3",
+        "https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv"
+    ]
+}
+
+run = client.actor("actor-forge/bulk-file-downloader").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/dataset-merge-dedupe/">Merge &amp; Deduplicate Datasets - Only New Items, Join, CSV/XLSX</a></h3><p>Merge Apify datasets, CSV, JSON, JSONL or Excel files and pasted rows into one clean dataset: remove duplicates by any fields (case and whitespace…</p><span class="price">$0.05 per 1,000 · row output</span></div><div class="card"><h3><a href="../../actors/excel-to-json/">Excel to JSON Converter — XLSX, ODS &amp; CSV to JSON Rows</a></h3><p>Convert Excel (.xlsx/.xlsm), OpenDocument (.ods) and CSV/TSV files from URLs to clean JSON: every sheet as typed rows keyed by column name, real ISO…</p><span class="price">$3 per 1,000 · document converted</span></div><div class="card"><h3><a href="../../actors/http-request-runner/">HTTP Request — Bulk API Calls for Clay, n8n &amp; Make</a></h3><p>Send HTTP requests to any API (GET, POST, PUT, PATCH, DELETE) from Clay, n8n, Make, Zapier or the Apify API: one call or thousands in a batch, with…</p><span class="price">$2 per 1,000 · request sent</span></div><div class="card"><h3><a href="../../actors/mastodon-scraper/">Mastodon Scraper: Profiles, Posts, Hashtags &amp; Trends</a></h3><p>Scrape Mastodon and the fediverse from any instance&#x27;s public API: profiles with follower counts and bio, posts with boosts, favourites, replies…</p><span class="price">$0.30 per 1,000 · post</span></div></div><div class="cta"><p><strong>Try Bulk File Downloader on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/bulk-file-downloader" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/more/">More More Data Tools tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a> · <a href="../../categories/more/">More Data Tools</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>
