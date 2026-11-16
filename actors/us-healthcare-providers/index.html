@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US Healthcare Provider Search — NPI Organizations &amp; Leads</title>
+<meta name="description" content="Search the official CMS NPI Registry for US healthcare organizations (clinics, hospitals, pharmacies, home health, dentists…) by specialty, city, state, ZIP…">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/us-healthcare-providers/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="US Healthcare Provider Search — NPI Organizations &amp; Leads">
+<meta property="og:description" content="Search the official CMS NPI Registry for US healthcare organizations (clinics, hospitals, pharmacies, home health, dentists…) by specialty, city, state, ZIP…">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/us-healthcare-providers/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"US Healthcare Provider Search — NPI Organizations & Leads","description":"Search the official CMS NPI Registry for US healthcare organizations (clinics, hospitals, pharmacies, home health, dentists…) by specialty, city, state, ZIP…","applicationCategory":"BusinessApplication","applicationSubCategory":"Business Leads & Company Data","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/us-healthcare-providers/","sameAs":"https://apify.com/actor-forge/us-healthcare-providers","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Provider result","description":"Charged per organisation row","price":"0.0007","priceCurrency":"USD","url":"https://apify.com/actor-forge/us-healthcare-providers"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"Business Leads & Company Data","item":"https://devtaonas.github.io/actorforge-site/categories/business-leads/"},{"@type":"ListItem","position":3,"name":"US Healthcare Provider Search — NPI Organizations & Leads","item":"https://devtaonas.github.io/actorforge-site/actors/us-healthcare-providers/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a></li><li aria-current="page">US Healthcare Provider Search — NPI Organizations &amp; Leads</li></ol></nav><h1>US Healthcare Provider Search — NPI Organizations &amp; Leads</h1><p>Search the official CMS NPI Registry for US healthcare organizations (clinics, hospitals, pharmacies, home health, dentists…) by specialty, city, state, ZIP or name, or look up NPIs: name, DBA, taxonomies, practice address, business phone. Beats the 1,200 cap. $0.70 per 1,000.</p><a class="btn" href="https://apify.com/actor-forge/us-healthcare-providers" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p><strong>A US healthcare provider search for organisation leads, straight from the official CMS NPI Registry.</strong> Every US healthcare organisation that bills health plans has a <strong>National Provider Identifier (NPI)</strong>, and the CMS NPPES registry publishes the organisation records as public data: hospitals, clinics, urgent care centres, pharmacies, dental practices, home health agencies, hospices, nursing facilities, labs, ambulance services, DME suppliers and more. Search by <strong>specialty or provider type</strong> (taxonomy text such as Urgent Care, Dentist, Home Health, or an exact NUCC taxonomy code), <strong>city, state or ZIP / ZIP prefix</strong>, and <strong>organisation name</strong>, or <strong>look up NPIs</strong> you already have, and get one clean row per organisation: <strong>NPI</strong>, <strong>legal name</strong>, <strong>DBA and other names</strong>, <strong>primary taxonomy</strong> and every taxonomy with its state licence, <strong>practice address and business phone/fax</strong>, mailing address, other practice locations, Medicaid and other identifiers, subpart and parent organisation, enumeration and last-updated dates, and the registry link. The registry only returns <strong>1,200 results per search</strong>: this actor <strong>splits large searches automatically</strong> by state and ZIP prefix and de-duplicates by NPI, so you can pull every urgent care centre in Texas in one run. Use it for <strong>healthcare B2B prospecting</strong> (medical supplies, software, billing, staffing, marketing agencies), territory planning, provider network and directory building, and NPI verification. <strong>Organisations only (NPI-2)</strong>: individual practitioners are deliberately left out. <strong>$0.70 per 1,000 providers</strong>, with no compute bill on top; problems return a free status row instead of failing.</p><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "taxonomies": [
+    "Urgent Care"
+  ],
+  "cities": [
+    "Houston, TX"
+  ],
+  "maxItems": 20
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>taxonomies</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Specialty or provider-type words as used in the NUCC taxonomy, e.g. Urgent Care, Dentist, Pharmacy, Home Health, Hospice, General Acute Care Hospital, Skilled Nursing Facility, Physical Therapist, Ambulance. You can…</td></tr><tr><td><code>cities</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Practice-location cities, best with the state: "Houston, TX", "Austin, TX". A city without a state is combined with each state below (or searched nationwide).</td></tr><tr><td><code>states</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">2-letter state codes of the practice location, e.g. TX, CA, FL. A state must be combined with a specialty, a name, a city or a ZIP.</td></tr><tr><td><code>postalCodes</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">5-digit ZIP codes (77054) or 2-4 digit prefixes (770 = all ZIPs starting 770) of the practice location.</td></tr><tr><td><code>organizationNames</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Organisation (legal or other) name, matched as a prefix: "Mayo" finds names starting with MAYO. Use * as a wildcard yourself, e.g. *DENTAL*.</td></tr><tr><td><code>npis</code></td><td>array</td><td>no</td><td><code>[]</code></td><td class="cut">Look up specific organisation NPIs (10 digits), up to 200 per run. Individual practitioner NPIs are out of scope and return a free status row.</td></tr><tr><td><code>primaryTaxonomyOnly</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">Keep only organisations whose primary taxonomy matches the specialty (the registry also matches secondary taxonomies, which brings in labs, DME suppliers and multi-specialty groups).</td></tr><tr><td><code>splitLargeQueries</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">The registry returns at most 1,200 results per search. When a search hits that cap, split it automatically by state and ZIP prefix to get the rest (more requests, de-duplicated by NPI).</td></tr><tr><td><code>maxItems</code></td><td>integer</td><td>no</td><td><code>100</code></td><td class="cut">Stop after this many organisations. Each one is one charged row.</td></tr></tbody></table></div></details><h2>Output example</h2><p>Sample rows from a real run (long text shortened). Export as JSON, CSV, Excel or via the API.</p><div class="tablewrap"><table><thead><tr><th scope="col">npi</th><th scope="col">organizationName</th><th scope="col">dbaName</th><th scope="col">primaryTaxonomy</th><th scope="col">city</th><th scope="col">state</th><th scope="col">phone</th></tr></thead><tbody><tr><td class="cut">1598100885</td><td class="cut">1960 URGENT CARE, LLC</td><td class="cut">LIVEWELL URGENT CARE</td><td class="cut">Clinic/Center, Urgent Care</td><td class="cut">HOUSTON</td><td class="cut">TX</td><td class="cut">713-689-8091</td></tr><tr><td class="cut">1083075576</td><td class="cut">AFFORDABLE URGENT CARE AND FAMILY PRACTICE, PLLC</td><td class="cut"></td><td class="cut">Clinic/Center, Urgent Care</td><td class="cut">HOUSTON</td><td class="cut">TX</td><td class="cut"></td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Provider result</td><td class="cut">Charged per organisation row</td><td>$0.0007</td><td>$0.70</td><td class="cut">1,000 providers = $0.70; every urgent care centre in Texas (about 1,340) = about $0.94</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 256 MB = $0.00005</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try US Healthcare Provider Search on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/us-healthcare-providers" rel="noopener">Run on Apify →</a></div><h2>Limits and honest notes</h2><ul><li><strong>Responsible use:</strong> the data is public US government data, but you are responsible for how you contact organisations (TCPA, CAN-SPAM, state laws). This actor is not affiliated with, endorsed by or sponsored by CMS, HHS or NPPES. Data source: CMS NPPES NPI Registry (public US government data).</li><li><strong>Organisations only.</strong> Searches always ask the registry for organisation NPIs (NPI-2). Individual practitioners (NPI-1: doctors, nurses, therapists) are personal data and are left out entirely, including in NPI lookups. The authorised official of each organisation is shown by title only; their name and direct phone are never output. Phone numbers are the organisation's business practice-location numbers as filed with CMS.</li><li>It calls the official keyless NPPES API (version 2.1), about 1.4 requests per second, 200 records per request, with an honest user agent (ActorForge-NPI), no login, cookies or proxies. NPPES limits queries per hour and asks bulk users to download its full monthly data file: a run stops after 1,200 requests (roughly 100,000+ records scanned), NPI lookups are limited to 200 per run, and Max providers to 20,000.</li><li>Search behaviour follows the registry: specialty text matches taxonomy names ("Hospital" also matches "Hospitalist", so prefer "General Acute Care Hospital"), organisation names are prefix matches, and only active NPIs are returned. With Primary taxonomy only (default) an organisation is kept only if its primary taxonomy matches. Splitting uses USPS ZIP prefixes per state (and the ZIPs seen in a city's results), so a few records filed under an unusual ZIP may be missed.</li><li>The registry is updated daily by providers themselves; addresses and phones can be out of date, and an NPI does not prove a licence or credential. If the registry refuses a request (for example the hourly limit), the run stops, keeps the rows already delivered and adds a free status row. Set a maximum total charge and the run stops cleanly at the cap; a run with no results returns one free status row.</li></ul><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~us-healthcare-providers/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"taxonomies": ["Urgent Care"], "cities": ["Houston, TX"], "maxItems": 20}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "taxonomies": [
+    "Urgent Care"
+  ],
+  "cities": [
+    "Houston, TX"
+  ],
+  "maxItems": 20
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~us-healthcare-providers/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "taxonomies": [
+        "Urgent Care"
+    ],
+    "cities": [
+        "Houston, TX"
+    ],
+    "maxItems": 20
+}
+
+run = client.actor("actor-forge/us-healthcare-providers").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/ai-ml-jobs/">AI &amp; ML Jobs Scraper — OpenAI, Anthropic &amp; 130+ AI Companies</a></h3><p>Fresh AI, machine-learning and data jobs from the career sites of 136 AI companies (OpenAI, Anthropic, Databricks, Perplexity…) plus any board you…</p><span class="price">$1.50 per 1,000 · job result</span></div><div class="card"><h3><a href="../../actors/ai-web-extractor/">AI Web Scraper — Structured Data from Any Site, No Selectors</a></h3><p>Give URLs and a plain-English instruction (optionally a JSON schema) and get clean structured JSON per page: products, prices, contacts, articles…</p><span class="price">$3 per 1,000 · page extracted</span></div><div class="card"><h3><a href="../../actors/airbnb-listing-details/">Airbnb Listing Details by URL: Amenities, Ratings, Host, Map</a></h3><p>Turn Airbnb room URLs or listing IDs into full listing rows: title, property type, guests, bedrooms, beds, baths, amenities, rating and category…</p><span class="price">$1.50 per 1,000 · listing</span></div><div class="card"><h3><a href="../../actors/arbeitnow-jobs/">Arbeitnow Jobs Scraper — Germany &amp; EU Jobs, Visa &amp; Remote</a></h3><p>Jobs in Germany, Europe and the UK from Arbeitnow&#x27;s public API: keyword, city, remote, visa-sponsorship, tag, job-type, seniority, language and…</p><span class="price">$0.40 per 1,000 · job result</span></div></div><div class="cta"><p><strong>Try US Healthcare Provider Search on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/us-healthcare-providers" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/business-leads/">More Business Leads &amp; Company Data tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a> · <a href="../../categories/more/">More Data Tools</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>

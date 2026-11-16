@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk Domain Availability Checker — RDAP, Any TLD &amp; Expiry</title>
+<meta name="description" content="Check if domains are available to register, in bulk: paste domains or combine names with any TLD list. Registry RDAP plus DNS gives available/registered, and…">
+<link rel="canonical" href="https://devtaonas.github.io/actorforge-site/actors/domain-availability-checker/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ActorForge">
+<meta property="og:title" content="Bulk Domain Availability Checker — RDAP, Any TLD &amp; Expiry">
+<meta property="og:description" content="Check if domains are available to register, in bulk: paste domains or combine names with any TLD list. Registry RDAP plus DNS gives available/registered, and…">
+<meta property="og:url" content="https://devtaonas.github.io/actorforge-site/actors/domain-availability-checker/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213d">
+<style>:root{--navy:#14213d;--navy2:#0a1628;--orange:#c2410c;--orange2:#f26430;--ink:#1b2430;--muted:#4f5967;--line:#e2e6ed;--bg2:#f6f8fb;--code:#0f172a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+a{color:#1d4ed8}a:hover{color:var(--orange)}
+:focus-visible{outline:3px solid var(--orange2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:9}.skip:focus{left:8px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.top{background:var(--navy2);color:#fff}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;padding-top:12px;padding-bottom:12px}
+.logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}.logo span{color:var(--orange2)}
+.top nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}.top nav a{color:#dbe3ef;text-decoration:none}.top nav a:hover{color:#fff;text-decoration:underline}
+.hero{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:40px 0 36px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:#cfd8e6;max-width:44em;margin:0 0 8px;font-size:1.08rem}
+.crumbs{font-size:.85rem;color:#aab6c8;margin-bottom:14px}.crumbs a{color:#cfd8e6}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}.crumbs li+li::before{content:"›";margin:0 6px 0 2px}
+main{padding:28px 0 16px}
+h2{font-size:1.45rem;margin:40px 0 10px;letter-spacing:-.01em;line-height:1.3}
+h3{font-size:1.1rem;margin:24px 0 6px}
+p,li{max-width:46em}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;margin:10px 10px 0 0}
+.btn:hover{background:#9a3412}
+.btn.ghost{background:transparent;border:2px solid #fff}
+.cta{border:2px solid var(--orange2);background:#fff7f2;border-radius:12px;padding:18px 20px;margin:28px 0}
+.cta p{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.card h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}.card h3 a{text-decoration:none}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+.card .price{display:block;margin-top:8px;font-size:.85rem;font-weight:600;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:650}
+tr:last-child td{border-bottom:0}
+td.cut{max-width:22em;overflow-wrap:anywhere}
+code{font:.88em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--bg2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre{background:var(--code);color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font:.85rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre code{background:none;padding:0;color:inherit;overflow-wrap:normal}
+.uc{border-left:4px solid var(--orange2);padding:2px 0 2px 14px;margin:14px 0}
+.uc h3{margin:0 0 4px}.uc p{margin:0}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{font-weight:650;cursor:pointer}
+details p{margin:8px 0 2px}
+ol.steps{padding-left:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px;margin:22px 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps h3{margin:2px 0 6px}
+.tldr{background:var(--bg2);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+.pill{display:inline-block;font-size:.78rem;font-weight:650;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;color:var(--muted);text-decoration:none}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:22px 0 40px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--navy)}
+@media (max-width:560px){body{font-size:15.5px}ol.steps>li{padding-left:40px}}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Bulk Domain Availability Checker — RDAP, Any TLD & Expiry","description":"Check if domains are available to register, in bulk: paste domains or combine names with any TLD list. Registry RDAP plus DNS gives available/registered, and…","applicationCategory":"BusinessApplication","applicationSubCategory":"SEO & Marketing Intelligence","operatingSystem":"Web (Apify platform)","url":"https://devtaonas.github.io/actorforge-site/actors/domain-availability-checker/","sameAs":"https://apify.com/actor-forge/domain-availability-checker","publisher":{"@type":"Organization","name":"ActorForge","url":"https://devtaonas.github.io/actorforge-site/"},"offers":[{"@type":"Offer","name":"Domain check","description":"Charged per domain checked with an answer (available, registered or likely-available), registration data included","price":"0.0005","priceCurrency":"USD","url":"https://apify.com/actor-forge/domain-availability-checker"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devtaonas.github.io/actorforge-site/"},{"@type":"ListItem","position":2,"name":"SEO & Marketing Intelligence","item":"https://devtaonas.github.io/actorforge-site/categories/seo-marketing/"},{"@type":"ListItem","position":3,"name":"Bulk Domain Availability Checker — RDAP, Any TLD & Expiry","item":"https://devtaonas.github.io/actorforge-site/actors/domain-availability-checker/"}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap"><a class="logo" href="../../">Actor<span>Forge</span></a><nav aria-label="Main"><a href="../../">Home</a><a href="../../actors/">All actors</a><a href="../../guides/">Guides</a><a href="https://apify.com/actor-forge" rel="noopener">On Apify ↗</a></nav></div></header>
+<div class="hero"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a></li><li aria-current="page">Bulk Domain Availability Checker — RDAP, Any TLD &amp; Expiry</li></ol></nav><h1>Bulk Domain Availability Checker — RDAP, Any TLD &amp; Expiry</h1><p>Check if domains are available to register, in bulk: paste domains or combine names with any TLD list. Registry RDAP plus DNS gives available/registered, and for taken names the registrar, creation and expiry dates and status. $0.50 per 1,000 checks.</p><a class="btn" href="https://apify.com/actor-forge/domain-availability-checker" rel="noopener">Run on Apify →</a><a class="btn ghost" href="#pricing">See pricing</a></div></div>
+<main id="main"><div class="wrap"><h2>What it does</h2><p><strong>Find out which domain names are free to register, in bulk, across any TLD.</strong> Paste full domains, or give <strong>brand names plus a list of TLDs</strong> and every combination is checked for you (10 names × 8 TLDs = 80 checks in one run). Each domain is checked against the <strong>registry's own RDAP service</strong> (the official successor to WHOIS, located through IANA's bootstrap list) with a <strong>DNS nameserver check</strong> as a second signal, and you get a clear <code>availability</code> value: <strong>available</strong>, <strong>registered</strong>, <strong>likely-available</strong>, <strong>unknown-tld-no-rdap</strong> or <strong>error</strong>, with a <code>confidence</code> level and the method used. For taken names you also get the <strong>registrar</strong>, <strong>creation and expiry dates</strong>, <strong>days to expiry</strong>, EPP <strong>status codes</strong> and a <strong>pendingDelete</strong> flag for names in redemption that may drop soon. Use it to brainstorm startup and product names, check a naming shortlist across .com/.io/.ai/.app/.dev at once, monitor expiring domains you want, or clean a domain list for outreach. <strong>Simple pricing: $0.50 per 1,000 checks</strong>, with no compute bill on top. Invalid inputs, duplicates, unknown and failed checks are never charged.</p><h2>Input example</h2><p>A typical run input (JSON). Every field is also available as a form in the Apify console.</p><pre><code class="language-json">{
+  "domains": [
+    "apify.com",
+    "my-unregistered-idea-123.com"
+  ]
+}</code></pre><details><summary>All input fields</summary><div class="tablewrap"><table><thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead><tbody><tr><td><code>domains</code></td><td>array</td><td>no</td><td></td><td class="cut">Full domain names to check, e.g. acme.com or acme.co.uk. URLs and email addresses are reduced to their registrable domain. Duplicates are removed. Up to 2,000 checks per run (domains plus name × TLD combinations).</td></tr><tr><td><code>names</code></td><td>array</td><td>no</td><td></td><td class="cut">Brand or keyword names without a TLD, e.g. "acmerocket" or "Acme Rocket" (spaces are removed). Each name is checked in every TLD of the list below, so 10 names × 8 TLDs = 80 checks. Up to 500 names.</td></tr><tr><td><code>tlds</code></td><td>array</td><td>no</td><td><code>["com", "net", "org", "io", "ai", "co", "app", "dev"]</code></td><td class="cut">Top-level domains (or public suffixes such as co.uk) to combine with each name. Used only with Names. Up to 100.</td></tr><tr><td><code>includeRegistrationData</code></td><td>boolean</td><td>no</td><td><code>true</code></td><td class="cut">For registered domains, ask the registry's RDAP service for the registrar, creation, update and expiry dates, days to expiry, EPP status codes (including pending delete) and DNSSEC. Turn off for a faster, DNS-first…</td></tr></tbody></table></div></details><h2>Output example</h2><p>Sample rows from a real run (long text shortened). Export as JSON, CSV, Excel or via the API.</p><div class="tablewrap"><table><thead><tr><th scope="col">domain</th><th scope="col">availability</th><th scope="col">confidence</th><th scope="col">registrar</th><th scope="col">createdAt</th><th scope="col">expiresAt</th><th scope="col">daysToExpiry</th><th scope="col">pendingDelete</th><th scope="col">method</th></tr></thead><tbody><tr><td class="cut">apify.com</td><td class="cut">registered</td><td class="cut">high</td><td class="cut">Amazon Registrar, Inc.</td><td class="cut">2009-06-02</td><td class="cut">2035-06-02</td><td class="cut">3124</td><td class="cut">false</td><td class="cut">rdap+dns</td></tr><tr><td class="cut">my-unregistered-idea-123.com</td><td class="cut">available</td><td class="cut">high</td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut">false</td><td class="cut">rdap+dns</td></tr><tr><td class="cut">acmerocket.xyz</td><td class="cut">likely-available</td><td class="cut">medium</td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut"></td><td class="cut">false</td><td class="cut">dns</td></tr></tbody></table></div><h2 id="pricing">Pricing</h2><p>Pay per event: you are charged only for the results you receive, with no subscription. Set a maximum total charge on any run and it stops cleanly at the cap.</p><div class="tablewrap"><table><thead><tr><th scope="col">Charged for</th><th scope="col">When</th><th scope="col">Price</th><th scope="col">Per 1,000</th><th scope="col">Worked example</th></tr></thead><tbody><tr><td>Domain check</td><td class="cut">Charged per domain checked with an answer (available, registered or likely-available), registration data included</td><td>$0.0005</td><td>$0.50</td><td class="cut">1,000 checks = $0.50; 50 names × 8 TLDs = 400 checks = $0.20</td></tr><tr><td>Actor Start (platform start fee)</td><td class="cut">Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).</td><td>$0.00005</td><td>—</td><td class="cut">One run at 128 MB = $0.00005 (charged as one event)</td></tr></tbody></table></div><p class="muted">Prices are read from the live Apify Store listing when this page is built. The listing is always authoritative.</p><div class="cta"><p><strong>Try Bulk Domain Availability Checker on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/domain-availability-checker" rel="noopener">Run on Apify →</a></div><h2>Limits and honest notes</h2><ul><li><code>available</code> means the registry's RDAP service has no record of the name. It is a strong signal, not a guarantee: premium, reserved or blocked names can still be unregistrable or cost more, and a name can be taken between the check and your purchase.</li><li>Registries that publish no RDAP service (for example .it, .es, .jp, .eu, .us at the time of writing) and registries whose robots.txt refuses automated access (for example CentralNic TLDs such as .xyz, and .uk, .nl, .co, .no) are not queried. For those, DNS decides: delegated names are <code>registered</code>, names that do not exist in DNS are <code>likely-available</code> (medium confidence), anything else is <code>unknown-tld-no-rdap</code> and is not charged. Registration dates are only available where RDAP was used.</li><li>Registry RDAP services are queried politely: at most 2 requests at a time per registry with a gap between them, Retry-After honoured on HTTP 429, and a registry that keeps rate-limiting is not asked again in that run (its domains fall back to DNS). Large runs on one TLD therefore take a few minutes. Up to 2,000 checks per run.</li><li>Privacy: registrant, admin, tech and abuse contact details are never read or returned, and no port-43 WHOIS servers are queried. Only the registrar's name and IANA ID are included.</li><li>Some registries publish less: .de has no creation or expiry dates and no registrar.</li><li>Use the results for your own domain research. Registries' terms forbid using registration data for unsolicited marketing.</li><li>Respects your run budget: set a maximum total charge and the run checks only what it covers, stopping cleanly at the cap.</li></ul><h2>Use it from code</h2><p>Run the actor through the Apify API with the input above.</p><h3>cURL</h3><pre><code class="language-bash">curl -X POST "https://api.apify.com/v2/acts/actor-forge~domain-availability-checker/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"domains": ["apify.com", "my-unregistered-idea-123.com"]}'</code></pre><h3>JavaScript (Node.js)</h3><pre><code class="language-javascript">// Node.js 18+ (built-in fetch). Set APIFY_TOKEN in your environment.
+const input = {
+  "domains": [
+    "apify.com",
+    "my-unregistered-idea-123.com"
+  ]
+};
+
+const res = await fetch(
+  "https://api.apify.com/v2/acts/actor-forge~domain-availability-checker/run-sync-get-dataset-items",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.APIFY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }
+);
+const items = await res.json();
+console.log(items.length, items[0]);</code></pre><h3>Python</h3><pre><code class="language-python"># pip install apify-client   (set APIFY_TOKEN in your environment)
+import os
+from apify_client import ApifyClient
+
+client = ApifyClient(os.environ["APIFY_TOKEN"])
+run_input = {
+    "domains": [
+        "apify.com",
+        "my-unregistered-idea-123.com"
+    ]
+}
+
+run = client.actor("actor-forge/domain-availability-checker").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)</code></pre><p class="muted">The <code>run-sync-get-dataset-items</code> endpoint waits for the run (up to 5 minutes) and returns the dataset rows directly. For longer runs, start the run asynchronously and read the dataset when it finishes, as the Python example does. Replace <code>APIFY_TOKEN</code> with your own token from the Apify console.</p><h2>Related actors</h2><div class="grid"><div class="card"><h3><a href="../../actors/ads-transparency/">Google Ads Transparency Scraper — Competitor Ads &amp; Monitoring</a></h3><p>Scrape competitor ads from the Google Ads Transparency Center by domain, advertiser name or ID: format, first/last shown, regions, impressions, ad…</p><span class="price">$0.60 per 1,000 · ad result</span></div><div class="card"><h3><a href="../../actors/ai-brand-visibility/">AI Brand Visibility Tracker - GPT, Gemini &amp; Claude Mentions</a></h3><p>Check how AI models answer your buyers&#x27; questions: is your brand mentioned, at what rank and list position, with what sentiment, which competitors…</p><span class="price">$10 per 1,000 · prompt check</span></div><div class="card"><h3><a href="../../actors/article-extractor/">Article Extractor - News &amp; Blog Text, Author, Date, Image</a></h3><p>Extract news and blog articles from URLs or a site&#x27;s home/section page: headline, authors, published and modified dates, lead image, language, site…</p><span class="price">$0.40 per 1,000 · article extracted</span></div><div class="card"><h3><a href="../../actors/bluesky-posts-search/">Bluesky Posts Search - Keyword &amp; Hashtag Posts, No Login</a></h3><p>Search Bluesky posts by keyword, phrase or hashtag without an account or API key: text, link, author handle, time, likes, replies, reposts, language…</p><span class="price">$0.30 per 1,000 · post</span></div></div><div class="cta"><p><strong>Try Bulk Domain Availability Checker on Apify.</strong> Pay only for the results you get.</p><a class="btn" href="https://apify.com/actor-forge/domain-availability-checker" rel="noopener">Run on Apify →</a></div><p><a href="../../categories/seo-marketing/">More SEO &amp; Marketing Intelligence tools</a> · <a href="../../actors/">All actors</a></p></div></main>
+<footer><div class="wrap"><p><a href="../../categories/business-leads/">Business Leads &amp; Company Data</a> · <a href="../../categories/documents-ai/">Documents, OCR &amp; AI-Ready Text</a> · <a href="../../categories/seo-marketing/">SEO &amp; Marketing Intelligence</a> · <a href="../../categories/ecommerce-apps/">E-commerce &amp; App Stores</a> · <a href="../../categories/video-social/">YouTube &amp; Video Data</a> · <a href="../../categories/china-trends/">China Social Trends</a> · <a href="../../categories/more/">More Data Tools</a></p><p><strong>ActorForge</strong> builds pay-per-result data tools on the Apify platform. All actors: <a href="https://apify.com/actor-forge" rel="noopener">apify.com/actor-forge</a>. ActorForge is independent and not affiliated with the data sources named on this site.</p><p><a href="../../sitemap.xml">Sitemap</a></p></div></footer>
+</body>
+</html>
